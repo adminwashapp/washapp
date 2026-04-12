@@ -61,21 +61,21 @@ export class AuthController {
     return this.authService.resetPassword(dto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Post('push-token')
-  savePushToken(@Request() req: any, @Body('token') token: string) {
+  savePushToken(@Req() req: any, @Body('token') token: string) {
     return this.authService.savePushToken(req.user.sub, token);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Post('send-verification')
-  sendEmailVerification(@Request() req: any) {
+  sendEmailVerification(@Req() req: any) {
     return this.authService.sendEmailVerification(req.user.sub);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Post('verify-email')
-  verifyEmail(@Request() req: any, @Body('token') token: string) {
+  verifyEmail(@Req() req: any, @Body('token') token: string) {
     return this.authService.verifyEmail(req.user.sub, token);
   }
 }

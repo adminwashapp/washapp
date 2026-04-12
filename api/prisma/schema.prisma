@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -144,6 +145,7 @@ model User {
   passwordHash    String
   isPhoneVerified Boolean  @default(false)
   isEmailVerified       Boolean  @default(false)
+  isActive              Boolean  @default(true)
   emailVerifyToken       String?
   emailVerifyExpires     DateTime?
   pushToken              String?

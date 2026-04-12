@@ -277,7 +277,7 @@ export class MissionsService {
 
     if (
       [MissionStatus.IN_PROGRESS, MissionStatus.COMPLETED, MissionStatus.VALIDATED].includes(
-        mission.status,
+        mission.status as any,
       )
     ) {
       throw new BadRequestException('Impossible d\'annuler cette mission');

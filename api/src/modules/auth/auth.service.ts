@@ -170,7 +170,7 @@ export class AuthService {
   async forgotPassword(dto: { phone?: string; email?: string }) {
     const where: any = dto.phone ? { phone: dto.phone } : { email: dto.email ?? '' };
     const user = await this.prisma.user.findUnique({ where });
-    if (!user) return { success: true, message: ''Si ce compte existe, un code vous sera envoye.'' };
+    if (!user) return { success: true, message: 'Si ce compte existe, un code vous sera envoye.' };
     await this.prisma.passwordResetToken.updateMany({
       where: { userId: user.id, used: false }, data: { used: true },
     });

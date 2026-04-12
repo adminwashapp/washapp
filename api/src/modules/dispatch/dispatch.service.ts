@@ -85,7 +85,7 @@ export class DispatchService {
       },
       include: {
         location: true,
-        user: { select: { id: true, name: true, fcmToken: true } },
+        user: { select: { id: true, name: true } },
         wallet: true,
       },
     });

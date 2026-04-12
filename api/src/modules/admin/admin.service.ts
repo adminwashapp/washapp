@@ -214,7 +214,7 @@ export class AdminService {
           ],
         }
       : {};
-    const [clients, total] = await this.prisma.\([
+    const [clients, total] = await this.prisma.$transaction([
       this.prisma.clientProfile.findMany({
         where,
         include: {

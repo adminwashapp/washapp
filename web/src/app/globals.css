@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 248, 250, 252;
+
+  /* Washapp brand blue */
+  --washapp-blue:       #1558f5;
+  --washapp-blue-light: #2f78ff;
+  --washapp-blue-dark:  #1045e1;
+  --washapp-blue-glow:  rgba(21, 88, 245, 0.38);
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  font-family: 'Inter', sans-serif;
+}
+
+@layer components {
+
+  /* ── PRIMARY BUTTON ─────────────────────────── */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2
+           font-semibold text-white
+           py-3 px-6 rounded-xl
+           transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background: linear-gradient(135deg, var(--washapp-blue-light) 0%, var(--washapp-blue) 60%, var(--washapp-blue-dark) 100%);
+    box-shadow: 0 4px 14px var(--washapp-blue-glow);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4a8fff 0%, var(--washapp-blue) 50%, #0c3ac4 100%);
+    box-shadow: 0 6px 22px rgba(21, 88, 245, 0.55);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0px);
+    box-shadow: 0 2px 8px var(--washapp-blue-glow);
+  }
+
+  /* ── SECONDARY BUTTON ───────────────────────── */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           font-semibold
+           py-3 px-6 rounded-xl
+           transition-all duration-200;
+    color: var(--washapp-blue);
+    border: 2px solid var(--washapp-blue);
+    background: transparent;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(21, 88, 245, 0.06);
+    box-shadow: 0 0 0 4px rgba(21, 88, 245, 0.10);
+  }
+
+  /* ── GHOST BUTTON ───────────────────────────── */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           font-medium text-gray-600
+           py-2 px-4 rounded-lg
+           transition-all duration-200
+           hover:text-gray-900 hover:bg-gray-100;
+  }
+
+  /* ── INPUT ──────────────────────────────────── */
+  .input-field {
+    @apply w-full border border-gray-300 rounded-xl px-4 py-3
+           text-gray-900 placeholder-gray-400
+           transition-all duration-200
+           focus:outline-none focus:border-transparent;
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(21, 88, 245, 0.20);
+      border-color: var(--washapp-blue);
+    }
+  }
+
+  /* ── CARD ───────────────────────────────────── */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+  }
+
+  /* ── TYPOGRAPHY ─────────────────────────────── */
+  .section-title {
+    @apply text-3xl font-bold text-gray-900 mb-2;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-gray-500 mb-8;
+  }
+
+  /* ── BADGE ──────────────────────────────────── */
+  .badge-blue {
+    @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full;
+    color: var(--washapp-blue);
+    background: rgba(21, 88, 245, 0.10);
+  }
+}

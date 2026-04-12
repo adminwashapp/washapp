@@ -1,0 +1,536 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ENUMS
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+enum Role {
+  CLIENT
+  WASHER
+  ADMIN
+}
+
+enum TransportType {
+  BIKE
+  SCOOTER
+  MOTORBIKE
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum MissionType {
+  INSTANT
+  BOOKING
+}
+
+enum ServiceType {
+  EXTERIOR
+  INTERIOR
+  FULL
+}
+
+enum MissionStatus {
+  SEARCHING
+  ASSIGNED
+  EN_ROUTE
+  ARRIVED
+  IN_PROGRESS
+  COMPLETED
+  VALIDATED
+  CANCELLED
+  DISPUTED
+}
+
+enum PaymentMethod {
+  ORANGE_MONEY
+  CASH
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  HELD
+  RELEASED
+  CASH_PENDING
+  CASH_CONFIRMED
+  REFUNDED
+}
+
+enum ValidationStatus {
+  PENDING
+  CLIENT_VALIDATED
+  AUTO_VALIDATED
+  REJECTED
+}
+
+enum PhotoType {
+  BEFORE
+  AFTER
+}
+
+enum DispatchAttemptStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CANCELLED
+}
+
+enum LedgerEntryType {
+  PAYMENT_RECEIVED
+  HOLD
+  RELEASE_TO_WASHER
+  WITHDRAWAL
+  REFUND
+  CASH_CONFIRMATION
+  ADJUSTMENT
+}
+
+enum LedgerDirection {
+  CREDIT
+  DEBIT
+}
+
+enum LedgerStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  PAID
+  FAILED
+  REJECTED
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum ComplaintStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  REJECTED
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// USERS
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+model User {
+  id              String   @id @default(cuid())
+  role            Role
+  name            String
+  phone           String   @unique
+  email           String?  @unique
+  passwordHash    String
+  isPhoneVerified Boolean  @default(false)
+  isEmailVerified       Boolean  @default(false)
+  emailVerifyToken       String?
+  emailVerifyExpires     DateTime?
+  pushToken              String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  clientProfile ClientProfile?
+  washerProfile WasherProfile?
+  refreshTokens RefreshToken[]
+  passwordResets PasswordResetToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// CLIENT
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+model ClientProfile {
+  id                   String        @id @default(cuid())
+  userId               String        @unique
+  defaultPaymentMethod PaymentMethod @default(ORANGE_MONEY)
+  createdAt            DateTime      @default(now())
+
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicles      Vehicle[]
+  addresses     Address[]
+  missions      Mission[]           @relation("ClientMissions")
+  ratings       Rating[]
+  complaints    Complaint[]
+  subscriptions ClientSubscription[]
+
+  @@map("client_profiles")
+}
+
+model Vehicle {
+  id          String   @id @default(cuid())
+  clientId    String
+  type        String
+  brand       String
+  model       String
+  plateNumber String
+  color       String?
+  createdAt   DateTime @default(now())
+
+  client   ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  missions Mission[]
+
+  @@map("vehicles")
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  clientId    String
+  label       String
+  fullAddress String
+  lat         Float
+  lng         Float
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  client ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+/// Abonnement client : 12 lavages prÃ©payÃ©s
+model ClientSubscription {
+  id          String             @id @default(cuid())
+  clientId    String
+  serviceType ServiceType
+  total       Int                @default(12)
+  remaining   Int                @default(12)
+  price       Int
+  status      SubscriptionStatus @default(ACTIVE)
+  expiresAt   DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  client ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("client_subscriptions")
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// WASHER
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+model WasherProfile {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  transportType      TransportType      @default(MOTORBIKE)
+  orangeMoneyNumber  String?
+  zoneLabel          String?
+  averageRating      Float              @default(5.0)
+  ratingsCount       Int                @default(0)
+  complaintsCount    Int                @default(0)
+  isOnline           Boolean            @default(false)
+  accountStatus      AccountStatus      @default(PENDING)
+  trainingValidated  Boolean            @default(false)
+  testValidated      Boolean            @default(false)
+  equipmentValidated Boolean            @default(false)
+  subscriptionStatus SubscriptionStatus @default(PENDING)
+  fcmToken           String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  missions         Mission[]                @relation("WasherMissions")
+  subscriptions    WasherSubscription[]
+  wallet           Wallet?
+  location         WasherLocation?
+  dispatchAttempts MissionDispatchAttempt[]
+  ratings          Rating[]
+  complaints       Complaint[]              @relation("WasherComplaints")
+  reservationStats WasherReservationStat[]
+  withdrawals      WithdrawalRequest[]
+
+  @@map("washer_profiles")
+}
+
+/// Abonnement washer : 35 000 FCFA/semaine
+model WasherSubscription {
+  id        String             @id @default(cuid())
+  washerId  String
+  amount    Int
+  status    SubscriptionStatus @default(PENDING)
+  startsAt  DateTime
+  endsAt    DateTime
+  createdAt DateTime           @default(now())
+
+  washer WasherProfile @relation(fields: [washerId], references: [id])
+
+  @@map("washer_subscriptions")
+}
+
+model WasherLocation {
+  id         String   @id @default(cuid())
+  washerId   String   @unique
+  lat        Float
+  lng        Float
+  recordedAt DateTime @default(now()) @updatedAt
+
+  washer WasherProfile @relation(fields: [washerId], references: [id])
+
+  @@map("washer_locations")
+}
+
+/// Statistiques annulations par mois pour rÃ¨gle des 2 annulations
+model WasherReservationStat {
+  id                  String   @id @default(cuid())
+  washerId            String
+  monthKey            String
+  cancellationsCount  Int      @default(0)
+  reservationsBlocked Boolean  @default(false)
+  updatedAt           DateTime @updatedAt
+
+  washer WasherProfile @relation(fields: [washerId], references: [id])
+
+  @@unique([washerId, monthKey])
+  @@map("washer_reservation_stats")
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// MISSIONS
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+model Mission {
+  id               String           @id @default(cuid())
+  clientId         String
+  washerId         String?
+  vehicleId        String?
+  fullAddress      String
+  lat              Float
+  lng              Float
+  missionType      MissionType
+  serviceType      ServiceType
+  price            Int
+  scheduledAt      DateTime?
+  status           MissionStatus    @default(SEARCHING)
+  paymentMethod    PaymentMethod
+  paymentStatus    PaymentStatus    @default(UNPAID)
+  validationStatus ValidationStatus @default(PENDING)
+  acceptedAt       DateTime?
+  arrivedAt        DateTime?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  validatedAt      DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  client           ClientProfile            @relation("ClientMissions", fields: [clientId], references: [id])
+  washer           WasherProfile?           @relation("WasherMissions", fields: [washerId], references: [id])
+  vehicle          Vehicle?                 @relation(fields: [vehicleId], references: [id])
+  photos           MissionPhoto[]
+  dispatchAttempts MissionDispatchAttempt[]
+  rating           Rating?
+  complaint        Complaint?
+  ledgerEntries    LedgerEntry[]
+
+  @@map("missions")
+}
+
+model MissionPhoto {
+  id        String    @id @default(cuid())
+  missionId String
+  washerId  String
+  type      PhotoType
+  url       String
+  createdAt DateTime  @default(now())
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@map("mission_photos")
+}
+
+/// Trace chaque tentative d'attribution au cours du dispatch
+model MissionDispatchAttempt {
+  id          String                @id @default(cuid())
+  missionId   String
+  washerId    String
+  attemptType MissionType
+  sentAt      DateTime              @default(now())
+  expiresAt   DateTime
+  status      DispatchAttemptStatus @default(PENDING)
+
+  mission Mission       @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  washer  WasherProfile @relation(fields: [washerId], references: [id])
+
+  @@map("mission_dispatch_attempts")
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// QUALITÃ‰
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+model Rating {
+  id        String   @id @default(cuid())
+  missionId String   @unique
+  clientId  String
+  washerId  String
+  stars     Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  mission Mission       @relation(fields: [missionId], references: [id])
+  client  ClientProfile @relation(fields: [clientId], references: [id])
+  washer  WasherProfile @relation(fields: [washerId], references: [id])
+
+  @@map("ratings")
+}
+
+model Complaint {
+  id             String          @id @default(cuid())
+  missionId      String          @unique
+  clientId       String
+  washerId       String
+  reason         String
+  description    String?
+  status         ComplaintStatus @default(OPEN)
+  resolutionNote String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  mission Mission       @relation(fields: [missionId], references: [id])
+  client  ClientProfile @relation(fields: [clientId], references: [id])
+  washer  WasherProfile @relation("WasherComplaints", fields: [washerId], references: [id])
+
+  @@map("complaints")
+}
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// WALLET & LEDGER
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+/// Un wallet par washer â€” ne jamais modifier les soldes sans LedgerEntry
+model Wallet {
+  id               String   @id @default(cuid())
+  washerId         String   @unique
+  availableBalance Int      @default(0)
+  pendingBalance   Int      @default(0)
+  currency         String   @default("XOF")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  washer      WasherProfile     @relation(fields: [washerId], references: [id])
+  ledgerEntries LedgerEntry[]
+  withdrawals  WithdrawalRequest[]
+
+  @@map("wallets")
+}
+
+/// Chaque mouvement financier doit crÃ©er une entrÃ©e ici
+model LedgerEntry {
+  id          String          @id @default(cuid())
+  walletId    String?
+  washerId    String?
+  clientId    String?
+  missionId   String?
+  type        LedgerEntryType
+  direction   LedgerDirection
+  amount      Int
+  status      LedgerStatus    @default(PENDING)
+  reference   String?
+  description String?
+  createdAt   DateTime        @default(now())
+
+  wallet  Wallet?  @relation(fields: [walletId], references: [id])
+  mission Mission? @relation(fields: [missionId], references: [id])
+
+  @@map("ledger_entries")
+}
+
+model WithdrawalRequest {
+  id                String           @id @default(cuid())
+  washerId          String
+  walletId          String
+  amount            Int
+  orangeMoneyNumber String
+  status            WithdrawalStatus @default(PENDING)
+  createdAt         DateTime         @default(now())
+  processedAt       DateTime?
+
+  washer WasherProfile @relation(fields: [washerId], references: [id])
+  wallet Wallet        @relation(fields: [walletId], references: [id])
+
+  @@map("withdrawal_requests")
+}
+
+enum CandidatureStatus {
+  PENDING
+  VALIDATED
+  REJECTED
+  INCOMPLETE
+}
+
+model WasherApplication {
+  id                  String            @id @default(cuid())
+  // Informations personnelles
+  firstName           String
+  lastName            String
+  email               String
+  phone               String
+  city                String
+  zone                String
+  // Informations d'activite
+  transportType       String
+  availability        String
+  experience          String?
+  hasEquipment        Boolean           @default(false)
+  // Paiement
+  waveMoneyNumber     String?
+  preferredPayment    String?
+  // Documents
+  profilePhotoUrl     String?
+  idDocumentUrl       String?
+  otherDocumentUrl    String?
+  // Admin
+  status              CandidatureStatus @default(PENDING)
+  adminNote           String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@map("washer_applications")
+}
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}

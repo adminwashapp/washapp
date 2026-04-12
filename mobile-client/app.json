@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Washapp",
+    "slug": "washapp-client",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "scheme": "washapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/manphone.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#040c24"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.washapp.client",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Washapp a besoin de votre localisation.",
+        "NSCameraUsageDescription": "Washapp utilise la camera pour les photos."
+      }
+    },
+    "android": {
+      "package": "com.washapp.client",
+      "permissions": ["ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","CAMERA"]
+    },
+    "web": { "bundler": "metro", "output": "static" },
+    "plugins": ["expo-router", "expo-location", "expo-camera"],
+    "experiments": { "typedRoutes": true },
+    "extra": {
+      "apiUrl": "http://localhost:3001/api",
+      "wsUrl": "http://localhost:3001",
+      "eas": { "projectId": "your-eas-project-id" }
+    }
+  }
+}

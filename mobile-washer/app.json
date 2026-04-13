@@ -1,36 +1,59 @@
-{
-  "expo": {
-    "name": "Washapp Washer",
-    "slug": "washapp-washer",
-    "version": "1.0.0",
-    "sdkVersion": "54.0.0",
-    "orientation": "portrait",
-    "scheme": "washapp-washer",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/Pagewasher.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#040c24"
-    },
-    "ios": {
-      "supportsTablet": false,
-      "bundleIdentifier": "com.washapp.washer",
-      "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Washapp Washer a besoin de votre localisation.",
-        "NSCameraUsageDescription": "Washapp Washer utilise la camera."
-      }
-    },
-    "android": {
-      "package": "com.washapp.washer",
-      "permissions": ["ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","CAMERA"]
-    },
-    "web": { "bundler": "metro", "output": "static" },
-    "plugins": ["expo-router", "expo-location", "expo-camera"],
-    "experiments": { "typedRoutes": true },
-    "extra": {
-      "apiUrl": "https://washapp-api.onrender.com/api",
-      "wsUrl": "http://localhost:3001",
-      "eas": { "projectId": "your-eas-project-id" }
-    }
-  }
+﻿{
+    "expo":  {
+                 "name":  "Washapp Washer",
+                 "slug":  "washapp-washer",
+                 "version":  "1.0.0",
+                 "sdkVersion":  "54.0.0",
+                 "orientation":  "portrait",
+                 "scheme":  "washapp-washer",
+                 "userInterfaceStyle":  "automatic",
+                 "splash":  {
+                                "image":  "./assets/images/Pagewasher.png",
+                                "resizeMode":  "cover",
+                                "backgroundColor":  "#040c24"
+                            },
+                 "ios":  {
+                             "supportsTablet":  false,
+                             "bundleIdentifier":  "com.washapp.washer",
+                             "infoPlist":  {
+                                               "NSLocationWhenInUseUsageDescription":  "Washapp Washer a besoin de votre localisation.",
+                                               "NSCameraUsageDescription":  "Washapp Washer utilise la camera."
+                                           },
+                             "config":  {
+                                            "googleMapsApiKey":  "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk"
+                                        }
+                         },
+                 "android":  {
+                                 "package":  "com.washapp.washer",
+                                 "permissions":  [
+                                                     "ACCESS_COARSE_LOCATION",
+                                                     "ACCESS_FINE_LOCATION",
+                                                     "CAMERA"
+                                                 ],
+                                 "config":  {
+                                                "googleMaps":  {
+                                                                   "apiKey":  "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk"
+                                                               }
+                                            }
+                             },
+                 "web":  {
+                             "bundler":  "metro",
+                             "output":  "static"
+                         },
+                 "plugins":  [
+                                 "expo-router",
+                                 "expo-location",
+                                 "expo-camera"
+                             ],
+                 "experiments":  {
+                                     "typedRoutes":  true
+                                 },
+                 "extra":  {
+                               "apiUrl":  "https://washapp-api.onrender.com/api",
+                               "wsUrl":  "http://localhost:3001",
+                               "eas":  {
+                                           "projectId":  "your-eas-project-id"
+                                       }
+                           }
+             }
 }

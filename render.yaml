@@ -6,8 +6,8 @@ services:
     region: frankfurt
     plan: free
     rootDir: api
-    buildCommand: npm install --include=dev && npx prisma generate
-    startCommand: npm run build && npx prisma db push && node dist/main
+    buildCommand: npm install --include=dev && npx prisma generate && node --max-old-space-size=460 ./node_modules/.bin/nest build
+    startCommand: npx prisma db push && node dist/main.js
     envVars:
       - key: NODE_ENV
         value: production

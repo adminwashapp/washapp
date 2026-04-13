@@ -14,15 +14,15 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: '*',
     credentials: true,
   });
 
   app.setGlobalPrefix('api');
 
   const port = process.env.PORT || 3001;
-  await app.listen(port);
-  console.log(`Washapp API running on http://localhost:${port}/api`);
+  await app.listen(port, '0.0.0.0');
+  console.log(`Washapp API running on http://0.0.0.0:${port}/api`);
 }
 
 bootstrap();

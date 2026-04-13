@@ -6,8 +6,8 @@ services:
     region: frankfurt
     plan: free
     rootDir: api
-    buildCommand: npm install --include=dev && npx prisma generate && NODE_OPTIONS=--max-old-space-size=460 npx nest build
-    startCommand: npx prisma db push && node dist/main.js
+    buildCommand: npm install --include=dev && npx prisma generate
+    startCommand: npx prisma db push && NODE_OPTIONS=--max-old-space-size=460 npx ts-node --transpile-only -r tsconfig-paths/register src/main.ts
     envVars:
       - key: NODE_ENV
         value: production

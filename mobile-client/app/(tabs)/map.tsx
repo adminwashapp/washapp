@@ -67,7 +67,7 @@ export default function MapScreen() {
         case 'account':  router.push('/(tabs)/account'); break;
         case 'faq':      Linking.openURL(`${WEB_URL}/faq`); break;
         case 'legal':    Linking.openURL(`${WEB_URL}/legal`); break;
-        case 'privacy':  Linking.openURL(${WEB_URL}/politique-de-confidentialite); break;
+        case 'privacy':  Linking.openURL(`${WEB_URL}/politique-de-confidentialite`); break;
         case 'logout':
           logout();
           router.replace('/(auth)/welcome');
@@ -172,7 +172,7 @@ export default function MapScreen() {
                 <Text style={styles.serviceDesc}>{desc}</Text>
                 {selectedService === key && (
                   <View style={styles.selectedCheck}>
-                    <Text style={{ fontSize: 11, color: '#fff', fontWeight: '800' }}>✓</Text>
+                    <Text style={{ fontSize: 11, color: '#fff', fontWeight: '800' }}>âœ“</Text>
                   </View>
                 )}
               </TouchableOpacity>
@@ -207,7 +207,7 @@ export default function MapScreen() {
                 <Text style={styles.drawerPhone}>{user?.phone || 'Washapp'}</Text>
               </View>
               <TouchableOpacity onPress={closeDrawer} style={styles.closeBtn} activeOpacity={0.7}>
-                <Text style={styles.closeBtnText}>✕</Text>
+                <Text style={styles.closeBtnText}>âœ•</Text>
               </TouchableOpacity>
             </View>
 

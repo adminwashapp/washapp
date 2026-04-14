@@ -35,7 +35,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem("user", JSON.stringify(user));
       setAuth(user, accessToken, refreshToken);
       washerSocket.connect();
-      registerForPushNotifications().catch(() => {});
+      registerForPushNotifications(washerApi.updateFcmToken).catch(() => {});
       router.replace("/(tabs)/map");
     } catch (e: any) {
       const msg = e?.response?.data?.message;
@@ -109,7 +109,7 @@ export default function LoginScreen() {
                 />
           <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password' as any)} activeOpacity={0.8}
             style={{ alignSelf: 'flex-end', marginTop: 8, marginBottom: 4 }}>
-            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oubliÃ© ?</Text>
+            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oubliÃƒÂ© ?</Text>
           </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.showPassBtn}

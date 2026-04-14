@@ -26,15 +26,15 @@ const SERVICE_ICON: Record<string, string> = {
 };
 
 const MENU_ITEMS = [
-  { icon: "[H]", label: "Accueil",         route: null },
-  { icon: "[M]", label: "Mes missions",     route: "/(tabs)/missions" },
-  { icon: "[R]", label: "Revenus",          route: "/(tabs)/earnings" },
-  { icon: "[W]", label: "Wallet",           route: "/(tabs)/wallet" },
-  { icon: "[U]", label: "Mon compte",       route: "/(tabs)/account" },
-  { icon: "[F]", label: "FAQ",              route: null, web: `${WEB_URL}/faq` },
-  { icon: "[L]", label: "Mentions legales", route: null, web: `${WEB_URL}/legal` },
-  { icon: "[P]", label: "Politique de confidentialite", route: null, web: `${WEB_URL}/politique-de-confidentialite` },
-  { icon: "[X]", label: "Deconnexion",      route: "LOGOUT" },
+  { icon: "\uD83C\uDFE0", label: "Accueil",         route: null },
+  { icon: "\uD83D\uDCC5", label: "Mes missions",     route: "/(tabs)/missions" },
+  { icon: "\uD83D\uDCB0", label: "Revenus",          route: "/(tabs)/earnings" },
+  { icon: "\uD83D\uDCB3", label: "Wallet",           route: "/(tabs)/wallet" },
+  { icon: "\uD83D\uDC64", label: "Mon compte",       route: "/(tabs)/account" },
+  { icon: "\uD83D\uDCCB", label: "FAQ",              route: null, web: `${WEB_URL}/faq` },
+  { icon: "\uD83D\uDCC4", label: "Mentions legales", route: null, web: `${WEB_URL}/legal` },
+  { icon: "\uD83D\uDD12", label: "Politique de confidentialite", route: null, web: `${WEB_URL}/politique-de-confidentialite` },
+  { icon: "\uD83D\uDEAA", label: "Deconnexion",      route: "LOGOUT" },
 ];
 
 // Helper component: row info inside the mission card

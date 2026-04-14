@@ -10,13 +10,13 @@ import { useBookingStore } from '../store';
 import { missionsApi, clientsApi } from '../services/api';
 
 const SERVICES = [
-  { key: 'EXTERIOR', icon: 'Ext.', label: 'Lavage Exterieur', price: 1500, desc: 'Carrosserie, vitres, jantes' },
-  { key: 'INTERIOR', icon: 'Int.', label: 'Lavage Interieur', price: 2500, desc: 'Habitacle, tapis, sieges' },
-  { key: 'FULL',     icon: 'Full', label: 'Lavage Complet',  price: 4000, desc: 'Exterieur + Interieur complet' },
+  { key: 'EXTERIOR', icon: '\uD83D\uDE97', label: 'Lavage Exterieur', price: 1500, desc: 'Carrosserie, vitres, jantes' },
+  { key: 'INTERIOR', icon: '\u2728', label: 'Lavage Interieur', price: 2500, desc: 'Habitacle, tapis, sieges' },
+  { key: 'FULL',     icon: '\u2705', label: 'Lavage Complet',  price: 4000, desc: 'Exterieur + Interieur complet' },
 ];
 const PAYMENT_METHODS = [
-  { key: 'WAVE_MONEY', icon: '[CB]', label: 'Wave Money', sub: 'Paiement mobile securise' },
-  { key: 'CASH', icon: '[CA]', label: 'Remise au washer', sub: 'Remis directement au washer avant la prestation' },
+  { key: 'WAVE_MONEY', icon: '\uD83D\uDCB3', label: 'Wave Money', sub: 'Paiement mobile securise' },
+  { key: 'CASH', icon: '\uD83E\uDD1D', label: 'Remise au washer', sub: 'Remis directement au washer avant la prestation' },
 ];
 const STEPS = ['Prestation', 'Localisation', 'Paiement', 'Confirmation'];
 
@@ -158,7 +158,7 @@ export default function BookingScreen() {
 
             <Text style={styles.stepTitle2}>Type de mission</Text>
             <View style={styles.missionTypeRow}>
-              {[{ key: 'INSTANT', icon: '!', label: 'Instantanee' }, { key: 'BOOKING', icon: 'D', label: 'Reservee' }].map((m) => (
+              {[{ key: 'INSTANT', icon: '\u26A1', label: 'Instantanee' }, { key: 'BOOKING', icon: '\uD83D\uDCC5', label: 'Reservee' }].map((m) => (
                 <TouchableOpacity
                   key={m.key}
                   style={[styles.missionTypeCard, missionType === m.key && styles.missionTypeCardActive]}

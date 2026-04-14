@@ -10,9 +10,9 @@ import { useBookingStore } from '../store';
 import { missionsApi, clientsApi } from '../services/api';
 
 const SERVICES = [
-  { key: 'EXTERIOR', emoji: '🚿', label: 'Lavage Exterieur', price: 1500, desc: 'Carrosserie, vitres, jantes' },
-  { key: 'INTERIOR', emoji: '✨', label: 'Lavage Interieur', price: 2500, desc: 'Habitacle, tapis, sieges' },
-  { key: 'FULL',     emoji: '⭐', label: 'Lavage Complet',  price: 4000, desc: 'Exterieur + Interieur complet' },
+  { key: 'EXTERIOR', emoji: 'ðŸš¿', label: 'Lavage Exterieur', price: 1500, desc: 'Carrosserie, vitres, jantes' },
+  { key: 'INTERIOR', emoji: 'âœ¨', label: 'Lavage Interieur', price: 2500, desc: 'Habitacle, tapis, sieges' },
+  { key: 'FULL',     emoji: 'â­', label: 'Lavage Complet',  price: 4000, desc: 'Exterieur + Interieur complet' },
 ];
 const PAYMENT_METHODS = [
   { key: 'WAVE_MONEY', emoji: '\uD83D\uDCB3', label: 'Wave Money', sub: 'Paiement mobile securise' },
@@ -82,8 +82,8 @@ export default function BookingScreen() {
         } as any);
       } else {
         Alert.alert(
-          'Réservation enregistrée !',
-          'Votre réservation a bien été prise en compte. Vous pouvez suivre son statut dans Mes réservations.',
+          'RÃ©servation enregistrÃ©e !',
+          'Votre rÃ©servation a bien Ã©tÃ© prise en compte. Vous pouvez suivre son statut dans Mes rÃ©servations.',
           [{ text: 'OK', onPress: () => router.replace('/(tabs)/missions') }]
         );
       }
@@ -104,7 +104,7 @@ export default function BookingScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => step === 0 ? router.back() : prev()} style={styles.backBtn}>
-          <Text style={styles.backArrow}>←</Text>
+          <Text style={styles.backArrow}>â†</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Reserver un lavage</Text>
         <View style={{ width: 40 }} />
@@ -116,7 +116,7 @@ export default function BookingScreen() {
           <View key={s} style={styles.stepWrap}>
             <View style={[styles.stepDot, i <= step && styles.stepDotActive, i < step && styles.stepDotDone]}>
               {i < step ? (
-                <Text style={styles.stepCheck}>✓</Text>
+                <Text style={styles.stepCheck}>âœ“</Text>
               ) : (
                 <Text style={[styles.stepNum, i <= step && styles.stepNumActive]}>{i + 1}</Text>
               )}
@@ -129,7 +129,7 @@ export default function BookingScreen() {
 
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 
-        {/* STEP 0 — Prestation */}
+        {/* STEP 0 â€” Prestation */}
         {step === 0 && (
           <View style={styles.stepContent}>
             <Text style={styles.stepTitle}>Choisissez votre prestation</Text>
@@ -150,7 +150,7 @@ export default function BookingScreen() {
                   </View>
                   <View style={styles.serviceCardRight}>
                     <Text style={[styles.servicePrice, serviceType === s.key && styles.textActive]}>{s.price.toLocaleString('fr-FR')} F</Text>
-                    {serviceType === s.key && <View style={styles.checkCircle}><Text style={styles.checkMark}>✓</Text></View>}
+                    {serviceType === s.key && <View style={styles.checkCircle}><Text style={styles.checkMark}>âœ“</Text></View>}
                   </View>
                 </TouchableOpacity>
               ))}
@@ -158,7 +158,7 @@ export default function BookingScreen() {
 
             <Text style={styles.stepTitle2}>Type de mission</Text>
             <View style={styles.missionTypeRow}>
-              {[{ key: 'INSTANT', emoji: '⚡', label: 'Instantanee' }, { key: 'BOOKING', emoji: '📅', label: 'Reservee' }].map((m) => (
+              {[{ key: 'INSTANT', emoji: 'âš¡', label: 'Instantanee' }, { key: 'BOOKING', emoji: 'ðŸ“…', label: 'Reservee' }].map((m) => (
                 <TouchableOpacity
                   key={m.key}
                   style={[styles.missionTypeCard, missionType === m.key && styles.missionTypeCardActive]}
@@ -173,7 +173,7 @@ export default function BookingScreen() {
           </View>
         )}
 
-        {/* STEP 1 — Localisation */}
+        {/* STEP 1 â€” Localisation */}
         {step === 1 && (
           <View style={styles.stepContent}>
             <Text style={styles.stepTitle}>Adresse du vehicule</Text>
@@ -202,7 +202,7 @@ export default function BookingScreen() {
                         onPress={() => setVehicle(v.id)}
                       >
                         <Text style={[styles.vehicleChipText, vehicleId === v.id && styles.textActive]}>
-                          🚗 {v.brand} {v.model}
+                          ðŸš— {v.brand} {v.model}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -225,11 +225,10 @@ export default function BookingScreen() {
           </View>
         )}
 
-        {/* STEP 2 — Paiement */}
+        {/* STEP 2 â€” Paiement */}
         {step === 2 && (
           <View style={styles.stepContent}>
             <Text style={styles.stepTitle}>Moyen de paiement</Text>
-            <Text style={styles.stepSub}>Le paiement est effectue avant le debut du lavage</Text>
             {PAYMENT_METHODS.map((pm) => (
               <TouchableOpacity
                 key={pm.key}
@@ -242,24 +241,24 @@ export default function BookingScreen() {
                   <Text style={[styles.payLabel, payMethod === pm.key && styles.textActive]}>{pm.label}</Text>
                   <Text style={styles.paySub}>{pm.sub}</Text>
                 </View>
-                {payMethod === pm.key && <View style={styles.checkCircle}><Text style={styles.checkMark}>✓</Text></View>}
+                {payMethod === pm.key && <View style={styles.checkCircle}><Text style={styles.checkMark}>âœ“</Text></View>}
               </TouchableOpacity>
             ))}
           </View>
         )}
 
-        {/* STEP 3 — Recap */}
+        {/* STEP 3 â€” Recap */}
         {step === 3 && (
           <View style={styles.stepContent}>
             <Text style={styles.stepTitle}>Confirmation</Text>
             <View style={styles.recapCard}>
               <View style={styles.recapRow}>
                 <Text style={styles.recapKey}>Prestation</Text>
-                <Text style={styles.recapVal}>{selectedService?.label || '—'}</Text>
+                <Text style={styles.recapVal}>{selectedService?.label || 'â€”'}</Text>
               </View>
               <View style={[styles.recapRow, styles.recapBorder]}>
                 <Text style={styles.recapKey}>Type</Text>
-                <Text style={styles.recapVal}>{missionType === 'INSTANT' ? '⚡ Instantanee' : '📅 Reservee'}</Text>
+                <Text style={styles.recapVal}>{missionType === 'INSTANT' ? 'âš¡ Instantanee' : 'ðŸ“… Reservee'}</Text>
               </View>
               <View style={[styles.recapRow, styles.recapBorder]}>
                 <Text style={styles.recapKey}>Adresse</Text>
@@ -290,7 +289,7 @@ export default function BookingScreen() {
       <View style={[styles.bottomBar, { paddingHorizontal: 20, paddingTop: 16, paddingBottom: insets.bottom + 16 }]}>
         {step < 3 ? (
           <TouchableOpacity style={styles.nextBtn} onPress={next} activeOpacity={0.85}>
-            <Text style={styles.nextBtnText}>Continuer →</Text>
+            <Text style={styles.nextBtnText}>Continuer â†’</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -301,7 +300,7 @@ export default function BookingScreen() {
           >
             {loading
               ? <ActivityIndicator color="#fff" />
-              : <Text style={styles.confirmBtnText}>✅  Confirmer la reservation</Text>
+              : <Text style={styles.confirmBtnText}>âœ…  Confirmer la reservation</Text>
             }
           </TouchableOpacity>
         )}

@@ -278,19 +278,29 @@ export default function TrackingScreen() {
         {/* ── CTA VALIDATE ────────────────────────────────────────────── */}
         {status === "COMPLETED" && (
           <View style={styles.validateBlock}>
-            <Text style={styles.validateTitle}>Mission terminée !</Text>
-            <Text style={styles.validateSub}>Vérifiez les photos et validez si tout est bon.</Text>
-            <TouchableOpacity
-              style={styles.validateBtn}
-              onPress={handleValidate}
-              disabled={submitting}
-              activeOpacity={0.85}
-            >
-              {submitting
-                ? <ActivityIndicator color="#fff" />
-                : <Text style={styles.validateBtnText}>✅ Valider la mission</Text>
-              }
-            </TouchableOpacity>
+            <Text style={styles.validateTitle}>Mission terminee !</Text>
+            <Text style={styles.validateSub}>Votre vehicule est pret.</Text>
+            {mission?.paymentMethod === "WAVE_MONEY" ? (
+              <TouchableOpacity
+                style={[styles.validateBtn, { backgroundColor: "#00b9f5" }]}
+                onPress={() => router.replace({ pathname: "/wave-payment/[id]", params: { id: mission.id } })}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.validateBtnText}>{'\uD83D\uDCB3'}  Payer via Wave Money</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.validateBtn}
+                onPress={handleValidate}
+                disabled={submitting}
+                activeOpacity={0.85}
+              >
+                {submitting
+                  ? <ActivityIndicator color="#fff" />
+                  : <Text style={styles.validateBtnText}>{'\u2705'} Confirmer la remise</Text>
+                }
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               style={styles.claimOpenBtn}
               onPress={() => setShowClaim(true)}

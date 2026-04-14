@@ -154,12 +154,10 @@ export default function MissionTrackingPage() {
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center" style={{ width: 240, height: 240 }}>
-          {[1, 2, 3].map((r) => (
-            <div key={r} className="absolute rounded-full border-2 border-blue-500"
-              style={{ width: r * 80, height: r * 80, borderRadius: '50%', opacity: 0.25 / r,
-                animationDuration: '2.4s', animationDelay: `\${(r-1)*0.8}s``, animationIterationCount: 'infinite', animationName: 'ping' }} />
-          ))}
+        <div className="relative flex items-center justify-center w-60 h-60">
+          <div className="absolute w-20 h-20 rounded-full border-2 border-blue-500 animate-ping opacity-30" />
+          <div className="absolute w-40 h-40 rounded-full border-2 border-blue-400 animate-ping opacity-20" style={{ animationDelay: '0.8s' }} />
+          <div className="absolute w-60 h-60 rounded-full border-2 border-blue-300 animate-ping opacity-10" style={{ animationDelay: '1.6s' }} />
           <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center shadow-2xl z-10">
             <span className="text-4xl">&#x1F697;</span>
           </div>

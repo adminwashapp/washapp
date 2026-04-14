@@ -3,11 +3,11 @@ import Footer from '@/components/layout/Footer';
 import { Check, Wallet, Shield, Clock, Star, ArrowRight, Smartphone, Zap } from 'lucide-react';
 
 const steps = [
-  { num: '01', title: 'Formation obligatoire', desc: 'Une journee de formation complete pour maitriser les techniques de lavage professionnel, les produits et les attentes qualite Washapp.', icon: '\uD83C\uDF93' },
-  { num: '02', title: 'Test de validation', desc: 'Un test pratique evalue par notre equipe. Il atteste que vous etes pret a servir nos clients avec le niveau de qualite requis.', icon: '\u2705' },
-  { num: '03', title: 'Acquisition du materiel', desc: 'Avant activation, vous devez posseder le materiel obligatoire : kit de nettoyage professionnel, produits agrees Washapp.', icon: '\uD83E\uDDF4' },
-  { num: '04', title: 'Abonnement Washapp', desc: '35 000 FCFA par semaine. Sans commission sur vos missions &mdash; tout ce que vous gagnez est a vous.', icon: '\uD83D\uDCB3' },
-  { num: '05', title: 'Activation et premiere mission', desc: "Votre profil est valide par l'equipe Washapp. Vous passez en ligne sur la carte et les missions arrivent directement sur votre telephone.", icon: '\uD83D\uDE80' },
+  { num: '01', title: 'Formation obligatoire', desc: 'Une journee de formation complete pour maitriser les techniques de lavage professionnel, les produits et les attentes qualite Washapp.', icon: 'formation' },
+  { num: '02', title: 'Test de validation', desc: 'Un test pratique evalue par notre equipe. Il atteste que vous etes pret a servir nos clients avec le niveau de qualite requis.', icon: 'test' },
+  { num: '03', title: 'Acquisition du materiel', desc: 'Avant activation, vous devez posseder le materiel obligatoire : kit de nettoyage professionnel, produits agrees Washapp.', icon: 'materiel' },
+  { num: '04', title: 'Abonnement Washapp', desc: '35 000 FCFA par semaine. Sans commission sur vos missions. Tout ce que vous gagnez est a vous.', icon: 'abonnement' },
+  { num: '05', title: 'Activation et premiere mission', desc: "Votre profil est valide par l'equipe Washapp. Vous passez en ligne sur la carte et les missions arrivent directement sur votre telephone.", icon: 'activation' },
 ];
 
 const earnings = [

@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,
   Alert, Image, StatusBar,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "../../store";
@@ -66,25 +67,31 @@ export default function LoginScreen() {
           <Text style={styles.subtitle}>Connectez-vous a votre espace washer</Text>
 
           <View style={styles.form}>
+            {/* Email */}
             <View style={styles.fieldWrap}>
               <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="votre@email.com"
-                placeholderTextColor="#94a3b8"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+              <View style={styles.inputRow}>
+                <Ionicons name="mail-outline" size={18} color="#94a3b8" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.inputField}
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="votre@email.com"
+                  placeholderTextColor="#94a3b8"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
             </View>
 
+            {/* Mot de passe */}
             <View style={styles.fieldWrap}>
               <Text style={styles.label}>Mot de passe</Text>
-              <View style={styles.passwordRow}>
+              <View style={styles.inputRow}>
+                <Ionicons name="lock-closed-outline" size={18} color="#94a3b8" style={styles.inputIcon} />
                 <TextInput
-                  style={styles.pwdInput}
+                  style={styles.inputField}
                   value={password}
                   onChangeText={setPassword}
                   placeholder="Votre mot de passe"
@@ -92,8 +99,12 @@ export default function LoginScreen() {
                   secureTextEntry={!showPass}
                   autoCapitalize="none"
                 />
-                <TouchableOpacity style={styles.showPassBtn} onPress={() => setShowPass(s => !s)}>
-                  <Text style={styles.showPassText}>{showPass ? "Cacher" : "Voir"}</Text>
+                <TouchableOpacity onPress={() => setShowPass(s => !s)} style={styles.eyeBtn}>
+                  <Ionicons
+                    name={showPass ? "eye-off-outline" : "eye-outline"}
+                    size={20}
+                    color="#64748b"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -142,19 +153,14 @@ const styles = StyleSheet.create({
   form: { gap: 16, marginBottom: 12 },
   fieldWrap: { gap: 6 },
   label: { fontSize: 13, fontWeight: "700", color: "#374151" },
-  input: {
-    backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#e2e8f0",
-    borderRadius: 14, paddingHorizontal: 16, paddingVertical: 15,
-    fontSize: 15, color: "#0f172a",
-  },
-  passwordRow: {
+  inputRow: {
     flexDirection: "row", alignItems: "center",
     backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#e2e8f0",
-    borderRadius: 14, paddingHorizontal: 16,
+    borderRadius: 14, paddingHorizontal: 14,
   },
-  pwdInput: { flex: 1, paddingVertical: 15, fontSize: 15, color: "#0f172a" },
-  showPassBtn: { paddingLeft: 10, paddingVertical: 15 },
-  showPassText: { fontSize: 13, fontWeight: "600", color: "#1558f5" },
+  inputIcon: { marginRight: 8 },
+  inputField: { flex: 1, paddingVertical: 15, fontSize: 15, color: "#0f172a" },
+  eyeBtn: { padding: 6 },
   forgotWrap: { alignSelf: "flex-end", marginBottom: 24 },
   forgotText: { fontSize: 13, color: "#1558f5", fontWeight: "600" },
   loginBtn: {

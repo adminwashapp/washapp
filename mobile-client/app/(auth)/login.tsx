@@ -94,7 +94,7 @@ export default function LoginScreen() {
                 underlineColorAndroid="transparent"
               />
               <TouchableOpacity onPress={() => setShowPwd(v => !v)} style={styles.eyeBtn} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                <Text style={styles.eyeText}>{showPwd ? "Cacher" : "Voir"}</Text>
+                <Text style={styles.eyeText}>{showPwd ? '\uD83D\uDE48' : '\uD83D\uDC41'}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   pwdRow: { flexDirection: "row", alignItems: "center", borderWidth: 1.5, borderColor: "#e2e8f0", borderRadius: 14, paddingHorizontal: 16, backgroundColor: "#fff", minHeight: 52 },
   pwdInput: { flex: 1, height: 52, fontSize: 16, color: "#0f172a", backgroundColor: "transparent" },
   eyeBtn: { paddingLeft: 12, height: 52, justifyContent: "center" },
-  eyeText: { fontSize: 13, color: "#64748b", fontWeight: "600" },
+  eyeText: { fontSize: 22 },
   forgotWrap: { alignSelf: 'flex-end', marginTop: -4, marginBottom: 4 },
   forgotText: { fontSize: 13, color: '#1558f5', fontWeight: '600' },
   errorBox: { backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca', borderRadius: 12, padding: 12 },

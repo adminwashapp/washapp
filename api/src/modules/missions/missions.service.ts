@@ -76,7 +76,7 @@ export class MissionsService {
       where: { id: missionId },
       include: {
         client: { include: { user: { select: { name: true, phone: true } } } },
-        washer: { include: { user: { select: { name: true, phone: true } } } },
+        washer: { include: { user: { select: { name: true, phone: true } }, location: true } },
         vehicle: true,
         photos: true,
         rating: true,

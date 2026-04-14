@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEmail, MinLength, IsMobilePhone } from 'class-validator';
+import { IsString, IsOptional, IsEmail, MinLength } from 'class-validator';
 
 export class RegisterClientDto {
   @IsString()
@@ -40,9 +40,15 @@ export class RegisterWasherDto {
   orangeMoneyNumber?: string;
 }
 
+// LoginDto accepts phone OR email (washer app uses email, client app uses phone)
 export class LoginDto {
+  @IsOptional()
   @IsString()
-  phone: string;
+  phone?: string;
+
+  @IsOptional()
+  @IsEmail()
+  email?: string;
 
   @IsString()
   password: string;

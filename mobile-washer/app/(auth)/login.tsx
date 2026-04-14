@@ -7,10 +7,10 @@ import {
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "../../store";
-import { authApi } from "../../services/api";
+import { authApi, washerApi } from "../../services/api";
 import { washerSocket } from "../../services/socket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { registerForPushNotifications } from '../../services/notifications';
+import { registerForPushNotifications } from "../../services/notifications";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function LoginScreen() {
     try {
       const res = await authApi.loginWasher({ email: email.trim().toLowerCase(), password });
       const { accessToken, refreshToken, user } = res.data;
-      await AsyncStorage.setItem("accessToken",  accessToken);
+      await AsyncStorage.setItem("accessToken", accessToken);
       await AsyncStorage.setItem("refreshToken", refreshToken);
       await AsyncStorage.setItem("user", JSON.stringify(user));
       setAuth(user, accessToken, refreshToken);
@@ -43,7 +43,7 @@ export default function LoginScreen() {
         "Connexion echouee",
         typeof msg === "string"
           ? msg
-          : "Email ou mot de passe incorrect. Verifiez vos identifiants.",
+          : "Email ou mot de passe incorrect.",
       );
     } finally {
       setLoading(false);
@@ -53,29 +53,14 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <ScrollView
-          contentContainerStyle={[
-            styles.inner,
-            { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 24 },
-          ]}
+          contentContainerStyle={[styles.inner, { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 24 }]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Logo */}
-          <TouchableOpacity
-            style={styles.logoRow}
-            onPress={() => router.back()}
-            activeOpacity={0.7}
-          >
-            <Image
-              source={require("../../assets/images/logowashapp.png")}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+          <TouchableOpacity style={styles.logoRow} onPress={() => router.back()} activeOpacity={0.7}>
+            <Image source={require("../../assets/images/logowashapp.png")} style={styles.logo} resizeMode="contain" />
             <Text style={styles.brand}>Washapp</Text>
           </TouchableOpacity>
 
@@ -96,30 +81,33 @@ export default function LoginScreen() {
                 autoCorrect={false}
               />
             </View>
+
             <View style={styles.fieldWrap}>
               <Text style={styles.label}>Mot de passe</Text>
               <View style={styles.passwordRow}>
                 <TextInput
-                  style={[styles.input, { flex: 1, marginBottom: 0, paddingRight: 48 }]}
+                  style={styles.pwdInput}
                   value={password}
                   onChangeText={setPassword}
-                  placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                  placeholder="Votre mot de passe"
                   placeholderTextColor="#94a3b8"
                   secureTextEntry={!showPass}
+                  autoCapitalize="none"
                 />
-          <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password' as any)} activeOpacity={0.8}
-            style={{ alignSelf: 'flex-end', marginTop: 8, marginBottom: 4 }}>
-            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oubliÃƒÂ© ?</Text>
-          </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.showPassBtn}
-                  onPress={() => setShowPass(s => !s)}
-                >
+                <TouchableOpacity style={styles.showPassBtn} onPress={() => setShowPass(s => !s)}>
                   <Text style={styles.showPassText}>{showPass ? "Cacher" : "Voir"}</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
+
+          <TouchableOpacity
+            onPress={() => router.push("/(auth)/forgot-password" as any)}
+            style={styles.forgotWrap}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.forgotText}>Mot de passe oublie ?</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.loginBtn, loading && { opacity: 0.6 }]}
@@ -153,17 +141,24 @@ const styles = StyleSheet.create({
   brand: { fontSize: 20, fontWeight: "900", color: "#0f172a" },
   title: { fontSize: 30, fontWeight: "900", color: "#0f172a", marginBottom: 8, letterSpacing: -0.5 },
   subtitle: { fontSize: 14, color: "#64748b", marginBottom: 36 },
-  form: { gap: 16, marginBottom: 28 },
+  form: { gap: 16, marginBottom: 12 },
   fieldWrap: { gap: 6 },
   label: { fontSize: 13, fontWeight: "700", color: "#374151" },
   input: {
     backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#e2e8f0",
     borderRadius: 14, paddingHorizontal: 16, paddingVertical: 15,
-    fontSize: 15, color: "#0f172a", marginBottom: 0,
+    fontSize: 15, color: "#0f172a",
   },
-  passwordRow: { flexDirection: "row", alignItems: "center" },
-  showPassBtn: { position: "absolute", right: 16 },
-  showPassText: { fontSize: 12, fontWeight: "600", color: "#1558f5" },
+  passwordRow: {
+    flexDirection: "row", alignItems: "center",
+    backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#e2e8f0",
+    borderRadius: 14, paddingHorizontal: 16,
+  },
+  pwdInput: { flex: 1, paddingVertical: 15, fontSize: 15, color: "#0f172a" },
+  showPassBtn: { paddingLeft: 10, paddingVertical: 15 },
+  showPassText: { fontSize: 13, fontWeight: "600", color: "#1558f5" },
+  forgotWrap: { alignSelf: "flex-end", marginBottom: 24 },
+  forgotText: { fontSize: 13, color: "#1558f5", fontWeight: "600" },
   loginBtn: {
     backgroundColor: "#1558f5", borderRadius: 16, paddingVertical: 17,
     alignItems: "center", marginBottom: 24,

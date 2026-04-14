@@ -7,7 +7,6 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { authApi } from '../../services/api';
 import { useAuthStore } from '../../store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLang } from '../../contexts/lang';
 import { registerForPushNotifications } from '../../services/notifications';
 import { LangToggle } from '../../components/LangToggle';
@@ -41,7 +40,7 @@ export default function LoginScreen() {
   };
 
   const handleDemo = async () => {
-    const demoUser = { id: 'demo-001', name: 'Lohrans Demo', phone: '07 00 00 00 00', email: 'demo@washapp.ci', role: 'CLIENT' as const };
+    const demoUser = { id: 'demo-001', name: 'Demo Client', phone: '0700000001', email: 'demo@washapp.ci', role: 'CLIENT' as const };
     await setAuth(demoUser, 'demo-token', 'demo-refresh');
     router.replace('/(tabs)/map');
   };
@@ -50,7 +49,7 @@ export default function LoginScreen() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backArrow}>Ã¢â€ Â</Text>
+          <Text style={styles.backArrow}>{'<'}</Text>
         </TouchableOpacity>
 
         <View style={styles.header}>
@@ -70,27 +69,44 @@ export default function LoginScreen() {
 
           <View style={styles.field}>
             <Text style={styles.label}>Telephone</Text>
-            <TextInput style={styles.input} value={phone} onChangeText={setPhone} placeholder="07 00 00 00 00" keyboardType="phone-pad" />
+            <TextInput
+              style={styles.input}
+              value={phone}
+              onChangeText={setPhone}
+              placeholder="07 00 00 00 00"
+              keyboardType="phone-pad"
+              autoCapitalize="none"
+            />
           </View>
 
           <View style={styles.field}>
             <Text style={styles.label}>Mot de passe</Text>
             <View style={styles.pwdRow}>
-              <TextInput style={[styles.input, { flex: 1, borderWidth: 0, padding: 0, backgroundColor: 'transparent' }]} value={password} onChangeText={setPassword} placeholder="Votre mot de passe" secureTextEntry={!showPwd} />
-              <TouchableOpacity onPress={() => setShowPwd(!showPwd)}>
-                <Text style={{ fontSize: 18 }}>{showPwd ? 'Ã°Å¸â„¢Ë†' : 'Ã°Å¸â€˜Â'}</Text>
+              <TextInput
+                style={styles.pwdInput}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Votre mot de passe"
+                secureTextEntry={!showPwd}
+                autoCapitalize="none"
+              />
+              <TouchableOpacity onPress={() => setShowPwd(!showPwd)} style={styles.eyeBtn}>
+                <Text style={styles.eyeText}>{showPwd ? 'Cacher' : 'Voir'}</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password' as any)}
-            style={{ alignSelf: 'flex-end', marginTop: -4, marginBottom: 8 }} activeOpacity={0.8}>
-            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oubliÃƒÂ© ?</Text>
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/forgot-password' as any)}
+            style={styles.forgotWrap}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.forgotText}>Mot de passe oublie ?</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.btnWrap, loading && { opacity: 0.6 }]} onPress={handleLogin} disabled={loading} activeOpacity={0.85}>
             <LinearGradient colors={['#2f78ff', '#1558f5', '#1045e1']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.btn}>
-              <Text style={styles.btnText}>{loading ? t('login_submitting') : t('login_submit')}</Text>
+              <Text style={styles.btnText}>{loading ? 'Connexion...' : 'Se connecter'}</Text>
             </LinearGradient>
           </TouchableOpacity>
 
@@ -111,7 +127,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f8fafc' },
   scroll: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 44, paddingBottom: 24 },
   backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9', borderRadius: 12, marginBottom: 20 },
-  backArrow: { fontSize: 20, color: '#0f172a' },
+  backArrow: { fontSize: 20, color: '#0f172a', fontWeight: '700' },
   header: { alignItems: 'center', marginBottom: 36 },
   headerTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: 16 },
   logoRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 },
@@ -123,7 +139,12 @@ const styles = StyleSheet.create({
   field: { gap: 7 },
   label: { fontSize: 13, fontWeight: '600', color: '#374151' },
   input: { borderWidth: 1.5, borderColor: '#e2e8f0', borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14, fontSize: 16, color: '#0f172a', backgroundColor: '#fff' },
-  pwdRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderColor: '#e2e8f0', borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#fff' },
+  pwdRow: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderColor: '#e2e8f0', borderRadius: 14, paddingHorizontal: 16, backgroundColor: '#fff' },
+  pwdInput: { flex: 1, paddingVertical: 14, fontSize: 16, color: '#0f172a' },
+  eyeBtn: { paddingLeft: 10, paddingVertical: 14 },
+  eyeText: { fontSize: 13, color: '#64748b', fontWeight: '600' },
+  forgotWrap: { alignSelf: 'flex-end', marginTop: -4, marginBottom: 4 },
+  forgotText: { fontSize: 13, color: '#1558f5', fontWeight: '600' },
   errorBox: { backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca', borderRadius: 12, padding: 12 },
   errorText: { color: '#dc2626', fontSize: 13, fontWeight: '500' },
   btnWrap: { borderRadius: 16, overflow: 'hidden', marginTop: 8, shadowColor: '#1558f5', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 16, elevation: 10 },

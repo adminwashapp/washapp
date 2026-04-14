@@ -21,6 +21,8 @@ services:
         generateValue: true
       - key: PORT
         value: 3001
+      - key: FRONTEND_URL
+        value: https://washapp-web.onrender.com
 
   # Web Next.js
   - type: web
@@ -33,10 +35,7 @@ services:
     startCommand: npm start
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        fromService:
-          name: washapp-api
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
+        value: https://washapp-api.onrender.com/api
 
 databases:
   - name: washapp-db

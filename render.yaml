@@ -7,7 +7,7 @@ services:
     plan: free
     rootDir: api
     buildCommand: npm install --include=dev && npx prisma generate
-    startCommand: npx prisma db push && NODE_OPTIONS=--max-old-space-size=460 npx ts-node --transpile-only -r tsconfig-paths/register src/main.ts
+    startCommand: npx prisma db push && NODE_OPTIONS=--max-old-space-size=460 npx ts-node --transpile-only -r tsconfig-paths/register prisma/seed.ts ; NODE_OPTIONS=--max-old-space-size=460 npx ts-node --transpile-only -r tsconfig-paths/register src/main.ts
     envVars:
       - key: NODE_ENV
         value: production

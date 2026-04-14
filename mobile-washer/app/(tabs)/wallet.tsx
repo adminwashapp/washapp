@@ -102,7 +102,7 @@ export default function WalletScreen() {
                 onPress={handleWithdraw}
                 activeOpacity={0.85}
               >
-                <Text style={styles.withdrawBtnText}>{"\uD83D\uDCB3"} Retirer vers Wave Money</Text>
+                <Text style={styles.withdrawBtnText}>{"Retirer vers Wave Money"}</Text>
               </TouchableOpacity>
             </View>
 
@@ -110,7 +110,7 @@ export default function WalletScreen() {
             <View style={styles.card}>
               <Text style={styles.cardTitle}>Mode de paiement</Text>
               <View style={styles.payMethodRow}>
-                <Text style={styles.payMethodIcon}>{"\uD83D\uDCB3"}</Text>
+                <Text style={styles.payMethodIcon}>{"[CB]"}</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.payMethodName}>Wave Money</Text>
                   <Text style={styles.payMethodNumber}>
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: { fontSize: 15, fontWeight: "800", color: "#0f172a" },
   payMethodRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  payMethodIcon: { fontSize: 28 },
+  payMethodIcon: { fontSize: 14, color: "#374151", fontWeight: "700" },
   payMethodName: { fontSize: 15, fontWeight: "700", color: "#0f172a" },
   payMethodNumber: { fontSize: 13, color: "#64748b", marginTop: 2 },
   payMethodBadge: { backgroundColor: "#ecfdf5", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },

@@ -20,23 +20,23 @@ type MapState = "OFFLINE" | "ONLINE_FREE" | "MISSION_INCOMING" | "MISSION_ACCEPT
 const SERVICE_LABELS: Record<string, string> = {
   EXTERIOR: "Lavage Exterieur", INTERIOR: "Lavage Interieur", FULL: "Lavage Complet",
 };
-const SERVICE_EMOJI: Record<string, string> = {
-  EXTERIOR: "\uD83D\uDEBF", INTERIOR: "\u2728", FULL: "\u2B50",
+const SERVICE_ICON: Record<string, string> = {
+  EXTERIOR: "Ext.", INTERIOR: "Int.", FULL: "Full",
 };
 
 const MENU_ITEMS = [
-  { icon: "\uD83C\uDFE0", label: "Accueil",         route: null },
-  { icon: "\uD83D\uDCC5", label: "Mes missions",     route: "/(tabs)/missions" },
-  { icon: "\uD83D\uDCB0", label: "Revenus",          route: "/(tabs)/earnings" },
-  { icon: "\uD83D\uDCB3", label: "Wallet",           route: "/(tabs)/wallet" },
-  { icon: "\uD83D\uDC64", label: "Mon compte",       route: "/(tabs)/account" },
-  { icon: "\uD83D\uDCCB", label: "FAQ",              route: null, web: `${WEB_URL}/faq` },
-  { icon: "\uD83D\uDCC4", label: "Mentions legales", route: null, web: `${WEB_URL}/legal` },
-  { icon: "\uD83D\uDD12", label: "Politique de confidentialite", route: null, web: `${WEB_URL}/politique-de-confidentialite` },
-  { icon: "\uD83D\uDEAA", label: "Deconnexion",      route: "LOGOUT" },
+  { icon: "[H]", label: "Accueil",         route: null },
+  { icon: "[M]", label: "Mes missions",     route: "/(tabs)/missions" },
+  { icon: "[R]", label: "Revenus",          route: "/(tabs)/earnings" },
+  { icon: "[W]", label: "Wallet",           route: "/(tabs)/wallet" },
+  { icon: "[U]", label: "Mon compte",       route: "/(tabs)/account" },
+  { icon: "[F]", label: "FAQ",              route: null, web: `${WEB_URL}/faq` },
+  { icon: "[L]", label: "Mentions legales", route: null, web: `${WEB_URL}/legal` },
+  { icon: "[P]", label: "Politique de confidentialite", route: null, web: `${WEB_URL}/politique-de-confidentialite` },
+  { icon: "[X]", label: "Deconnexion",      route: "LOGOUT" },
 ];
 
-// ── Helper component: row info inside the mission card ───────────────────────
+// Helper component: row info inside the mission card
 function McInfoRow({ icon, value }: { icon: string; value: string }) {
   return (
     <View style={mcRowStyle.row}>
@@ -47,7 +47,7 @@ function McInfoRow({ icon, value }: { icon: string; value: string }) {
 }
 const mcRowStyle = StyleSheet.create({
   row:  { flexDirection: "row", alignItems: "flex-start", gap: 10, paddingVertical: 5 },
-  icon: { fontSize: 15, marginTop: 1, width: 20, textAlign: "center" },
+  icon: { fontSize: 13, marginTop: 1, width: 20, textAlign: "center", color: "#374151" },
   text: { flex: 1, fontSize: 14, color: "#374151", fontWeight: "500", lineHeight: 20 },
 });
 
@@ -290,7 +290,7 @@ export default function MapScreen() {
         />
       </View>
 
-      {/* ONLINE / OFFLINE TOGGLE - bottom bar */}
+      {/* ONLINE / OFFLINE TOGGLE */}
       {(mapState === "OFFLINE" || mapState === "ONLINE_FREE") && (
         <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 16 }]}>
           <TouchableOpacity
@@ -309,7 +309,7 @@ export default function MapScreen() {
       {mapState === "ONLINE_FREE" && (
         <View style={styles.freeMsg}>
           <Text style={styles.freeMsgText}>
-            {"\u2705"} Vous etes en ligne. Les missions apparaitront ici.
+            {"[OK] Vous etes en ligne. Les missions apparaitront ici."}
           </Text>
         </View>
       )}
@@ -317,13 +317,13 @@ export default function MapScreen() {
       {/* BOTTOM PANEL */}
       <Animated.View style={[styles.panel, { transform: [{ translateY: panelAnim }] }]}>
 
-        {/* ── MISSION INCOMING ── Uber-style card */}
+        {/* MISSION INCOMING */}
         {mapState === "MISSION_INCOMING" && mission && (
           <View style={styles.missionCard}>
-            {/* Top row: close X + title + countdown */}
+            {/* Top row */}
             <View style={styles.mcTopRow}>
               <TouchableOpacity style={styles.mcCloseBtn} onPress={declineMission} activeOpacity={0.8}>
-                <Text style={styles.mcCloseTxt}>{"×"}</Text>
+                <Text style={styles.mcCloseTxt}>{"X"}</Text>
               </TouchableOpacity>
               <View style={{ flex: 1, alignItems: "center" }}>
                 <Text style={styles.mcTitle}>Nouvelle mission</Text>
@@ -336,25 +336,25 @@ export default function MapScreen() {
             {/* Type badge */}
             <View style={styles.mcBadgeRow}>
               <View style={[styles.mcBadge, { backgroundColor: mission.serviceType === "FULL" ? "#fef3c7" : "#eff6ff" }]}>
-                <Text style={styles.mcBadgeIcon}>{SERVICE_EMOJI[mission.serviceType]}</Text>
+                <Text style={styles.mcBadgeIcon}>{SERVICE_ICON[mission.serviceType]}</Text>
                 <Text style={[styles.mcBadgeText, { color: mission.serviceType === "FULL" ? "#92400e" : "#1558f5" }]}>
                   {SERVICE_LABELS[mission.serviceType]}
                 </Text>
               </View>
               {mission.type === "BOOKING" && (
                 <View style={[styles.mcBadge, { backgroundColor: "#f0fdf4" }]}>
-                  <Text style={[styles.mcBadgeText, { color: "#059669" }]}>{"📅 Reservation"}</Text>
+                  <Text style={[styles.mcBadgeText, { color: "#059669" }]}>{"Reservation"}</Text>
                 </View>
               )}
             </View>
 
-            {/* Price — hero element */}
+            {/* Price */}
             <Text style={styles.mcPrice}>{mission.price.toLocaleString("fr-FR")} <Text style={styles.mcPriceCur}>FCFA</Text></Text>
 
-            {/* Distance / time row */}
+            {/* Distance row */}
             <View style={styles.mcDistRow}>
               <View style={styles.mcDistChip}>
-                <Text style={styles.mcDistIcon}>{"\uD83D\uDEF5"}</Text>
+                <Text style={styles.mcDistIcon}>{"~"}</Text>
                 <Text style={styles.mcDistText}>
                   {location
                     ? (() => {
@@ -364,7 +364,7 @@ export default function MapScreen() {
                         const a = Math.sin(dLat/2)**2 + Math.cos(location.lat*Math.PI/180)*Math.cos(mission.lat*Math.PI/180)*Math.sin(dLng/2)**2;
                         const km = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
                         const mins = Math.max(2, Math.round(km / 0.35));
-                        return `${mins} min \u00b7 ${km.toFixed(1)} km`;
+                        return `${mins} min - ${km.toFixed(1)} km`;
                       })()
                     : "Calcul en cours..."}
                 </Text>
@@ -376,23 +376,23 @@ export default function MapScreen() {
 
             {/* Infos list */}
             <View style={styles.mcInfoList}>
-              <McInfoRow icon={"\uD83D\uDCCD"} value={mission.address} />
+              <McInfoRow icon={"[A]"} value={mission.address} />
               {mission.scheduledAt ? (
                 <McInfoRow
-                  icon={"\uD83D\uDD55"}
+                  icon={"[D]"}
                   value={new Date(mission.scheduledAt).toLocaleString("fr-FR", {
                     weekday: "short", day: "numeric", month: "short",
                     hour: "2-digit", minute: "2-digit",
                   })}
                 />
               ) : (
-                <McInfoRow icon={"\u26A1"} value={"Maintenant — mission instantanee"} />
+                <McInfoRow icon={"[!]"} value={"Maintenant - mission instantanee"} />
               )}
               {(mission as any).vehiclePlate && (
-                <McInfoRow icon={"\uD83D\uDE97"} value={(mission as any).vehiclePlate} />
+                <McInfoRow icon={"[V]"} value={(mission as any).vehiclePlate} />
               )}
               {(mission as any).instructions && (
-                <McInfoRow icon={"\uD83D\uDCDD"} value={(mission as any).instructions} />
+                <McInfoRow icon={"[N]"} value={(mission as any).instructions} />
               )}
             </View>
 
@@ -403,14 +403,14 @@ export default function MapScreen() {
           </View>
         )}
 
-        {/* ── MISSION ACCEPTED ── */}
+        {/* MISSION ACCEPTED */}
         {mapState === "MISSION_ACCEPTED" && activeMission && (
           <View style={styles.panelContent}>
             <View style={styles.panelHandle} />
-            <Text style={styles.panelTag}>{"\uD83D\uDE97"} Mission confirmee</Text>
+            <Text style={styles.panelTag}>{"Mission confirmee"}</Text>
             <Text style={styles.missionTitle}>{SERVICE_LABELS[activeMission.serviceType] || "Mission"}</Text>
             <View style={styles.missionInfoRow}>
-              <Text style={styles.missionInfo}>{"\uD83D\uDCCD"} {activeMission.address || activeMission.fullAddress}</Text>
+              <Text style={styles.missionInfo}>{"[A] "}{activeMission.address || activeMission.fullAddress}</Text>
             </View>
             <View style={styles.panelActions}>
               <TouchableOpacity
@@ -418,21 +418,21 @@ export default function MapScreen() {
                 onPress={() => { if (activeMission.clientPhone) Linking.openURL(`tel:${activeMission.clientPhone}`); }}
                 activeOpacity={0.85}
               >
-                <Text style={styles.callBtnText}>{"\uD83D\uDCDE"} Appeler</Text>
+                <Text style={styles.callBtnText}>{"[T] Appeler"}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.startBtn} onPress={startMission} activeOpacity={0.85}>
-                <Text style={styles.startBtnText}>{"\uD83D\uDE80"} Demarrer</Text>
+                <Text style={styles.startBtnText}>{"Demarrer"}</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
 
-        {/* ── MISSION IN PROGRESS ── */}
+        {/* MISSION IN PROGRESS */}
         {mapState === "MISSION_IN_PROGRESS" && activeMission && (
           <View style={styles.panelContent}>
             <View style={styles.panelHandle} />
             <View style={styles.inProgressHeader}>
-              <Text style={styles.panelTag}>{"\u26A1"} Mission en cours</Text>
+              <Text style={styles.panelTag}>{"Mission en cours"}</Text>
               <Text style={styles.timerText}>{formatTimer(missionTimer)}</Text>
             </View>
             <Text style={styles.missionTitle}>{SERVICE_LABELS[activeMission.serviceType] || "Mission"}</Text>
@@ -441,13 +441,13 @@ export default function MapScreen() {
               onPress={completeMission}
               activeOpacity={0.85}
             >
-              <Text style={styles.startBtnText}>{"\u2705"} Mission terminee</Text>
+              <Text style={styles.startBtnText}>{"Mission terminee"}</Text>
             </TouchableOpacity>
           </View>
         )}
       </Animated.View>
 
-      {/* ─── DRAWER ─────────────────────────────────────────────────────────── */}
+      {/* DRAWER */}
       {drawerOpen && (
         <>
           <Animated.View style={[styles.drawerOverlay, { opacity: overlayAnim }]}>
@@ -497,7 +497,6 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f8fafc" },
 
-  // Top bar
   topBar: {
     position: "absolute", top: 0, left: 0, right: 0,
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",
@@ -524,7 +523,6 @@ const styles = StyleSheet.create({
   statusTextOff: { color: "#64748b" },
   topLogo: { width: 36, height: 36, borderRadius: 9 },
 
-  // Online toggle
   bottomBar: {
     position: "absolute", bottom: 0, left: 0, right: 0,
     paddingHorizontal: 20, paddingTop: 16,
@@ -539,7 +537,6 @@ const styles = StyleSheet.create({
   },
   onlineBtnText: { color: "#fff", fontWeight: "800", fontSize: 16 },
 
-  // Free state message
   freeMsg: {
     position: "absolute", bottom: 130, left: 20, right: 20,
     backgroundColor: "#fff", borderRadius: 16, padding: 14,
@@ -548,7 +545,6 @@ const styles = StyleSheet.create({
   },
   freeMsgText: { fontSize: 13, fontWeight: "600", color: "#374151", textAlign: "center" },
 
-  // Mission panel
   panel: {
     position: "absolute", bottom: 0, left: 0, right: 0,
     backgroundColor: "#fff", borderTopLeftRadius: 28, borderTopRightRadius: 28,
@@ -595,7 +591,6 @@ const styles = StyleSheet.create({
   },
   startBtnText: { color: "#fff", fontWeight: "800", fontSize: 15 },
 
-  // Drawer
   drawerOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "#000",
@@ -611,9 +606,9 @@ const styles = StyleSheet.create({
   drawerRole: { fontSize: 12, color: "#64748b", fontWeight: "500", marginTop: 2 },
   drawerDivider: { height: 1, backgroundColor: "#f1f5f9", marginBottom: 8 },
   drawerItem: { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 20, paddingVertical: 14 },
-  drawerItemIcon: { fontSize: 20 },
+  drawerItemIcon: { fontSize: 14, color: "#374151" },
   drawerItemLabel: { fontSize: 15, fontWeight: "600", color: "#0f172a" },
-  // Mission card (Uber-style)
+
   missionCard: {
     padding: 20, paddingBottom: 28, gap: 6,
   },
@@ -622,7 +617,7 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16, backgroundColor: "#f1f5f9",
     alignItems: "center", justifyContent: "center",
   },
-  mcCloseTxt: { fontSize: 20, color: "#64748b", fontWeight: "300", marginTop: -2 },
+  mcCloseTxt: { fontSize: 16, color: "#64748b", fontWeight: "700" },
   mcTitle: { fontSize: 16, fontWeight: "800", color: "#0f172a" },
   mcCountdown: {
     backgroundColor: "#fef2f2", paddingHorizontal: 10, paddingVertical: 4,
@@ -631,7 +626,7 @@ const styles = StyleSheet.create({
   mcCountdownTxt: { color: "#ef4444", fontWeight: "800", fontSize: 14 },
   mcBadgeRow: { flexDirection: "row", gap: 8, marginBottom: 4 },
   mcBadge: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20 },
-  mcBadgeIcon: { fontSize: 13 },
+  mcBadgeIcon: { fontSize: 12, fontWeight: "700", color: "#374151" },
   mcBadgeText: { fontSize: 12, fontWeight: "700" },
   mcPrice: { fontSize: 36, fontWeight: "900", color: "#0f172a", letterSpacing: -1, marginVertical: 4 },
   mcPriceCur: { fontSize: 18, fontWeight: "700", color: "#64748b" },
@@ -640,7 +635,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 6,
     backgroundColor: "#eff6ff", paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20,
   },
-  mcDistIcon: { fontSize: 14 },
+  mcDistIcon: { fontSize: 14, color: "#1558f5" },
   mcDistText: { fontSize: 13, fontWeight: "700", color: "#1558f5" },
   mcDivider: { height: 1, backgroundColor: "#f1f5f9", marginVertical: 8 },
   mcInfoList: { gap: 0 },

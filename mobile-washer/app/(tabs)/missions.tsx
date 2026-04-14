@@ -18,8 +18,8 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 const SERVICE_LABELS: Record<string, string> = {
   EXTERIOR: "Lavage Exterieur", INTERIOR: "Lavage Interieur", FULL: "Lavage Complet",
 };
-const SERVICE_EMOJI: Record<string, string> = {
-  EXTERIOR: "\uD83D\uDEBF", INTERIOR: "\u2728", FULL: "\u2B50",
+const SERVICE_ICON: Record<string, string> = {
+  EXTERIOR: "Ext.", INTERIOR: "Int.", FULL: "Full",
 };
 const PRICES: Record<string, number> = { EXTERIOR: 1500, INTERIOR: 2500, FULL: 4000 };
 
@@ -60,8 +60,8 @@ export default function MissionsScreen() {
         activeOpacity={0.75}
         onPress={() => router.push({ pathname: "/mission/[id]", params: { id: item.id } })}
       >
-        <View style={[styles.emojiBox, { backgroundColor: st.bg }]}>
-          <Text style={styles.emoji}>{SERVICE_EMOJI[item.serviceType] ?? "\uD83D\uDE97"}</Text>
+        <View style={[styles.iconBox, { backgroundColor: st.bg }]}>
+          <Text style={styles.iconText}>{SERVICE_ICON[item.serviceType] ?? "?"}</Text>
         </View>
         <View style={styles.cardBody}>
           <Text style={styles.cardTitle}>{SERVICE_LABELS[item.serviceType] ?? item.serviceType}</Text>
@@ -114,7 +114,7 @@ export default function MissionsScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor="#1558f5" />}
         ListEmptyComponent={loading ? null : (
           <View style={styles.emptyBlock}>
-            <Text style={styles.emptyEmoji}>{tab === 0 ? "\uD83D\uDE97" : "\uD83D\uDCCB"}</Text>
+            <Text style={styles.emptyIcon}>{tab === 0 ? "[V]" : "[H]"}</Text>
             <Text style={styles.emptyTitle}>{tab === 0 ? "Aucune mission a venir" : "Aucun historique"}</Text>
           </View>
         )}
@@ -141,15 +141,15 @@ const styles = StyleSheet.create({
   listContent: { padding: 16, gap: 12 },
   emptyContainer: { flex: 1 },
   emptyBlock: { flex: 1, alignItems: "center", justifyContent: "center", paddingTop: 80 },
-  emptyEmoji: { fontSize: 48, marginBottom: 16 },
+  emptyIcon: { fontSize: 16, marginBottom: 16, color: "#94a3b8" },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: "#64748b" },
   card: {
     flexDirection: "row", alignItems: "center", gap: 12,
     backgroundColor: "#fff", borderRadius: 18, padding: 14,
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 3,
   },
-  emojiBox: { width: 48, height: 48, borderRadius: 14, alignItems: "center", justifyContent: "center" },
-  emoji: { fontSize: 22 },
+  iconBox: { width: 48, height: 48, borderRadius: 14, alignItems: "center", justifyContent: "center" },
+  iconText: { fontSize: 12, fontWeight: "700", color: "#374151" },
   cardBody: { flex: 1, gap: 2 },
   cardTitle: { fontSize: 15, fontWeight: "700", color: "#0f172a" },
   cardAddr: { fontSize: 12, color: "#64748b" },

@@ -74,23 +74,23 @@ export default function EarningsScreen() {
                 {periodData.total.toLocaleString("fr-FR")} <Text style={styles.mainCurrency}>FCFA</Text>
               </Text>
               <View style={styles.mainStats}>
-                <StatChip icon="\uD83D\uDE97" label="Missions"  value={String(periodData.missions)} />
-                <StatChip icon="\uD83D\uDCCA" label="Moyenne"   value={`${Math.round(periodData.average).toLocaleString("fr-FR")} F`} />
+                <StatChip icon="[V]" label="Missions"  value={String(periodData.missions)} />
+                <StatChip icon="[G]" label="Moyenne"   value={`${Math.round(periodData.average).toLocaleString("fr-FR")} F`} />
               </View>
             </View>
 
             {/* Breakdown */}
             <View style={styles.card}>
               <Text style={styles.cardTitle}>Par type de lavage</Text>
-              <BreakdownRow label="Lavage Exterieur" emoji="\uD83D\uDEBF" amount={periodData.exterior} />
-              <BreakdownRow label="Lavage Interieur"  emoji="\u2728"         amount={periodData.interior} />
-              <BreakdownRow label="Lavage Complet"    emoji="\u2B50"         amount={periodData.full}     />
+              <BreakdownRow label="Lavage Exterieur" icon="Ext." amount={periodData.exterior} />
+              <BreakdownRow label="Lavage Interieur" icon="Int." amount={periodData.interior} />
+              <BreakdownRow label="Lavage Complet"   icon="Full" amount={periodData.full}     />
             </View>
 
             {/* Info note */}
             <View style={styles.infoNote}>
               <Text style={styles.infoNoteText}>
-                {"\uD83D\uDCA1"} Les paiements sont verses via Wave Money apres chaque mission validee.
+                {"[i] Les paiements sont verses via Wave Money apres chaque mission validee."}
               </Text>
             </View>
           </>
@@ -113,10 +113,10 @@ function StatChip({ icon, label, value }: { icon: string; label: string; value: 
   );
 }
 
-function BreakdownRow({ label, emoji, amount }: { label: string; emoji: string; amount: number }) {
+function BreakdownRow({ label, icon, amount }: { label: string; icon: string; amount: number }) {
   return (
     <View style={styles.breakRow}>
-      <Text style={styles.breakEmoji}>{emoji}</Text>
+      <Text style={styles.breakIcon}>{icon}</Text>
       <Text style={styles.breakLabel}>{label}</Text>
       <Text style={styles.breakAmount}>{amount.toLocaleString("fr-FR")} F</Text>
     </View>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 10,
     backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 14, paddingHorizontal: 14, paddingVertical: 10, flex: 1,
   },
-  statIcon: { fontSize: 20 },
+  statIcon: { fontSize: 14, color: "#fff" },
   statLabel: { fontSize: 10, fontWeight: "600", color: "rgba(255,255,255,0.7)" },
   statValue: { fontSize: 15, fontWeight: "800", color: "#fff" },
   card: {
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: { fontSize: 15, fontWeight: "800", color: "#0f172a" },
   breakRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 6, borderTopWidth: 1, borderTopColor: "#f1f5f9" },
-  breakEmoji: { fontSize: 20 },
+  breakIcon: { fontSize: 12, fontWeight: "700", color: "#374151", width: 32 },
   breakLabel: { flex: 1, fontSize: 14, fontWeight: "600", color: "#374151" },
   breakAmount: { fontSize: 15, fontWeight: "800", color: "#0f172a" },
   infoNote: { backgroundColor: "#eff6ff", borderRadius: 16, padding: 16 },

@@ -51,31 +51,31 @@ export default function AccountScreen() {
     {
       title: 'Informations',
       rows: [
-        { icon: '\u{1F464}', label: 'Modifier le nom', sub: user?.name || '—', action: () => Alert.alert('Bientot disponible') },
-        { icon: '\u2709\uFE0F', label: 'Modifier l\'email', sub: user?.email || '—', action: () => Alert.alert('Bientot disponible') },
-        { icon: '\uD83D\uDCDE', label: 'Modifier le telephone', sub: user?.phone || '—', action: () => Alert.alert('Bientot disponible') },
+        { icon: '[U]', label: 'Modifier le nom', sub: user?.name || '-', action: () => Alert.alert('Bientot disponible') },
+        { icon: '[E]', label: "Modifier l'email", sub: user?.email || '-', action: () => Alert.alert('Bientot disponible') },
+        { icon: '[T]', label: 'Modifier le telephone', sub: user?.phone || '-', action: () => Alert.alert('Bientot disponible') },
       ],
     },
     {
       title: 'Activite',
       rows: [
-        { icon: '\uD83D\uDCC5', label: 'Mes reservations', action: () => router.push('/(tabs)/missions') },
-        { icon: '\uD83D\uDD04', label: 'Historique des lavages', action: () => router.push('/(tabs)/missions') },
+        { icon: '[D]', label: 'Mes reservations', action: () => router.push('/(tabs)/missions') },
+        { icon: '[H]', label: 'Historique des lavages', action: () => router.push('/(tabs)/missions') },
       ],
     },
     {
       title: 'Aide',
       rows: [
-        { icon: '\uD83D\uDCCB', label: 'FAQ', action: () => Linking.openURL(`${WEB_URL}/faq`), external: true },
-        { icon: '\uD83D\uDCAC', label: 'Support / Contact', action: () => Alert.alert('Support', 'Ecrivez-nous : support@washapp.ci') },
-        { icon: '\uD83D\uDCC4', label: 'Mentions legales', action: () => Linking.openURL(`${WEB_URL}/legal`), external: true },
-        { icon: '\uD83D\uDD12', label: 'Politique de confidentialite', action: () => Linking.openURL(`${WEB_URL}/legal`), external: true },
+        { icon: '[F]', label: 'FAQ', action: () => Linking.openURL(`${WEB_URL}/faq`), external: true },
+        { icon: '[M]', label: 'Support / Contact', action: () => Alert.alert('Support', 'Ecrivez-nous : support@washapp.ci') },
+        { icon: '[L]', label: 'Mentions legales', action: () => Linking.openURL(`${WEB_URL}/legal`), external: true },
+        { icon: '[P]', label: 'Politique de confidentialite', action: () => Linking.openURL(`${WEB_URL}/legal`), external: true },
       ],
     },
     {
       title: 'Session',
       rows: [
-        { icon: '\uD83D\uDEAA', label: 'Deconnexion', action: handleLogout, danger: true },
+        { icon: '[X]', label: 'Deconnexion', action: handleLogout, danger: true },
       ],
     },
   ];
@@ -84,10 +84,10 @@ export default function AccountScreen() {
     return (
       <View style={[styles.guestContainer, { paddingTop: insets.top + 40, paddingBottom: insets.bottom + 24 }]}>
         <View style={styles.guestAvatarRing}>
-          <Text style={styles.guestAvatarIcon}>{'\uD83D\uDC64'}</Text>
+          <Text style={styles.guestAvatarIcon}>{'[U]'}</Text>
         </View>
         <Text style={styles.guestTitle}>Mon compte</Text>
-        <Text style={styles.guestSub}>Connectez-vous pour acceder{'\n'}a votre espace personnel</Text>
+        <Text style={styles.guestSub}>{'Connectez-vous pour acceder\na votre espace personnel'}</Text>
         <TouchableOpacity style={styles.guestLoginBtn} onPress={() => router.push('/(auth)/login')} activeOpacity={0.85}>
           <Text style={styles.guestLoginBtnText}>Se connecter</Text>
         </TouchableOpacity>
@@ -141,7 +141,7 @@ export default function AccountScreen() {
                   {row.sub ? <Text style={styles.rowSub}>{row.sub}</Text> : null}
                 </View>
                 <Text style={[styles.rowChevron, row.external && styles.rowExternal]}>
-                  {row.external ? '\uD83C\uDF10' : '\u203A'}
+                  {row.external ? '[>]' : '>'}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
 
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 16, gap: 14 },
   rowBorder: { borderBottomWidth: 1, borderBottomColor: '#f8fafc' },
-  rowIcon: { fontSize: 18, width: 26, textAlign: 'center' },
+  rowIcon: { fontSize: 14, width: 26, textAlign: 'center', color: '#374151' },
   rowContent: { flex: 1 },
   rowLabel: { fontSize: 15, fontWeight: '500', color: '#1e293b', letterSpacing: -0.2 },
   rowLabelDanger: { color: '#ef4444', fontWeight: '500' },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
 
   guestContainer: { flex: 1, backgroundColor: '#f8fafc', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 },
   guestAvatarRing: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#f1f5f9', alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
-  guestAvatarIcon: { fontSize: 36 },
+  guestAvatarIcon: { fontSize: 16, color: '#374151' },
   guestTitle: { fontSize: 22, fontWeight: '600', color: '#0f172a', marginBottom: 8, letterSpacing: -0.4 },
   guestSub: { fontSize: 14, color: '#94a3b8', textAlign: 'center', lineHeight: 20, marginBottom: 28, fontWeight: '400' },
   guestLoginBtn: { backgroundColor: '#1558f5', borderRadius: 16, paddingVertical: 15, paddingHorizontal: 48, marginBottom: 12, shadowColor: '#1558f5', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 6 },

@@ -91,7 +91,7 @@ export default function AccountScreen() {
             </View>
             {profile?.rating != null && (
               <View style={styles.ratingBox}>
-                <Text style={styles.ratingStar}>{"\u2B50"}</Text>
+                <Text style={styles.ratingStar}>{"*"}</Text>
                 <Text style={styles.ratingVal}>{Number(profile.rating).toFixed(1)}</Text>
               </View>
             )}
@@ -100,30 +100,30 @@ export default function AccountScreen() {
           {/* Infos perso */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Informations personnelles</Text>
-            <InfoRow icon="\uD83D\uDCDE" label="Telephone"    value={user?.phone ?? profile?.phone ?? "—"} />
-            <InfoRow icon="\uD83D\uDCE7" label="Email"        value={user?.email ?? "—"} />
+            <InfoRow icon="[T]" label="Telephone"    value={user?.phone ?? profile?.phone ?? "-"} />
+            <InfoRow icon="[E]" label="Email"        value={user?.email ?? "-"} />
           </View>
 
           {/* Infos washer */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Profil washer</Text>
-            <InfoRow icon="\uD83D\uDCCD" label="Ville / Zone"   value={`${profile?.city ?? ""} — ${profile?.zoneLabel ?? "—"}`} />
-            <InfoRow icon="\uD83D\uDEB2" label="Transport"      value={TRANSPORT_LABELS[profile?.transportType ?? ""] ?? "—"} />
-            <InfoRow icon="\uD83D\uDCB0" label="Wave Money"     value={profile?.orangeMoneyNumber ?? profile?.waveMoneyNumber ?? "Non renseigne"} />
+            <InfoRow icon="[A]" label="Ville / Zone"   value={`${profile?.city ?? ""} - ${profile?.zoneLabel ?? "-"}`} />
+            <InfoRow icon="[B]" label="Transport"      value={TRANSPORT_LABELS[profile?.transportType ?? ""] ?? "-"} />
+            <InfoRow icon="[W]" label="Wave Money"     value={profile?.orangeMoneyNumber ?? profile?.waveMoneyNumber ?? "Non renseigne"} />
           </View>
 
           {/* Support */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Aide & Support</Text>
-            <MenuRow icon="\uD83D\uDCCB" label="FAQ"                     onPress={() => Linking.openURL(`${WEB_URL}/faq`)} />
-            <MenuRow icon="\uD83D\uDCC4" label="Mentions legales"         onPress={() => Linking.openURL(`${WEB_URL}/legal`)} />
-            <MenuRow icon="\uD83D\uDD12" label="Politique de confidentialite" onPress={() => Linking.openURL(`${WEB_URL}/legal`)} />
-            <MenuRow icon="\uD83D\uDCE9" label="Contacter le support"     onPress={() => Linking.openURL("mailto:support@washapp.ci")} />
+            <Text style={styles.sectionTitle}>Aide et Support</Text>
+            <MenuRow icon="[F]" label="FAQ"                           onPress={() => Linking.openURL(`${WEB_URL}/faq`)} />
+            <MenuRow icon="[L]" label="Mentions legales"              onPress={() => Linking.openURL(`${WEB_URL}/legal`)} />
+            <MenuRow icon="[P]" label="Politique de confidentialite"  onPress={() => Linking.openURL(`${WEB_URL}/legal`)} />
+            <MenuRow icon="[M]" label="Contacter le support"          onPress={() => Linking.openURL("mailto:support@washapp.ci")} />
           </View>
 
           {/* Logout */}
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.85}>
-            <Text style={styles.logoutBtnText}>{"\uD83D\uDEAA"} Se deconnecter</Text>
+            <Text style={styles.logoutBtnText}>{"Se deconnecter"}</Text>
           </TouchableOpacity>
 
           <View style={{ height: 32 }} />
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   statusBadge: { alignSelf: "flex-start", marginTop: 6, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 10 },
   statusBadgeText: { fontSize: 11, fontWeight: "700" },
   ratingBox: { alignItems: "center" },
-  ratingStar: { fontSize: 20 },
+  ratingStar: { fontSize: 20, color: "#f59e0b" },
   ratingVal: { fontSize: 18, fontWeight: "900", color: "#0f172a" },
   section: {
     backgroundColor: "#fff", borderRadius: 20, padding: 20,
@@ -190,11 +190,11 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 13, fontWeight: "800", color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12 },
   infoRow: { flexDirection: "row", alignItems: "flex-start", gap: 14, paddingVertical: 10, borderTopWidth: 1, borderTopColor: "#f8fafc" },
-  infoRowIcon: { fontSize: 18, lineHeight: 24 },
+  infoRowIcon: { fontSize: 13, lineHeight: 24, color: "#374151" },
   infoRowLabel: { fontSize: 11, fontWeight: "600", color: "#94a3b8", textTransform: "uppercase" },
   infoRowValue: { fontSize: 14, fontWeight: "600", color: "#0f172a", marginTop: 2 },
   menuRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14, borderTopWidth: 1, borderTopColor: "#f8fafc" },
-  menuRowIcon: { fontSize: 18 },
+  menuRowIcon: { fontSize: 13, color: "#374151" },
   menuRowLabel: { flex: 1, fontSize: 14, fontWeight: "600", color: "#0f172a" },
   menuRowChevron: { fontSize: 16, color: "#cbd5e1", fontWeight: "700" },
   logoutBtn: {

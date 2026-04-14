@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import {
-  View, Text, StyleSheet, TouchableOpacity, Image, Animated, Linking,
-  Dimensions, Platform, StatusBar,
+  View, Text, StyleSheet, TouchableOpacity, Image, Animated,
+  Linking, Dimensions, StatusBar, ImageBackground,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,28 +10,26 @@ const { width, height } = Dimensions.get("window");
 const WEB_URL = "http://localhost:3000";
 
 export default function WelcomeScreen() {
-  const router  = useRouter();
-  const insets  = useSafeAreaInsets();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const router    = useRouter();
+  const insets    = useSafeAreaInsets();
+  const fadeAnim  = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(40)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim,  { toValue: 1,  duration: 800, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: 0,  duration: 800, useNativeDriver: true }),
+      Animated.timing(fadeAnim,  { toValue: 1, duration: 800, useNativeDriver: true }),
+      Animated.timing(slideAnim, { toValue: 0, duration: 800, useNativeDriver: true }),
     ]).start();
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require("../../assets/images/Pagewasher.png")}
+      style={styles.bg}
+      resizeMode="cover"
+    >
       <StatusBar barStyle="light-content" />
-      {/* Background image */}
-      <Image
-        source={require("../../assets/images/Pagewasher.png")}
-        style={StyleSheet.absoluteFillObject}
-        resizeMode="cover"
-      />
-      {/* Dark overlay gradient */}
+      {/* Overlay sombre */}
       <View style={styles.overlay} />
 
       <Animated.View
@@ -41,7 +39,7 @@ export default function WelcomeScreen() {
           { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
         ]}
       >
-        {/* Logo row */}
+        {/* Logo */}
         <View style={styles.logoRow}>
           <Image
             source={require("../../assets/images/logowashapp.png")}
@@ -53,7 +51,7 @@ export default function WelcomeScreen() {
 
         <View style={styles.spacer} />
 
-        {/* Headline */}
+        {/* Titre */}
         <View style={styles.textBlock}>
           <Text style={styles.title}>Travaillez avec Washapp</Text>
           <Text style={styles.subtitle}>
@@ -71,7 +69,7 @@ export default function WelcomeScreen() {
           ))}
         </View>
 
-        {/* Buttons */}
+        {/* Boutons */}
         <View style={styles.buttons}>
           <TouchableOpacity
             style={styles.btnPrimary}
@@ -89,39 +87,28 @@ export default function WelcomeScreen() {
           </TouchableOpacity>
         </View>
       </Animated.View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#040c24" },
+  bg: { flex: 1, width: "100%", height: "100%" },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(4,12,36,0.72)",
+    backgroundColor: "rgba(4,12,36,0.60)",
   },
-  content: {
-    flex: 1, paddingHorizontal: 28,
-  },
-  logoRow: {
-    flexDirection: "row", alignItems: "center", gap: 10,
-  },
+  content: { flex: 1, paddingHorizontal: 28 },
+  logoRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   logo: { width: 40, height: 40, borderRadius: 10 },
-  brand: {
-    fontSize: 22, fontWeight: "900", color: "#fff", letterSpacing: -0.5,
-  },
+  brand: { fontSize: 22, fontWeight: "900", color: "#fff", letterSpacing: -0.5 },
   spacer: { flex: 1 },
   textBlock: { marginBottom: 24 },
   title: {
     fontSize: 34, fontWeight: "900", color: "#fff",
     lineHeight: 40, marginBottom: 14, letterSpacing: -0.5,
   },
-  subtitle: {
-    fontSize: 15, color: "rgba(255,255,255,0.72)",
-    lineHeight: 22, fontWeight: "400",
-  },
-  badges: {
-    flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 40,
-  },
+  subtitle: { fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 22 },
+  badges: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 40 },
   badge: {
     paddingHorizontal: 12, paddingVertical: 6,
     backgroundColor: "rgba(255,255,255,0.12)",

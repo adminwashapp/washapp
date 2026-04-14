@@ -4,10 +4,9 @@ import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
-import * as Notifications from 'expo-notifications';
 import { useAuthStore } from '../store';
 import { washerSocket } from '../services/socket';
-import { registerForPushNotifications } from '../services/notifications';
+import { registerForPushNotifications, addNotificationListener } from '../services/notifications';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,20 +37,20 @@ export default function RootLayout() {
   // Register push notifications when washer is logged in
   useEffect(() => {
     if (isAuthenticated) {
-      registerForPushNotifications().catch(() => {});
+      registerForPushNotifications(() => Promise.resolve()).catch(() => {});
     }
   }, [isAuthenticated]);
 
+  // Listen for notification responses (lazy - safe in Expo Go)
   useEffect(() => {
-    const notifSub = Notifications.addNotificationResponseReceivedListener((response) => {
-      const missionId = response.notification.request.content.data?.missionId;
-      if (missionId) {
-        router.push(`/mission/${missionId}`);
-      }
-    });
-    return () => {
-      notifSub.remove();
-    };
+    const unsub = addNotificationListener(
+      () => {},
+      (response: any) => {
+        const missionId = response?.notification?.request?.content?.data?.missionId;
+        if (missionId) router.push(`/mission/${missionId}`);
+      },
+    );
+    return () => { if (typeof unsub === 'function') unsub(); };
   }, []);
 
   return (

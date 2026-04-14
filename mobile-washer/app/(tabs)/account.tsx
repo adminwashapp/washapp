@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+import { playDing } from '../../services/sound';
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, ActivityIndicator, Linking, Image,
 } from "react-native";
@@ -36,6 +37,7 @@ export default function AccountScreen() {
   }, []);
 
   const handleLogout = async () => {
+    await playDing();
     Alert.alert("Deconnexion", "Voulez-vous vous deconnecter ?", [
       { text: "Annuler", style: "cancel" },
       {

@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { playDing } from "../../services/sound";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "../../store";
 import { authApi, washerApi } from "../../services/api";
@@ -35,6 +36,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem("refreshToken", refreshToken);
       await AsyncStorage.setItem("user", JSON.stringify(user));
       setAuth(user, accessToken, refreshToken);
+      await playDing();
       washerSocket.connect();
       registerForPushNotifications(washerApi.updateFcmToken).catch(() => {});
       router.replace("/(tabs)/map");

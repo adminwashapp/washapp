@@ -158,7 +158,7 @@ export default function MissionTrackingPage() {
           {[1, 2, 3].map((r) => (
             <div key={r} className="absolute rounded-full border-2 border-blue-500"
               style={{ width: r * 80, height: r * 80, borderRadius: '50%', opacity: 0.25 / r,
-                animation: ping 2.4s ease-out s infinite }} />
+                animationDuration: '2.4s', animationDelay: `\${(r-1)*0.8}s``, animationIterationCount: 'infinite', animationName: 'ping' }} />
           ))}
           <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center shadow-2xl z-10">
             <span className="text-4xl">&#x1F697;</span>

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import Constants from 'expo-constants';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import {
@@ -127,7 +128,7 @@ export default function MapScreen() {
       <MapView
         ref={mapRef}
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
+        provider={Constants.appOwnership === 'expo' ? undefined : PROVIDER_GOOGLE}
         initialRegion={region}
         showsUserLocation
         showsMyLocationButton={false}

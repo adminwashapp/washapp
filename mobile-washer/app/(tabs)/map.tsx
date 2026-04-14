@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions,
   Alert, Linking, Platform, StatusBar, Image, Modal, ScrollView,
 } from "react-native";
+import Constants from 'expo-constants';
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
@@ -247,7 +248,7 @@ export default function MapScreen() {
       <MapView
         ref={mapRef}
         style={StyleSheet.absoluteFillObject}
-        provider={PROVIDER_GOOGLE}
+        provider={Constants.appOwnership === 'expo' ? undefined : PROVIDER_GOOGLE}
         initialRegion={region}
         showsUserLocation={true}
         showsMyLocationButton={false}

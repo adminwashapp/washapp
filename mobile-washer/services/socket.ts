@@ -1,19 +1,32 @@
 import { io, Socket } from 'socket.io-client';
-import * as Notifications from 'expo-notifications';
-import * as Haptics from 'expo-haptics';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const WS_URL = Constants.expoConfig?.extra?.wsUrl || 'http://localhost:3001';
+const WS_URL = 'https://washapp-api.onrender.com';
+const IS_EXPO_GO = Constants.appOwnership === 'expo';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    priority: Notifications.AndroidNotificationPriority.MAX,
-  }),
-});
+// Lazy-load expo-notifications + expo-haptics (crash in Expo Go SDK 53)
+let Notif: typeof import('expo-notifications') | null = null;
+let Hapt: typeof import('expo-haptics') | null = null;
+
+async function loadNativeModules() {
+  if (IS_EXPO_GO) return;
+  try {
+    Notif = await import('expo-notifications');
+    Hapt  = await import('expo-haptics');
+    Notif.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        priority: Notif!.AndroidNotificationPriority.MAX,
+      }),
+    });
+  } catch {}
+}
+
+// Init on first import (fire-and-forget)
+loadNativeModules();
 
 type MissionEventCallback = (data: MissionData) => void;
 
@@ -39,7 +52,7 @@ class WasherSocketService {
     const token = await AsyncStorage.getItem('accessToken');
     if (!token) return;
 
-    this.socket = io(`${WS_URL}/ws`, {
+    this.socket = io(WS_URL, {
       auth: { token },
       transports: ['websocket'],
       reconnection: true,
@@ -48,7 +61,7 @@ class WasherSocketService {
     });
 
     this.socket.on('connect', () => {
-      console.log('WS washer connecté');
+      console.log('WS washer connect\u00E9');
     });
 
     this.socket.on('mission:new', async (data: MissionData) => {
@@ -61,32 +74,41 @@ class WasherSocketService {
     });
 
     this.socket.on('disconnect', () => {
-      console.log('WS washer déconnecté');
+      console.log('WS washer d\u00E9connect\u00E9');
     });
   }
 
   private async triggerMissionAlert(data: MissionData) {
     try {
-      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      if (Hapt) {
+        await Hapt.notificationAsync(Hapt.NotificationFeedbackType.Warning);
+      }
 
-      const serviceLabels = { EXTERIOR: 'Extérieur', INTERIOR: 'Intérieur', FULL: 'Complet' };
+      const serviceLabels: Record<string, string> = {
+        EXTERIOR: 'Ext\u00E9rieur', INTERIOR: 'Int\u00E9rieur', FULL: 'Complet',
+      };
 
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: data.type === 'INSTANT' ? '🚗 Nouvelle mission !' : '📅 Nouvelle réservation !',
-          body: `${serviceLabels[data.serviceType]} — ${data.price.toLocaleString()} FCFA`,
-          sound: true,
-          priority: Notifications.AndroidNotificationPriority.MAX,
-          data: { missionId: data.missionId },
-        },
-        trigger: null,
-      });
+      if (Notif) {
+        await Notif.scheduleNotificationAsync({
+          content: {
+            title: data.type === 'INSTANT'
+              ? '\uD83D\uDE97 Nouvelle mission !'
+              : '\uD83D\uDCC5 Nouvelle r\u00E9servation !',
+            body: `${serviceLabels[data.serviceType]} \u2014 ${data.price.toLocaleString()} FCFA`,
+            sound: true,
+            priority: Notif.AndroidNotificationPriority.MAX,
+            data: { missionId: data.missionId },
+          },
+          trigger: null,
+        });
+      }
 
-      const hapticInterval = setInterval(() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      }, 500);
-
-      setTimeout(() => clearInterval(hapticInterval), data.timeoutSeconds * 1000);
+      if (Hapt) {
+        const hapticInterval = setInterval(() => {
+          Hapt!.impactAsync(Hapt!.ImpactFeedbackStyle.Heavy);
+        }, 500);
+        setTimeout(() => clearInterval(hapticInterval), data.timeoutSeconds * 1000);
+      }
     } catch (e) {
       console.error('Erreur notification', e);
     }
@@ -142,7 +164,6 @@ class WasherSocketService {
 
   private startLocationTracking() {
     if (this.locationInterval) return;
-
     this.locationInterval = setInterval(async () => {
       try {
         const Location = require('expo-location');

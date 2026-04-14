@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,
-  Alert, Image, StatusBar, ImageBackground,
+  Alert, Image, StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -49,15 +49,8 @@ export default function LoginScreen() {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/Pagewasher.png")}
-      style={styles.bg}
-      resizeMode="cover"
-    >
-      <StatusBar barStyle="light-content" />
-      {/* Overlay sombre */}
-      <View style={styles.overlay} />
-
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <ScrollView
           contentContainerStyle={[styles.inner, { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 24 }]}
@@ -134,63 +127,44 @@ export default function LoginScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  bg: { flex: 1 },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.52)",
-  },
+  container: { flex: 1, backgroundColor: "#f8fafc" },
   inner: { paddingHorizontal: 28, flexGrow: 1 },
   logoRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 40 },
   logo: { width: 36, height: 36, borderRadius: 9 },
-  brand: { fontSize: 20, fontWeight: "900", color: "#fff" },
-  title: { fontSize: 30, fontWeight: "900", color: "#fff", marginBottom: 8, letterSpacing: -0.5 },
-  subtitle: { fontSize: 14, color: "rgba(255,255,255,0.7)", marginBottom: 36 },
+  brand: { fontSize: 20, fontWeight: "900", color: "#0f172a" },
+  title: { fontSize: 30, fontWeight: "900", color: "#0f172a", marginBottom: 8, letterSpacing: -0.5 },
+  subtitle: { fontSize: 14, color: "#64748b", marginBottom: 36 },
   form: { gap: 16, marginBottom: 12 },
   fieldWrap: { gap: 6 },
-  label: { fontSize: 13, fontWeight: "700", color: "rgba(255,255,255,0.85)" },
+  label: { fontSize: 13, fontWeight: "700", color: "#374151" },
   input: {
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.25)",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 15,
-    fontSize: 15,
-    color: "#fff",
+    backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#e2e8f0",
+    borderRadius: 14, paddingHorizontal: 16, paddingVertical: 15,
+    fontSize: 15, color: "#0f172a",
   },
   passwordRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.25)",
-    borderRadius: 14,
-    paddingHorizontal: 16,
+    flexDirection: "row", alignItems: "center",
+    backgroundColor: "#fff", borderWidth: 1.5, borderColor: "#e2e8f0",
+    borderRadius: 14, paddingHorizontal: 16,
   },
-  pwdInput: { flex: 1, paddingVertical: 15, fontSize: 15, color: "#fff" },
+  pwdInput: { flex: 1, paddingVertical: 15, fontSize: 15, color: "#0f172a" },
   showPassBtn: { paddingLeft: 10, paddingVertical: 15 },
-  showPassText: { fontSize: 13, fontWeight: "600", color: "#60a5fa" },
+  showPassText: { fontSize: 13, fontWeight: "600", color: "#1558f5" },
   forgotWrap: { alignSelf: "flex-end", marginBottom: 24 },
-  forgotText: { fontSize: 13, color: "#60a5fa", fontWeight: "600" },
+  forgotText: { fontSize: 13, color: "#1558f5", fontWeight: "600" },
   loginBtn: {
-    backgroundColor: "#1558f5",
-    borderRadius: 16,
-    paddingVertical: 17,
-    alignItems: "center",
-    marginBottom: 24,
-    shadowColor: "#1558f5",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
-    shadowRadius: 14,
-    elevation: 8,
+    backgroundColor: "#1558f5", borderRadius: 16, paddingVertical: 17,
+    alignItems: "center", marginBottom: 24,
+    shadowColor: "#1558f5", shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35, shadowRadius: 14, elevation: 8,
   },
   loginBtnText: { color: "#fff", fontWeight: "800", fontSize: 16 },
   footer: { flexDirection: "row", justifyContent: "center", alignItems: "center" },
-  footerText: { fontSize: 13, color: "rgba(255,255,255,0.6)" },
-  footerLink: { fontSize: 13, fontWeight: "700", color: "#60a5fa" },
+  footerText: { fontSize: 13, color: "#64748b" },
+  footerLink: { fontSize: 13, fontWeight: "700", color: "#1558f5" },
 });

@@ -103,16 +103,16 @@ export const applicationsApi = {
   uploadFile: async (file: File): Promise<string> => {
     const fd = new FormData();
     fd.append('file', file);
-    const res = await fetch(${API_URL}/applications/upload, { method: 'POST', body: fd });
+    const res = await fetch(`${API_URL}/applications/upload`, { method: 'POST', body: fd });
     if (!res.ok) throw new Error('Upload echoue');
     const data2 = await res.json();
     return data2.url as string;
   },
   // Admin
   getAll: (status?: string) => api.get('/applications', { params: status ? { status } : {} }),
-  getOne: (id: string) => api.get(/applications/),
+  getOne: (id: string) => api.get(`/applications/${id}`),
   updateStatus: (id: string, status: string, adminNote?: string) =>
-    api.patch(/applications//status, { status, adminNote }),
+    api.patch(`/applications/${id}/status`, { status, adminNote }),
 };
 
 export const paymentsApi = {

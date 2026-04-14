@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import { authApi } from './api';
+import { washerApi } from './api';
 
 // Configure how notifications appear when app is in foreground
 Notifications.setNotificationHandler({
@@ -24,7 +24,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
   }
 
   if (finalStatus !== 'granted') {
-    console.warn('[Notifications] Permission refusée');
+    console.warn('[Notifications] Permission refusÃ©e');
     return null;
   }
 
@@ -37,7 +37,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
 
   // Save token to backend
   try {
-    await authApi.savePushToken(token);
+    await washerApi.updateFcmToken(token);
   } catch (e) {
     console.warn('[Notifications] Impossible de sauvegarder le token:', e);
   }

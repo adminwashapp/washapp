@@ -9,6 +9,7 @@ import { authApi } from '../../services/api';
 import { useAuthStore } from '../../store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLang } from '../../contexts/lang';
+import { registerForPushNotifications } from '../../services/notifications';
 import { LangToggle } from '../../components/LangToggle';
 
 const LOGO = require('../../assets/images/logowashapp.png');
@@ -30,6 +31,7 @@ export default function LoginScreen() {
     try {
       const res = await authApi.loginClient({ phone, password });
       await setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
+      registerForPushNotifications().catch(() => {});
       router.replace('/(tabs)/map');
     } catch (e: any) {
       setError(e.response?.data?.message || 'Identifiants invalides');
@@ -48,7 +50,7 @@ export default function LoginScreen() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Text style={styles.backArrow}>←</Text>
+          <Text style={styles.backArrow}>â†</Text>
         </TouchableOpacity>
 
         <View style={styles.header}>
@@ -76,14 +78,14 @@ export default function LoginScreen() {
             <View style={styles.pwdRow}>
               <TextInput style={[styles.input, { flex: 1, borderWidth: 0, padding: 0, backgroundColor: 'transparent' }]} value={password} onChangeText={setPassword} placeholder="Votre mot de passe" secureTextEntry={!showPwd} />
               <TouchableOpacity onPress={() => setShowPwd(!showPwd)}>
-                <Text style={{ fontSize: 18 }}>{showPwd ? '🙈' : '👁'}</Text>
+                <Text style={{ fontSize: 18 }}>{showPwd ? 'ðŸ™ˆ' : 'ðŸ‘'}</Text>
               </TouchableOpacity>
             </View>
           </View>
 
           <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password' as any)}
             style={{ alignSelf: 'flex-end', marginTop: -4, marginBottom: 8 }} activeOpacity={0.8}>
-            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oublié ?</Text>
+            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oubliÃ© ?</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.btnWrap, loading && { opacity: 0.6 }]} onPress={handleLogin} disabled={loading} activeOpacity={0.85}>

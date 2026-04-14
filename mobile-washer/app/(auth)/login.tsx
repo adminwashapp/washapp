@@ -10,6 +10,7 @@ import { useAuthStore } from "../../store";
 import { authApi } from "../../services/api";
 import { washerSocket } from "../../services/socket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { registerForPushNotifications } from '../../services/notifications';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem("user", JSON.stringify(user));
       setAuth(user, accessToken, refreshToken);
       washerSocket.connect();
+      registerForPushNotifications().catch(() => {});
       router.replace("/(tabs)/map");
     } catch (e: any) {
       const msg = e?.response?.data?.message;
@@ -107,7 +109,7 @@ export default function LoginScreen() {
                 />
           <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password' as any)} activeOpacity={0.8}
             style={{ alignSelf: 'flex-end', marginTop: 8, marginBottom: 4 }}>
-            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oublié ?</Text>
+            <Text style={{ fontSize: 13, color: '#1558f5', fontWeight: '600' }}>Mot de passe oubliÃ© ?</Text>
           </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.showPassBtn}

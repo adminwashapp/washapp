@@ -46,6 +46,9 @@ export const authApi = {
   loginClient: (data: any) => api.post('/auth/login/client', data),
   logout: (refreshToken: string) => api.post('/auth/logout', { refreshToken }),
   getMe: () => api.get('/auth/me'),
+  savePushToken: (token: string) => api.post('/auth/push-token', { token }),
+  forgotPassword: (data: any) => api.post('/auth/forgot-password', data),
+  resetPassword: (data: any) => api.post('/auth/reset-password', data),
 };
 
 export const missionsApi = {

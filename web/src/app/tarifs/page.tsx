@@ -117,7 +117,7 @@ export default function TarifsPage() {
 
   const { isAuthenticated } = useAuthStore();
   const [hasActiveSub, setHasActiveSub] = useState(false);
-  useEffect(() => { if (!isAuthenticated) return; clientsApi.getSubscription().then((r: any) => { if (r.data?.isSubscribed) setHasActiveSub(true); }).catch(() => {}); }, [isAuthenticated]);
+  useEffect(() => { if (!isAuthenticated) return; clientsApi.getActiveSubscription().then((r: any) => { if (r.data?.isSubscribed) setHasActiveSub(true); }).catch(() => {}); }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-[#f9fafb]">

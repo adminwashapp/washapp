@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -46,7 +46,7 @@ export default function AccountPage() {
   const [showAddVehicle, setShowAddVehicle] = useState(false);
   const [newVehicle, setNewVehicle] = useState({ type: 'CAR', brand: '', model: '', plateNumber: '', color: '' });
   const [addingVehicle, setAddingVehicle] = useState(false);
-  const [payMethod, setPayMethod] = useState<'ORANGE_MONEY' | 'CASH'>('ORANGE_MONEY');
+  const [payMethod, setPayMethod] = useState<'WAVE_MONEY' | 'CASH'>('WAVE_MONEY');
 
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); return; }
@@ -372,16 +372,16 @@ export default function AccountPage() {
           <h2 className="text-[1rem] font-bold text-gray-900 mb-3">Moyens de paiement</h2>
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
             <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => setPayMethod('ORANGE_MONEY')}
-                className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${payMethod === 'ORANGE_MONEY' ? 'border-orange-400 bg-orange-50' : 'border-gray-100 hover:border-orange-200'}`}>
+              <button onClick={() => setPayMethod('WAVE_MONEY')}
+                className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${payMethod === 'WAVE_MONEY' ? 'border-[#00b9f5] bg-blue-50' : 'border-gray-100 hover:border-[#bae6fd]'}`}>
                 <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
                   <span className="text-orange-600 font-extrabold text-[13px]">OM</span>
                 </div>
                 <div className="text-left">
-                  <p className="text-[0.875rem] font-bold text-gray-900">Orange Money</p>
+                  <p className="text-[0.875rem] font-bold text-gray-900">Wave Money</p>
                   <p className="text-[11px] text-gray-400">Mobile securise</p>
                 </div>
-                {payMethod === 'ORANGE_MONEY' && <Check className="w-4 h-4 text-orange-500 ml-auto" />}
+                {payMethod === 'WAVE_MONEY' && <Check className="w-4 h-4 text-blue-500 ml-auto" />}
               </button>
               <button onClick={() => setPayMethod('CASH')}
                 className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${payMethod === 'CASH' ? 'border-green-400 bg-green-50' : 'border-gray-100 hover:border-green-200'}`}>

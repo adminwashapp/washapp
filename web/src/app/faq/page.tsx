@@ -42,7 +42,7 @@ const groups: Group[] = [
       {
         id: 'paiement-client', title: 'Paiement',
         items: [
-          { q: "Comment payer une prestation ?", a: "Le paiement peut etre effectue via Orange Money ou en especes avant le debut de la prestation." },
+          { q: "Comment payer une prestation ?", a: "Le paiement peut etre effectue via Wave Money ou en especes apres la prestation." },
           { q: "Pourquoi dois-je payer avant la prestation ?", a: "Le paiement avant prestation permet de confirmer la reservation, d'eviter les annulations abusives et de securiser le deplacement du washer." },
           { q: "Que se passe-t-il si je ne paie pas avant ?", a: "Le washer n'est pas oblige de commencer le lavage tant que le paiement n'a pas ete effectue." },
           { q: "Le washer peut-il commencer si je n'ai pas paye ?", a: "Il ne doit pas commencer sans paiement prealable. S'il decide malgre tout d'intervenir, cela releve de sa propre responsabilite." },
@@ -140,7 +140,7 @@ const groups: Group[] = [
         id: 'paiement-gen', title: 'Paiement',
         items: [
           { q: "Pourquoi Washapp impose-t-il le paiement avant prestation ?", a: "Parce que cela securise la reservation, le deplacement du washer et l'organisation generale du service." },
-          { q: "Orange Money est-il accepte ?", a: "Oui, Orange Money fait partie des moyens de paiement prevus sur Washapp." },
+          { q: "Wave Money est-il accepte ?", a: "Oui, Wave Money est le moyen de paiement numerique principal sur Washapp." },
           { q: "Les especes sont-elles autorisees ?", a: "Oui, mais uniquement avant le debut de la prestation." },
         ],
       },

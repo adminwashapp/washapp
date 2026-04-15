@@ -114,7 +114,7 @@ export default function HomePage() {
               {[
                 'À domicile ou au bureau',
                 'Photos avant/après',
-                'Orange Money sécurisé',
+                'Wave Money securise',
                 'Disponible à Abidjan',
               ].map((item) => (
                 <span key={item} className="flex items-center gap-2 text-[13px] text-white/75 font-medium">
@@ -538,7 +538,7 @@ export default function HomePage() {
                     color: '#1558f5',
                     bg: '#eff4ff',
                     title: 'Paiement sécurisé',
-                    desc: 'Le paiement via Orange Money est validé dans un cadre clair et sécurisé.',
+                    desc: 'Le paiement via Wave Money est valide dans un cadre clair et securise.',
                   },
                   {
                     icon: Camera,

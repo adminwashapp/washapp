@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 declare const google: any;
 
@@ -55,7 +55,7 @@ function BookingContent() {
   const [service, setService] = useState<'EXTERIOR' | 'INTERIOR' | 'FULL'>('EXTERIOR');
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'ORANGE_MONEY' | 'CASH'>('ORANGE_MONEY');
+  const [paymentMethod, setPaymentMethod] = useState<'WAVE_MONEY' | 'CASH'>('WAVE_MONEY');
 
   const currentService = SERVICES.find((s) => s.key === service)!;
   const surcharge = VEHICLE_TYPES.find((v) => v.key === vehicleType)!.surcharge;
@@ -162,7 +162,7 @@ function BookingContent() {
         serviceType: service, paymentMethod, scheduledAt,
       });
       setMissionId(res.data.id);
-      if (paymentMethod === 'ORANGE_MONEY') await paymentsApi.initiateOM(res.data.id);
+      
       setPhase('done');
       setTimeout(() => router.push(`/mission/${res.data.id}`), 1500);
     } catch (e: any) {
@@ -180,7 +180,7 @@ function BookingContent() {
             serviceType: service, paymentMethod, scheduledAt,
           });
           setMissionId(res.data.id);
-          if (paymentMethod === 'ORANGE_MONEY') await paymentsApi.initiateOM(res.data.id);
+          
           setPhase('done');
           setTimeout(() => router.push(`/mission/${res.data.id}`), 1500);
         } catch {
@@ -199,7 +199,7 @@ function BookingContent() {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-
+      <div className="flex-1 flex flex-col-reverse lg:flex-row overflow-auto lg:overflow-hidden">
         {/* GAUCHE formulaire */}
         <div className="lg:w-[480px] xl:w-[520px] flex-shrink-0 overflow-y-auto bg-white border-r border-gray-100">
           <div className="p-6 lg:p-8">
@@ -421,12 +421,12 @@ function BookingContent() {
                     {isBookingMode ? '6' : '5'} · Paiement
                   </h2>
                   <div className="grid grid-cols-2 gap-3">
-                    <button type="button" onClick={() => setPaymentMethod('ORANGE_MONEY')}
+                    <button type="button" onClick={() => setPaymentMethod('WAVE_MONEY')}
                       className={`p-3.5 rounded-xl border-2 text-center transition-all ${
-                        paymentMethod === 'ORANGE_MONEY' ? 'border-orange-500 bg-orange-50' : 'border-gray-200'
+                        paymentMethod === 'WAVE_MONEY' ? 'border-[#00b9f5] bg-blue-50' : 'border-gray-200'
                       }`}>
-                      <p className="text-[13px] font-bold text-gray-900">Orange Money</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Paiement avant mission</p>
+                      <p className="text-[13px] font-bold text-gray-900">Wave Money</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">Paiement apres la prestation</p>
                     </button>
                     <button type="button" onClick={() => setPaymentMethod('CASH')}
                       className={`p-3.5 rounded-xl border-2 text-center transition-all ${
@@ -460,7 +460,7 @@ function BookingContent() {
 
         {/* DROITE carte */}
         <div className="flex-1 relative min-h-[300px] lg:min-h-0 bg-gray-100">
-          <div ref={mapRef} className="absolute inset-0" />
+        <div className="flex-1 relative h-[280px] lg:h-auto lg:min-h-0 bg-gray-100 order-first lg:order-last">
           {!mapLoaded && (
             <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
               <div className="text-center">

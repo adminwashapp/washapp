@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import Footer from '@/components/layout/Footer';
@@ -176,8 +176,8 @@ export default function LegalPage() {
 
             <Article title="5. Paiement">
               <p>La plateforme peut proposer des paiements par :</p>
-              <Ul items={['Orange Money ;', 'espèces dans les conditions prévues par les CGU.']} />
-              <InfoBox>Orange Money est disponible en Côte d&apos;Ivoire. CinetPay annonce la prise en charge d&apos;Orange Money Côte d&apos;Ivoire. Le mécanisme exact dépendra du prestataire effectivement retenu par Washapp.</InfoBox>
+              <Ul items={['Wave Money ;', 'espèces dans les conditions prévues par les CGU.']} />
+              <InfoBox>Wave Money est disponible en Côte d&apos;Ivoire. CinetPay annonce la prise en charge d&apos;Orange Money Côte d&apos;Ivoire. Le mécanisme exact dépendra du prestataire effectivement retenu par Washapp.</InfoBox>
             </Article>
 
             <Article title="6. Propriété intellectuelle">
@@ -257,9 +257,9 @@ export default function LegalPage() {
             <Article title="Article 9 — Paiement">
               <p><strong>Paiement préalable :</strong> Le client doit régler la prestation avant son exécution. À défaut, le washer n&apos;est pas tenu de commencer.</p>
               <p><strong>Moyens de paiement :</strong></p>
-              <Ul items={["Orange Money ;", "espèces avant prestation."]} />
+              <Ul items={["Wave Money ;", "espèces avant prestation."]} />
               <WarnBox>En paiement espèces, le client doit régler avant le début du lavage. Si le washer décide d&apos;exécuter sans paiement préalable, cette décision est prise sous sa seule responsabilité et la responsabilité de Washapp ne pourra pas être engagée.</WarnBox>
-              <p>Pour les paiements numériques, Washapp peut recourir à un prestataire opérable en Côte d&apos;Ivoire, compatible avec Orange Money (ex : CinetPay).</p>
+              <p>Pour les paiements numériques, Washapp peut recourir à un prestataire opérable en Côte d&apos;Ivoire, compatible avec Wave Money (ex : CinetPay).</p>
             </Article>
 
             <Article title="Article 10 — Annulation par le client">

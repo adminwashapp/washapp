@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/api';
@@ -61,7 +61,7 @@ export default function AdminWithdrawalsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-white">Retraits</h1>
-          <p className="text-gray-500 text-sm mt-1">Demandes de retrait Orange Money des washers</p>
+          <p className="text-gray-500 text-sm mt-1">Demandes de retrait Wave Money des washers</p>
         </div>
         <button onClick={load} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white bg-gray-800 px-3 py-2 rounded-xl">
           <RefreshCw className="w-4 h-4" /> Actualiser
@@ -119,7 +119,7 @@ export default function AdminWithdrawalsPage() {
                       <p className="text-xs text-gray-500">{w.washer?.user?.phone}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-0.5">Numéro Orange Money</p>
+                      <p className="text-xs text-gray-500 mb-0.5">Numero Wave Money</p>
                       <p className="font-mono font-bold text-orange-400">{w.orangeMoneyNumber}</p>
                     </div>
                   </div>

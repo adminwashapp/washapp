@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -287,7 +287,7 @@ export default function MissionTrackingPage() {
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Paiement</span>
               <span className="font-medium">
-                {mission.paymentMethod === 'ORANGE_MONEY' ? 'Orange Money' : 'Espèces'}
+                {mission.paymentMethod === 'WAVE_MONEY' ? 'Wave Money' : 'Espèces'}
               </span>
             </div>
             <div className="flex justify-between text-sm">

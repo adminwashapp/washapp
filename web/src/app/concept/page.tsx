@@ -62,7 +62,7 @@ export default function ConceptPage() {
               'Des professionnels fiables — Washers sélectionnés pour leur sérieux.',
               'Qualité garantie — Photos avant / après pour chaque prestation.',
               'Transparence totale — Le prix affiché est le prix payé, sans surprise.',
-              'Paiement sécurisé — Transactions protégées via Orange Money.',
+              'Paiement sécurisé — Transactions protégées via Wave Money.',
               'Support disponible — Une équipe prête à vous aider en cas de besoin.',
             ].map((item) => (
               <div key={item} className="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">

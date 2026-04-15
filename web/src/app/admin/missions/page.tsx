@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -136,9 +136,9 @@ export default function AdminMissionsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-semibold ${
-                        m.paymentMethod === 'ORANGE_MONEY' ? 'text-orange-400' : 'text-gray-400'
+                        m.paymentMethod === 'WAVE_MONEY' ? 'text-[#00b9f5]' : 'text-gray-400'
                       }`}>
-                        {m.paymentMethod === 'ORANGE_MONEY' ? 'OM' : 'Cash'}
+                        {m.paymentMethod === 'WAVE_MONEY' ? 'Wave' : 'Cash'}
                       </span>
                       <p className={`text-xs mt-0.5 ${
                         m.paymentStatus === 'HELD' ? 'text-yellow-400' :

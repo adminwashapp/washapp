@@ -1,8 +1,9 @@
-﻿'use client';
+'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useState, useEffect } from 'react';
 import { clientsApi } from '@/lib/api';
 import Link from 'next/link';
+import { useAuthStore } from '@/store';
 
 const PLANS: Record<string, { label: string; price: number; color: string; features: string[] }> = {
   EXTERIOR: { label: 'Abonnement Exterieur', price: 16500, color: '#1558f5', features: ['Lavage exterieur complet', '11 lavages payants + 1 offert', 'Economie de 1 500 FCFA'] },
@@ -22,6 +23,15 @@ function ActivateContent() {
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { isAuthenticated } = useAuthStore();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const redirect = encodeURIComponent('/abonnements/activer?plan=' + plan);
+      router.replace('/login?redirect=' + redirect);
+    }
+  }, [isAuthenticated, plan, router]);
 
   useEffect(() => {
     // Check if already subscribed

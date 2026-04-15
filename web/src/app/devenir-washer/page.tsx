@@ -9,7 +9,7 @@ export default function DevenirWasherPage() {
   const txt = {
     fr: {
       hero_badge: 'Devenez Washer independant',
-      hero_title_1: 'Gagnez votre vie en',
+      hero_title_1: 'Générez des revenus en',
       hero_title_2: 'lavant des vehicules',
       hero_sub: 'Rejoignez le reseau Washapp et recevez des missions de lavage pres de chez vous. Travaillez a votre rythme, sans commission.',
       hero_cta: 'Postuler maintenant',
@@ -57,7 +57,7 @@ export default function DevenirWasherPage() {
     },
     en: {
       hero_badge: 'Become an independent Washer',
-      hero_title_1: 'Earn a living by',
+      hero_title_1: 'Generate income by',
       hero_title_2: 'washing vehicles',
       hero_sub: 'Join the Washapp network and receive car wash jobs near you. Work at your own pace, with no commission.',
       hero_cta: 'Apply now',

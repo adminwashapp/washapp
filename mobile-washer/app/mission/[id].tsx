@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, ActivityIndicator, Linking, Image, Platform, TextInput,
@@ -138,9 +138,12 @@ export default function MissionDetailScreen() {
           washerSocket.complete(mission.id);
           setMission((m: any) => ({ ...m, status: "DONE" }));
           setLocalStep("DONE");
-          Alert.alert("Mission terminée ✅", "Bravo ! La mission est enregistrée.", [
-            { text: "OK", onPress: () => router.push("/(tabs)/missions") },
-          ]);
+          const isWave = mission?.paymentMethod === "WAVE_MONEY";
+          Alert.alert(
+            "Mission terminee",
+            isWave ? "Bravo ! Attendez que le client envoie le paiement Wave." : "Bravo ! La mission est enregistree.",
+            [{ text: "OK", onPress: () => isWave ? router.replace({ pathname: "/wave-confirm/[id]", params: { id: mission.id } }) : router.push("/(tabs)/missions") }]
+          );
         },
       },
     ]);
@@ -368,7 +371,12 @@ export default function MissionDetailScreen() {
           <View style={styles.doneBlock}>
             <Text style={styles.doneEmoji}>🏆</Text>
             <Text style={styles.doneTitle}>Mission terminée !</Text>
-            <Text style={styles.doneSubtitle}>Le paiement a été crédité à votre wallet.</Text>
+            <Text style={styles.doneSubtitle}>{mission?.paymentMethod === "WAVE_MONEY" ? "En attente du paiement Wave du client." : "Le paiement a ete credite a votre wallet."}</Text>
+          {mission?.paymentMethod === "WAVE_MONEY" && mission?.status === "DONE" && (
+            <TouchableOpacity style={{ backgroundColor: "#00b9f5", borderRadius: 14, paddingVertical: 14, paddingHorizontal: 24, marginTop: 8 }} onPress={() => router.push({ pathname: "/wave-confirm/[id]", params: { id: mission.id } })} activeOpacity={0.85}>
+              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 14 }}>{"Confirmer paiement Wave \u2192"}</Text>
+            </TouchableOpacity>
+          )}
           </View>
         )}
 

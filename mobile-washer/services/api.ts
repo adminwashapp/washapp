@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
@@ -55,13 +55,14 @@ export const washerApi = {
     }),
   cancelReservation: (id: string) => api.post(`/washers/reservations/${id}/cancel`),
   updateFcmToken: (fcmToken: string) => api.post('/washers/fcm-token', { fcmToken }),
+  confirmWavePayment: (missionId: string) => api.post('/payments/wave/' + missionId + '/confirm-washer'),
 };
 
 export const walletApi = {
   get: () => api.get('/wallet'),
   getLedger: (page = 1) => api.get(`/wallet/ledger?page=${page}`),
-  withdraw: (amount: number, orangeMoneyNumber: string) =>
-    api.post('/wallet/withdraw', { amount, orangeMoneyNumber }),
+  withdraw: (amount: number, waveMoneyNumber: string) =>
+    api.post('/wallet/withdraw', { amount, waveMoneyNumber }),
 };
 
 export const paymentsApi = {

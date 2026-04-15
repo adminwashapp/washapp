@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+﻿import { useState, useEffect, useRef, useCallback } from "react";
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, ActivityIndicator, Animated, Linking, Image, Platform, Dimensions,
@@ -89,6 +89,13 @@ export default function TrackingScreen() {
 
   const mapRef  = useRef<MapView>(null);
   const dotAnim = useRef(new Animated.Value(0)).current;
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    if (status !== "IN_PROGRESS") return;
+    const t = setInterval(() => setElapsed(e => e + 1), 1000);
+    return () => clearInterval(t);
+  }, [status]);
 
   useEffect(() => {
     const anim = Animated.loop(
@@ -209,6 +216,7 @@ export default function TrackingScreen() {
   const destLat = mission.lat || 5.3599517;
   const destLng = mission.lng || -4.0082563;
   const showMap = ["ASSIGNED","EN_ROUTE","ARRIVED","IN_PROGRESS"].includes(status);
+  const isInProgress = status === "IN_PROGRESS";
   const showEta = eta && washerLoc && ["ASSIGNED","EN_ROUTE"].includes(status);
   const mapRegion = { latitude: washerLoc?.lat ?? destLat, longitude: washerLoc?.lng ?? destLng, latitudeDelta: 0.04, longitudeDelta: 0.04 };
   return (
@@ -338,6 +346,35 @@ export default function TrackingScreen() {
                   </View>
                 </View>
               ))}
+            </View>
+          </View>
+        )}
+
+        {isInProgress && (
+          <View style={styles.inProgressCard}>
+            <View style={styles.inProgressHeader}>
+              <Text style={styles.inProgressTitle}>Lavage en cours</Text>
+              <View style={styles.timerBadge}>
+                <Text style={styles.timerText}>
+                  {String(Math.floor(elapsed/60)).padStart(2,"0")}:{String(elapsed%60).padStart(2,"0")}
+                </Text>
+              </View>
+            </View>
+            <Text style={styles.inProgressSub}>Votre washer nettoie votre vehicule avec soin</Text>
+            <View style={styles.progressSteps}>
+              {["Nettoyage exterieur","Rinçage","Sechage","Finitions"].map((step, i) => {
+                const done = elapsed > (i+1)*90;
+                const active = !done && elapsed > i*90;
+                return (
+                  <View key={step} style={styles.washStep}>
+                    <View style={[styles.washStepDot, done ? styles.washDotDone : active ? styles.washDotActive : styles.washDotPending]}>
+                      {done && <Text style={{color:"#fff",fontSize:10,fontWeight:"900"}}>v</Text>}
+                      {active && <View style={styles.washDotInner}/>}
+                    </View>
+                    <Text style={[styles.washStepLabel, (done||active) && {color:"#1558f5",fontWeight:"700"}]}>{step}</Text>
+                  </View>
+                );
+              })}
             </View>
           </View>
         )}
@@ -519,4 +556,18 @@ const styles = StyleSheet.create({
   sheetCancelTxt: { color: "#374151", fontWeight: "700", fontSize: 15 },
   sheetOkBtn: { flex: 1, backgroundColor: "#1558f5", borderRadius: 14, paddingVertical: 15, alignItems: "center" },
   sheetOkTxt: { color: "#fff", fontWeight: "800", fontSize: 15 },
+  inProgressCard: { backgroundColor: "#fff", borderRadius: 20, padding: 20, shadowColor: "#7c3aed", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.12, shadowRadius: 14, elevation: 5, borderWidth: 1.5, borderColor: "#ede9fe", gap: 12 },
+  inProgressHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  inProgressTitle: { fontSize: 17, fontWeight: "900", color: "#7c3aed" },
+  inProgressSub: { fontSize: 13, color: "#64748b", fontWeight: "500" },
+  timerBadge: { backgroundColor: "#f5f3ff", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
+  timerText: { fontSize: 18, fontWeight: "900", color: "#7c3aed", fontFamily: "monospace" },
+  progressSteps: { gap: 10 },
+  washStep: { flexDirection: "row", alignItems: "center", gap: 10 },
+  washStepDot: { width: 22, height: 22, borderRadius: 11, alignItems: "center", justifyContent: "center" },
+  washDotDone: { backgroundColor: "#059669" },
+  washDotActive: { backgroundColor: "#7c3aed" },
+  washDotPending: { backgroundColor: "#e2e8f0" },
+  washDotInner: { width: 8, height: 8, borderRadius: 4, backgroundColor: "#fff" },
+  washStepLabel: { fontSize: 14, fontWeight: "600", color: "#94a3b8" },
 });

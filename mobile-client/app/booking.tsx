@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   TextInput, KeyboardAvoidingView, Platform, Alert, ActivityIndicator,
@@ -16,7 +16,7 @@ const SERVICES = [
 ];
 const PAYMENT_METHODS = [
   { key: 'WAVE_MONEY', icon: '\uD83D\uDCB3', label: 'Wave Money', sub: 'Paiement mobile securise' },
-  { key: 'CASH', icon: '\uD83E\uDD1D', label: 'Remise au washer', sub: 'Remis directement au washer avant la prestation' },
+  { key: 'CASH', icon: '\uD83E\uDD1D', label: 'Remise au washer', sub: 'Remis directement au washer apres la prestation' },
 ];
 const STEPS = ['Prestation', 'Localisation', 'Paiement', 'Confirmation'];
 

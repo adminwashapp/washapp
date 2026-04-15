@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
@@ -54,6 +54,7 @@ export const authApi = {
 export const missionsApi = {
   create: (data: any) => api.post('/missions', data),
   getById: (id: string) => api.get(`/missions/${id}`),
+  getMission: (id: string) => api.get('/missions/' + id),
   getMy: () => api.get('/missions/my'),
   validate: (id: string, data?: any) => api.post(`/missions/${id}/validate`, data),
   rate: (id: string, data: any) => api.post(`/missions/${id}/rate`, data),

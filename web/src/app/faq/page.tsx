@@ -183,7 +183,6 @@ function FAQItem({ q, a }: { q: string; a: string }) {
           <p className="text-gray-500 leading-relaxed text-[14.5px]">{a}</p>
         </div>
       )}
-      <Footer />
     </div>
   );
 }

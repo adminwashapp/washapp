@@ -1,4 +1,5 @@
-'use client';
+'use client'
+export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -6,7 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Eye, EyeOff, CheckCircle, KeyRound } from 'lucide-react';
 import { authApi } from '@/lib/api';
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const router       = useRouter();
   const params       = useSearchParams();
   const [phone, setPhone]       = useState('');
@@ -160,5 +161,13 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+import { Suspense } from 'react';
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" /></div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }

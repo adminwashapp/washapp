@@ -1,4 +1,7 @@
-﻿import Link from 'next/link';
+﻿'use client';
+import { useState, useEffect } from 'react';
+import { clientsApi } from '@/lib/api';
+import Link from 'next/link';
 import Footer from '@/components/layout/Footer';
 import { Check, ArrowRight, Sparkles } from 'lucide-react';
 
@@ -205,14 +208,14 @@ export default function TarifsPage() {
                 </p>
 
                 <Link
-                  href={`/abonnements/activer?plan=${s.plan}`}
+                  href={hasActiveSub ? '/compte/abonnement?existing=1' : ('/abonnements/activer?plan=' + s.plan)}
                   className={`mt-auto flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[0.875rem] font-bold transition-all ${
                     s.highlight
                       ? 'bg-white text-[#0f172a] hover:bg-gray-100'
                       : 'bg-[#1558f5] text-white hover:bg-[#1045e1]'
                   }`}
                 >
-                  S&apos;abonner
+                  {hasActiveSub ? 'Voir mon abonnement \u2192' : "S'abonner \u2192"}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

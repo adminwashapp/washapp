@@ -236,6 +236,8 @@ model ClientSubscription {
   completedPaidWashesCount Int                @default(0)
   freeWashAvailable        Boolean            @default(false)
   subscriptionStartedAt    DateTime           @default(now())
+  vehiclePlate            String?
+  vehicleModel            String?
   status      SubscriptionStatus @default(ACTIVE)
   expiresAt   DateTime?
   createdAt   DateTime           @default(now())

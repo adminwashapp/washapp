@@ -59,6 +59,16 @@ function AbonnementContent() {
 
       <div className="max-w-lg mx-auto px-6 py-8 space-y-6">
 
+        {params.get('existing') === '1' && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center gap-4">
+            <span className="text-3xl">⚠️</span>
+            <div>
+              <p className="font-black text-amber-800">Vous avez deja un abonnement actif</p>
+              <p className="text-sm text-amber-600">Un seul abonnement actif est autorise a la fois.</p>
+            </div>
+          </div>
+        )}
+
         {justActivated && (
           <div className="bg-green-50 border border-green-200 rounded-2xl p-5 flex items-center gap-4">
             <span className="text-3xl">🎉</span>
@@ -75,6 +85,13 @@ function AbonnementContent() {
             <div>
               <p className="text-xs font-bold opacity-70 uppercase tracking-widest">Formule active</p>
               <h2 className="text-xl font-black mt-1">{SERVICE_LABELS[sub.serviceType] ?? sub.serviceType}</h2>
+              {sub.vehiclePlate && (
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-lg">🚗</span>
+                  <span className="text-sm font-bold opacity-90">{sub.vehicleModel}</span>
+                  <span className="bg-white/20 rounded-lg px-2 py-0.5 text-xs font-black tracking-wider">{sub.vehiclePlate}</span>
+                </div>
+              )}
             </div>
             <span className={`px-3 py-1.5 rounded-full text-xs font-black ${sub.status === 'ACTIVE' ? 'bg-green-400 text-white' : 'bg-gray-400 text-white'}`}>
               {sub.status === 'ACTIVE' ? 'Actif' : sub.status}

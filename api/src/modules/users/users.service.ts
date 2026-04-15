@@ -37,7 +37,7 @@ export class UsersService {
 
   // ── ABONNEMENTS ────────────────────────────────────────────────────────────
 
-  async activateSubscription(clientProfileId: string, serviceType: string) {
+  async activateSubscription(clientProfileId: string, serviceType: string, vehiclePlate?: string, vehicleModel?: string) {
     const existing = await this.prisma.clientSubscription.findFirst({
       where: { clientId: clientProfileId, status: 'ACTIVE' },
     });
@@ -60,6 +60,8 @@ export class UsersService {
         completedPaidWashesCount: 0,
         freeWashAvailable: false,
         subscriptionStartedAt: new Date(),
+        vehiclePlate: vehiclePlate ?? null,
+        vehicleModel: vehicleModel ?? null,
         status: 'ACTIVE',
       },
     });

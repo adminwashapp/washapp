@@ -67,7 +67,8 @@ export const clientsApi = {
   getAddresses: () => api.get('/clients/addresses'),
   getSubscriptions: () => api.get('/clients/subscriptions'),
   getActiveSubscription: () => api.get('/clients/subscriptions/active'),
-  activateSubscription: (serviceType: string) => api.post('/clients/subscriptions', { serviceType }),
+  activateSubscription: (serviceType: string, vehiclePlate?: string, vehicleModel?: string) => api.post('/clients/subscriptions', { serviceType, vehiclePlate, vehicleModel }),
+  getVehicles: () => api.get('/clients/vehicles'),
   cancelSubscription: () => api.delete('/clients/subscriptions'),
 };
 

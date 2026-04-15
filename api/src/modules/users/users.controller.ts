@@ -22,6 +22,8 @@ class AddAddressDto {
 
 class ActivateSubscriptionDto {
   @IsString() serviceType: string;
+  @IsOptional() @IsString() vehiclePlate?: string;
+  @IsOptional() @IsString() vehicleModel?: string;
 }
 
 @Controller('clients')
@@ -58,7 +60,7 @@ export class UsersController {
 
   @Post('subscriptions')
   activateSubscription(@CurrentUser() user: any, @Body() dto: ActivateSubscriptionDto) {
-    return this.usersService.activateSubscription(user.clientProfile.id, dto.serviceType);
+    return this.usersService.activateSubscription(user.clientProfile.id, dto.serviceType, dto.vehiclePlate, dto.vehicleModel);
   }
 
   @Get('subscriptions/active')

@@ -103,7 +103,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen overflow-hidden flex">
+    <div className="fixed inset-0 overflow-hidden flex z-50 bg-white">
 
       {/* GAUCHE — formulaire */}
       <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-24 py-12 bg-white">

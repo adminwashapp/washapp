@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 declare const google: any;
 
@@ -198,7 +198,6 @@ function BookingContent() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
       <div className="flex-1 flex flex-col-reverse lg:flex-row overflow-auto lg:overflow-hidden">
         {/* GAUCHE formulaire */}
         <div className="lg:w-[480px] xl:w-[520px] flex-shrink-0 overflow-y-auto bg-white border-r border-gray-100">

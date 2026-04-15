@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -390,7 +390,6 @@ export default function AccountPage() {
                 </div>
                 <div className="text-left">
                   <p className="text-[0.875rem] font-bold text-gray-900">Especes</p>
-                  <p className="text-[11px] text-gray-400">Avant la prestation</p>
                 </div>
                 {payMethod === 'CASH' && <Check className="w-4 h-4 text-green-500 ml-auto" />}
               </button>

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Footer from '@/components/layout/Footer';
 import { Check, ArrowRight, Sparkles } from 'lucide-react';
 
@@ -38,18 +38,21 @@ const subscriptions = [
     price: '16 500',
     saving: '1 500',
     highlight: false,
+    plan: 'EXTERIOR',
   },
   {
     name: 'Abonnement Complet',
     price: '44 000',
     saving: '4 000',
     highlight: true,
+    plan: 'FULL',
   },
   {
     name: 'Abonnement Intérieur',
     price: '27 500',
     saving: '2 500',
     highlight: false,
+    plan: 'INTERIOR',
   },
 ];
 
@@ -202,7 +205,7 @@ export default function TarifsPage() {
                 </p>
 
                 <Link
-                  href="/booking"
+                  href={`/abonnements/activer?plan=${s.plan}`}
                   className={`mt-auto flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[0.875rem] font-bold transition-all ${
                     s.highlight
                       ? 'bg-white text-[#0f172a] hover:bg-gray-100'

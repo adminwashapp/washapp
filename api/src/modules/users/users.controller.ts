@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+﻿import { Controller, Get, Post, Delete, Body, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -18,6 +18,10 @@ class AddAddressDto {
   @IsNumber() lat: number;
   @IsNumber() lng: number;
   @IsOptional() @IsBoolean() isDefault?: boolean;
+}
+
+class ActivateSubscriptionDto {
+  @IsString() serviceType: string;
 }
 
 @Controller('clients')
@@ -48,5 +52,27 @@ export class UsersController {
   @Get('addresses')
   getAddresses(@CurrentUser() user: any) {
     return this.usersService.getAddresses(user.clientProfile.id);
+  }
+
+  // ── ABONNEMENTS ────────────────────────────────────────────────────────────
+
+  @Post('subscriptions')
+  activateSubscription(@CurrentUser() user: any, @Body() dto: ActivateSubscriptionDto) {
+    return this.usersService.activateSubscription(user.clientProfile.id, dto.serviceType);
+  }
+
+  @Get('subscriptions/active')
+  getActiveSubscription(@CurrentUser() user: any) {
+    return this.usersService.getActiveSubscription(user.clientProfile.id);
+  }
+
+  @Get('subscriptions')
+  getSubscriptions(@CurrentUser() user: any) {
+    return this.usersService.getSubscriptions(user.clientProfile.id);
+  }
+
+  @Delete('subscriptions')
+  cancelSubscription(@CurrentUser() user: any) {
+    return this.usersService.cancelSubscription(user.clientProfile.id);
   }
 }

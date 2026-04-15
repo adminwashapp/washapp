@@ -1,4 +1,4 @@
-import {
+﻿import {
   Injectable,
   NotFoundException,
   BadRequestException,
@@ -8,6 +8,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { DispatchService } from '../dispatch/dispatch.service';
 import { WalletService } from '../wallet/wallet.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { UsersService } from '../users/users.service';
 import {
   CreateComplaintDto,
   CreateMissionDto,
@@ -35,6 +36,7 @@ export class MissionsService {
     private dispatchService: DispatchService,
     private walletService: WalletService,
     private notificationsService: NotificationsService,
+    private usersService: UsersService,
   ) {}
 
   async createMission(clientProfileId: string, dto: CreateMissionDto) {
@@ -144,11 +146,11 @@ export class MissionsService {
         validationStatus: ValidationStatus.CLIENT_VALIDATED,
         validatedAt: new Date(),
         paymentStatus:
-          mission.paymentMethod === PaymentMethod.ORANGE_MONEY ? 'RELEASED' : 'CASH_CONFIRMED',
+          (mission.paymentMethod === PaymentMethod.ORANGE_MONEY || (mission.paymentMethod as any) === 'WAVE_MONEY') ? 'RELEASED' : 'CASH_CONFIRMED',
       },
     });
 
-    if (mission.paymentMethod === PaymentMethod.ORANGE_MONEY && mission.washer?.wallet) {
+    if ((mission.paymentMethod === PaymentMethod.ORANGE_MONEY || (mission.paymentMethod as any) === 'WAVE_MONEY') && mission.washer?.wallet) {
       await this.walletService.releaseToWasher(
         mission.washerId!,
         mission.washer.wallet.id,
@@ -164,6 +166,11 @@ export class MissionsService {
         data: { missionId, type: 'MISSION_VALIDATED' },
       });
     }
+
+    // Increment subscription counter
+    try {
+      await this.usersService.incrementSubscriptionCounter(mission.clientId, mission.serviceType);
+    } catch (_) { /* abonnement non actif, on ignore */ }
 
     return { success: true };
   }

@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
@@ -66,6 +66,9 @@ export const clientsApi = {
   addAddress: (data: any) => api.post('/clients/addresses', data),
   getAddresses: () => api.get('/clients/addresses'),
   getSubscriptions: () => api.get('/clients/subscriptions'),
+  getActiveSubscription: () => api.get('/clients/subscriptions/active'),
+  activateSubscription: (serviceType: string) => api.post('/clients/subscriptions', { serviceType }),
+  cancelSubscription: () => api.delete('/clients/subscriptions'),
 };
 
 export const clientApi = clientsApi;

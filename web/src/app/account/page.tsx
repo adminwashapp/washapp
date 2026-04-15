@@ -333,7 +333,7 @@ export default function AccountPage() {
           <section>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-[1rem] font-bold text-gray-900">Mes abonnements</h2>
-              <Link href="/account/subscriptions" className="text-[13px] text-[#1558f5] font-semibold flex items-center gap-1">
+              <Link href="/compte/abonnement" className="text-[13px] text-[#1558f5] font-semibold flex items-center gap-1">
                 Voir <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>

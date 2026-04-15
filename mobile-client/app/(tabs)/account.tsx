@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   StatusBar, Alert, Linking, Modal, TextInput, Switch, ActivityIndicator,
@@ -133,6 +133,7 @@ export default function AccountScreen() {
       rows: [
         { icon: ICON.clipboard, label: 'Mes r\u00E9servations',     action: () => router.push('/(tabs)/missions') },
         { icon: ICON.clock,     label: 'Historique des lavages', action: () => router.push('/(tabs)/missions') },
+        { icon: '\u2B50', label: 'Mon abonnement', action: () => router.push('/abonnement') },
       ],
     },
     {

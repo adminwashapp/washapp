@@ -62,6 +62,13 @@ export const missionsApi = {
   cancel: (id: string) => api.post(`/missions/${id}/cancel`),
 };
 
+export const subscriptionsApi = {
+  getActive: () => api.get('/clients/subscriptions/active'),
+  activate: (serviceType: string) => api.post('/clients/subscriptions', { serviceType }),
+  getAll: () => api.get('/clients/subscriptions'),
+  cancel: () => api.delete('/clients/subscriptions'),
+};
+
 export const clientsApi = {
   getMe: () => api.get('/clients/me'),
   addVehicle: (data: any) => api.post('/clients/vehicles', data),

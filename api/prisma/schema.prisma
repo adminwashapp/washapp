@@ -1,4 +1,4 @@
-generator client {
+﻿generator client {
   provider = "prisma-client-js"
 }
 
@@ -55,6 +55,7 @@ enum MissionStatus {
 
 enum PaymentMethod {
   ORANGE_MONEY
+  WAVE_MONEY
   CASH
 }
 
@@ -179,7 +180,7 @@ model RefreshToken {
 model ClientProfile {
   id                   String        @id @default(cuid())
   userId               String        @unique
-  defaultPaymentMethod PaymentMethod @default(ORANGE_MONEY)
+  defaultPaymentMethod PaymentMethod @default(CASH)
   createdAt            DateTime      @default(now())
 
   user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -232,6 +233,9 @@ model ClientSubscription {
   total       Int                @default(12)
   remaining   Int                @default(12)
   price       Int
+  completedPaidWashesCount Int                @default(0)
+  freeWashAvailable        Boolean            @default(false)
+  subscriptionStartedAt    DateTime           @default(now())
   status      SubscriptionStatus @default(ACTIVE)
   expiresAt   DateTime?
   createdAt   DateTime           @default(now())

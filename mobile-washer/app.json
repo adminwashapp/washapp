@@ -27,7 +27,7 @@
       "config": { "googleMaps": { "apiKey": "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk" } }
     },
     "web": { "bundler": "metro", "output": "static" },
-    "plugins": ["expo-router", "expo-location", "expo-camera"],
+    "plugins": ["expo-router",["expo-notifications",{"icon":"./assets/images/icon.png","color":"#1558f5","sounds":[],"mode":"production"}], "expo-location", "expo-camera"],
     "experiments": { "typedRoutes": true },
     "extra": {
       "apiUrl": "https://washapp-api.onrender.com/api",

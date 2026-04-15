@@ -1,55 +1,52 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import * as admin from 'firebase-admin';
 import { PrismaService } from '../../prisma/prisma.service';
+import axios from 'axios';
+
+interface ExpoMessage {
+  to: string;
+  title: string;
+  body: string;
+  data?: Record<string, string>;
+  sound?: string;
+  channelId?: string;
+  priority?: string;
+}
 
 @Injectable()
 export class NotificationsService implements OnModuleInit {
   private readonly logger = new Logger(NotificationsService.name);
-  private firebaseApp: admin.app.App | null = null;
 
   constructor(private prisma: PrismaService) {}
 
   onModuleInit() {
-    try {
-      if (
-        process.env.FIREBASE_PROJECT_ID &&
-        process.env.FIREBASE_PRIVATE_KEY &&
-        process.env.FIREBASE_CLIENT_EMAIL
-      ) {
-        this.firebaseApp = admin.initializeApp({
-          credential: admin.credential.cert({
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-          }),
-        });
-        this.logger.log('Firebase Admin initialise');
-      } else {
-        this.logger.warn('Firebase non configure - notifications push desactivees');
-      }
-    } catch (e) {
-      this.logger.error('Erreur init Firebase', e);
-    }
+    this.logger.log('NotificationsService pret (Expo Push API)');
   }
 
-  private async sendFcm(token: string, notification: { title: string; body: string; data?: Record<string, string> }) {
-    if (!this.firebaseApp) return;
+  private async sendExpoPush(token: string, notification: { title: string; body: string; data?: Record<string, string> }) {
+    if (!token || !token.startsWith('ExponentPushToken')) {
+      this.logger.debug(`Token invalide ou absent: ${token?.slice(0, 30)}`);
+      return;
+    }
     try {
-      await admin.messaging(this.firebaseApp).send({
-        token,
-        notification: { title: notification.title, body: notification.body },
+      const message: ExpoMessage = {
+        to: token,
+        title: notification.title,
+        body: notification.body,
         data: notification.data || {},
-        android: {
-          priority: 'high',
-          notification: { sound: 'default', channelId: 'washapp_missions' },
-        },
-        apns: {
-          payload: { aps: { sound: 'default', badge: 1 } },
+        sound: 'default',
+        channelId: 'washapp_missions',
+        priority: 'high',
+      };
+      const res = await axios.post('https://exp.host/--/api/v2/push/send', message, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate',
         },
       });
-      this.logger.debug('Notification envoyee');
-    } catch (e) {
-      this.logger.error('Erreur envoi FCM', e);
+      this.logger.debug(`Expo Push envoye: ${JSON.stringify(res.data)}`);
+    } catch (e: any) {
+      this.logger.error(`Erreur Expo Push: ${e.message}`);
     }
   }
 
@@ -57,7 +54,6 @@ export class NotificationsService implements OnModuleInit {
     userId: string,
     notification: { title: string; body: string; data?: Record<string, string> },
   ) {
-    if (!this.firebaseApp) return;
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { washerProfile: { select: { fcmToken: true } } },
@@ -65,7 +61,7 @@ export class NotificationsService implements OnModuleInit {
     if (!user) return;
     const token = user.washerProfile?.fcmToken ?? user.pushToken;
     if (!token) { this.logger.debug(`Pas de token pour user ${userId}`); return; }
-    await this.sendFcm(token, notification);
+    await this.sendExpoPush(token, notification);
   }
 
   async sendMissionToWasher(

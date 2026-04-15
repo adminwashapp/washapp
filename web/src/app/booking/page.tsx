@@ -458,8 +458,8 @@ function BookingContent() {
         </div>
 
         {/* DROITE carte */}
-        <div className="flex-1 relative min-h-[300px] lg:min-h-0 bg-gray-100">
         <div className="flex-1 relative h-[280px] lg:h-auto lg:min-h-0 bg-gray-100 order-first lg:order-last">
+          <div ref={mapRef} className="absolute inset-0" />
           {!mapLoaded && (
             <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
               <div className="text-center">

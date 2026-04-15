@@ -1,6 +1,7 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
 import { clientsApi } from '@/lib/api';
+import { useAuthStore } from '@/store';
 import Link from 'next/link';
 import Footer from '@/components/layout/Footer';
 import { Check, ArrowRight, Sparkles } from 'lucide-react';
@@ -60,6 +61,9 @@ const subscriptions = [
 ];
 
 export default function TarifsPage() {
+  const { isAuthenticated } = useAuthStore();
+  const [hasActiveSub, setHasActiveSub] = useState(false);
+  useEffect(() => { if (!isAuthenticated) return; clientsApi.getSubscription().then((r: any) => { if (r.data?.isSubscribed) setHasActiveSub(true); }).catch(() => {}); }, [isAuthenticated]);
   return (
     <div className="min-h-screen bg-[#f9fafb]">
 

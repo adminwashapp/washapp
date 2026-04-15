@@ -23,12 +23,33 @@ export class NotificationsService implements OnModuleInit {
             clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
           }),
         });
-        this.logger.log('Firebase Admin initialisé');
+        this.logger.log('Firebase Admin initialise');
       } else {
-        this.logger.warn('Firebase non configuré - notifications push désactivées');
+        this.logger.warn('Firebase non configure - notifications push desactivees');
       }
     } catch (e) {
       this.logger.error('Erreur init Firebase', e);
+    }
+  }
+
+  private async sendFcm(token: string, notification: { title: string; body: string; data?: Record<string, string> }) {
+    if (!this.firebaseApp) return;
+    try {
+      await admin.messaging(this.firebaseApp).send({
+        token,
+        notification: { title: notification.title, body: notification.body },
+        data: notification.data || {},
+        android: {
+          priority: 'high',
+          notification: { sound: 'default', channelId: 'washapp_missions' },
+        },
+        apns: {
+          payload: { aps: { sound: 'default', badge: 1 } },
+        },
+      });
+      this.logger.debug('Notification envoyee');
+    } catch (e) {
+      this.logger.error('Erreur envoi FCM', e);
     }
   }
 
@@ -36,96 +57,57 @@ export class NotificationsService implements OnModuleInit {
     userId: string,
     notification: { title: string; body: string; data?: Record<string, string> },
   ) {
+    if (!this.firebaseApp) return;
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        washerProfile: { select: { fcmToken: true } },
-      },
+      include: { washerProfile: { select: { fcmToken: true } } },
     });
-
-    const fcmToken = user?.washerProfile?.fcmToken;
-
-    if (!fcmToken || !this.firebaseApp) {
-      this.logger.debug(`Pas de FCM token pour user ${userId}`);
-      return;
-    }
-
-    try {
-      await admin.messaging(this.firebaseApp).send({
-        token: fcmToken,
-        notification: {
-          title: notification.title,
-          body: notification.body,
-        },
-        data: notification.data || {},
-        android: {
-          priority: 'high',
-          notification: {
-            sound: 'default',
-            channelId: 'washapp_missions',
-          },
-        },
-        apns: {
-          payload: {
-            aps: {
-              sound: 'default',
-              badge: 1,
-            },
-          },
-        },
-      });
-    } catch (e) {
-      this.logger.error(`Erreur envoi FCM à ${userId}`, e);
-    }
+    if (!user) return;
+    const token = user.washerProfile?.fcmToken ?? user.pushToken;
+    if (!token) { this.logger.debug(`Pas de token pour user ${userId}`); return; }
+    await this.sendFcm(token, notification);
   }
 
   async sendMissionToWasher(
     userId: string,
     missionData: {
-      missionId: string;
-      type: string;
-      serviceType: string;
-      price: number;
-      address: string;
-      lat: number;
-      lng: number;
-      scheduledAt?: string;
-      timeoutSeconds: number;
+      missionId: string; type: string; serviceType: string;
+      price: number; address: string; lat: number; lng: number;
+      scheduledAt?: string; timeoutSeconds: number;
     },
   ) {
     const serviceLabels: Record<string, string> = {
-      EXTERIOR: 'Extérieur',
-      INTERIOR: 'Intérieur',
-      FULL: 'Complet',
+      EXTERIOR: 'Exterieur', INTERIOR: 'Interieur', FULL: 'Complet',
     };
-
+    const isInstant = missionData.type === 'INSTANT';
     await this.sendToUser(userId, {
-      title: missionData.type === 'INSTANT' ? '🚗 Nouvelle mission !' : '📅 Nouvelle réservation !',
+      title: isInstant ? 'Nouvelle mission !' : 'Nouvelle reservation !',
       body: `${serviceLabels[missionData.serviceType] || missionData.serviceType} - ${missionData.price} FCFA`,
       data: {
-        type: 'NEW_MISSION',
-        missionId: missionData.missionId,
-        missionType: missionData.type,
-        serviceType: missionData.serviceType,
-        price: String(missionData.price),
-        address: missionData.address,
-        lat: String(missionData.lat),
-        lng: String(missionData.lng),
+        type: 'NEW_MISSION', missionId: missionData.missionId,
+        missionType: missionData.type, serviceType: missionData.serviceType,
+        price: String(missionData.price), address: missionData.address,
+        lat: String(missionData.lat), lng: String(missionData.lng),
         scheduledAt: missionData.scheduledAt || '',
         timeoutSeconds: String(missionData.timeoutSeconds),
       },
     });
   }
 
+  async sendToClient(
+    userId: string,
+    notification: { title: string; body: string; data?: Record<string, string> },
+  ) {
+    await this.sendToUser(userId, notification);
+  }
+
   async updateFcmToken(userId: string, fcmToken: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) return;
-
     if (user.role === 'WASHER') {
-      await this.prisma.washerProfile.updateMany({
-        where: { userId },
-        data: { fcmToken },
-      });
+      await this.prisma.washerProfile.updateMany({ where: { userId }, data: { fcmToken } });
+    } else {
+      await this.prisma.user.update({ where: { id: userId }, data: { pushToken: fcmToken } });
     }
   }
 }

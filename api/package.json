@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "washapp-api",
   "version": "1.0.0",
   "description": "Washapp Backend API",
@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "nest start --watch",
-    "build": "nest build",
+    "build": "prisma migrate deploy && nest build",
     "start": "node dist/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

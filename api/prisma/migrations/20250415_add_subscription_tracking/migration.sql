@@ -1,0 +1,8 @@
+﻿-- AlterEnum
+ALTER TYPE "PaymentMethod" ADD VALUE IF NOT EXISTS 'WAVE_MONEY';
+
+-- AlterTable
+ALTER TABLE "client_subscriptions"
+  ADD COLUMN IF NOT EXISTS "completedPaidWashesCount" INTEGER NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "freeWashAvailable" BOOLEAN NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS "subscriptionStartedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

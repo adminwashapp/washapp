@@ -17,15 +17,6 @@ const TRANSPORT_OPTIONS = [
   { key: 'MOTORBIKE', label: 'Moto' },
 ];
 
-const AVAILABILITY_OPTIONS = [
-  'Lundi - Vendredi (8h - 18h)',
-  'Weekend uniquement',
-  'Tous les jours',
-  'Matin uniquement',
-  'Apres-midi uniquement',
-  'Flexible',
-];
-
 type FormData = {
   firstName: string;
   lastName: string;
@@ -34,9 +25,7 @@ type FormData = {
   city: string;
   zone: string;
   transportType: string;
-  availability: string;
   experience: string;
-  hasEquipment: boolean;
   waveMoneyNumber: string;
   preferredPayment: string;
   profilePhotoUrl: string;
@@ -46,7 +35,7 @@ type FormData = {
 
 const initial: FormData = {
   firstName: '', lastName: '', email: '', phone: '', city: '', zone: '',
-  transportType: '', availability: '', experience: '', hasEquipment: false,
+  transportType: '', experience: '',
   waveMoneyNumber: '', preferredPayment: 'WAVE',
   profilePhotoUrl: '', idDocumentUrl: '', otherDocumentUrl: '',
 };
@@ -91,7 +80,6 @@ export default function PostulerPage() {
     }
     if (step === 2) {
       if (!form.transportType) e.transportType = 'Requis';
-      if (!form.availability)  e.availability  = 'Requis';
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -117,7 +105,6 @@ export default function PostulerPage() {
     try {
       await api.post('/applications', {
         ...form,
-        hasEquipment: form.hasEquipment,
       });
       setDone(true);
     } catch (e: any) {
@@ -240,32 +227,11 @@ export default function PostulerPage() {
                   ))}
                 </div>
               </Field>
-              <Field label="Disponibilites *" error={errors.availability}>
-                <select value={form.availability} onChange={e => { set('availability', e.target.value); clearErr('availability'); }}
-                  className={input(errors.availability)}>
-                  <option value="">Selectionnez vos disponibilites</option>
-                  {AVAILABILITY_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
-                </select>
-              </Field>
               <Field label="Experience dans le lavage auto (optionnel)">
                 <textarea value={form.experience} onChange={e => set('experience', e.target.value)}
                   className={`${input()} resize-none`} rows={3}
                   placeholder="Decrivez brievement votre experience si vous en avez une..." />
               </Field>
-              <div>
-                <p className="text-sm font-semibold text-gray-700 mb-3">Materiel obligatoire</p>
-                <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  form.hasEquipment ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
-                  <input type="checkbox" checked={form.hasEquipment} onChange={e => set('hasEquipment', e.target.checked)}
-                    className="accent-green-600 w-4 h-4" />
-                  <div>
-                    <p className={`font-semibold text-sm ${form.hasEquipment ? 'text-green-700' : 'text-gray-700'}`}>
-                      Je possede deja le materiel de lavage
-                    </p>
-                    <p className="text-xs text-gray-400 mt-0.5">Aspirateur, produits, serviettes microfibre, etc.</p>
-                  </div>
-                </label>
-              </div>
             </div>
           )}
 

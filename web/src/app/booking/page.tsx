@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { api, missionsApi, paymentsApi } from '@/lib/api';
 import { useAuthStore } from '@/store';
+import { useLang } from '@/contexts/lang';
 
 const SERVICES = [
   { key: 'EXTERIOR', label: 'Exterieur', basePrice: 1500, icon: '🚿', desc: 'Carrosserie, vitres, jantes' },
@@ -29,6 +30,125 @@ function BookingContent() {
   const router = useRouter();
   const params = useSearchParams();
   const { isAuthenticated, user, setAuth } = useAuthStore();
+  const { lang } = useLang();
+
+  const txt = {
+    fr: {
+      tab_instant: 'Demande instantanee',
+      tab_book: 'Reservation',
+      desc_booking: "Choisissez une date et un creneau - on vous envoie un washer a l'heure prevue.",
+      desc_instant: 'Aucun compte requis - votre profil est cree automatiquement',
+      s1_title: '1 · Votre adresse',
+      addr_placeholder: 'Ex : Cocody, Abidjan',
+      addr_hint: 'Deplacez le pin sur la carte si besoin',
+      s2_title: '2 · Type de vehicule',
+      s3_title: '3 · Type de lavage',
+      s4_datetime: '4 · Date et heure',
+      label_date: 'Date',
+      label_time: 'Heure',
+      s_info_instant: '4 · Vos informations',
+      s_info_booking: '5 · Vos informations',
+      label_firstname: 'Prenom',
+      optional: '(optionnel)',
+      label_phone: 'Telephone',
+      label_email: 'Email',
+      label_password: 'Mot de passe',
+      placeholder_password: 'Pour retrouver votre compte',
+      already_account: 'Deja un compte ?',
+      sign_in: 'Se connecter',
+      s_pay_instant: '5 · Paiement',
+      s_pay_booking: '6 · Paiement',
+      wave: 'Wave Money',
+      wave_sub: 'Paiement apres la prestation',
+      cash: 'Especes',
+      cash_sub: 'Directement au washer',
+      btn_loading: 'En cours...',
+      btn_book: 'Reserver',
+      btn_order: 'Commander',
+      done_title: 'Mission cree !',
+      done_sub: 'Redirection vers le suivi...',
+      searching_title: 'Recherche en cours',
+      searching_sub: 'On cherche le washer le plus proche disponible',
+      err_required: 'Adresse et numero de telephone requis',
+      err_phone_used: 'Ce numero est deja utilise. Connectez-vous dabord.',
+      err_generic: 'Une erreur est survenue. Reessayez.',
+      map_hint: 'Deplacez le pin pour ajuster',
+      map_loading: 'Chargement de la carte',
+      service_ext_label: 'Exterieur',
+      service_ext_desc: 'Carrosserie, vitres, jantes',
+      service_int_label: 'Interieur',
+      service_int_desc: 'Sieges, tableau de bord, tapis',
+      service_full_label: 'Complet',
+      service_full_desc: 'Exterieur + interieur',
+      vt_std_label: 'Citadine / Berline',
+      vt_std_desc: 'Voiture compacte ou standard',
+      vt_lg_label: 'SUV / 4x4 / Break',
+      vt_lg_desc: 'Grand gabarit',
+    },
+    en: {
+      tab_instant: 'Instant request',
+      tab_book: 'Schedule',
+      desc_booking: 'Choose a date and time slot - we send you a washer at the scheduled time.',
+      desc_instant: 'No account required - your profile is created automatically',
+      s1_title: '1 · Your address',
+      addr_placeholder: 'Ex: Cocody, Abidjan',
+      addr_hint: 'Move the pin on the map if needed',
+      s2_title: '2 · Vehicle type',
+      s3_title: '3 · Wash type',
+      s4_datetime: '4 · Date & time',
+      label_date: 'Date',
+      label_time: 'Time',
+      s_info_instant: '4 · Your information',
+      s_info_booking: '5 · Your information',
+      label_firstname: 'First name',
+      optional: '(optional)',
+      label_phone: 'Phone',
+      label_email: 'Email',
+      label_password: 'Password',
+      placeholder_password: 'To find your account again',
+      already_account: 'Already have an account?',
+      sign_in: 'Sign in',
+      s_pay_instant: '5 · Payment',
+      s_pay_booking: '6 · Payment',
+      wave: 'Wave Money',
+      wave_sub: 'Payment after the service',
+      cash: 'Cash',
+      cash_sub: 'Directly to the washer',
+      btn_loading: 'Loading...',
+      btn_book: 'Schedule',
+      btn_order: 'Order',
+      done_title: 'Mission created!',
+      done_sub: 'Redirecting to tracking...',
+      searching_title: 'Searching',
+      searching_sub: 'Looking for the nearest available washer',
+      err_required: 'Address and phone number are required',
+      err_phone_used: 'This number is already in use. Please sign in first.',
+      err_generic: 'An error occurred. Please try again.',
+      map_hint: 'Move the pin to adjust',
+      map_loading: 'Loading map',
+      service_ext_label: 'Exterior',
+      service_ext_desc: 'Body, windows, rims',
+      service_int_label: 'Interior',
+      service_int_desc: 'Seats, dashboard, mats',
+      service_full_label: 'Full wash',
+      service_full_desc: 'Exterior + interior',
+      vt_std_label: 'City car / Saloon',
+      vt_std_desc: 'Compact or standard car',
+      vt_lg_label: 'SUV / 4x4 / Estate',
+      vt_lg_desc: 'Large vehicle',
+    },
+  }[lang];
+
+  // Translated service + vehicle labels (used only for display in the recap)
+  const serviceLabels: Record<string, string> = {
+    EXTERIOR: txt.service_ext_label,
+    INTERIOR: txt.service_int_label,
+    FULL: txt.service_full_label,
+  };
+  const vehicleLabels: Record<string, string> = {
+    standard: txt.vt_std_label,
+    large: txt.vt_lg_label,
+  };
 
   const [mode, setMode] = useState<'instant' | 'booking'>(
     params.get('mode') === 'booking' ? 'booking' : 'instant'
@@ -140,7 +260,7 @@ function BookingContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!address || !phone) { setError('Adresse et numero de telephone requis'); return; }
+    if (!address || !phone) { setError(txt.err_required); return; }
     setError('');
     setLoading(true);
     setPhase('searching');
@@ -184,11 +304,11 @@ function BookingContent() {
           setPhase('done');
           setTimeout(() => router.push(`/mission/${res.data.id}`), 1500);
         } catch {
-          setError('Ce numero est deja utilise. Connectez-vous dabord.');
+          setError(txt.err_phone_used);
           setPhase('form');
         }
       } else {
-        setError(msg || 'Une erreur est survenue. Reessayez.');
+        setError(msg || txt.err_generic);
         setPhase('form');
       }
     } finally {
@@ -208,16 +328,16 @@ function BookingContent() {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                   <Check className="w-8 h-8 text-green-600" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">Mission cree !</h2>
-                <p className="text-gray-500 text-sm">Redirection vers le suivi...</p>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">{txt.done_title}</h2>
+                <p className="text-gray-500 text-sm">{txt.done_sub}</p>
               </div>
             ) : phase === 'searching' ? (
               <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
                   <Zap className="w-8 h-8 text-[#1558f5]" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2">Recherche en cours</h2>
-                <p className="text-gray-400 text-sm">On cherche le washer le plus proche disponible</p>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">{txt.searching_title}</h2>
+                <p className="text-gray-400 text-sm">{txt.searching_sub}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-7">
@@ -234,7 +354,7 @@ function BookingContent() {
                     }`}
                   >
                     <Zap className={`w-4 h-4 flex-shrink-0 ${mode === 'instant' ? 'text-yellow-500' : 'text-gray-400'}`} />
-                    Demande instantanee
+                    {txt.tab_instant}
                   </button>
                   <button
                     type="button"
@@ -246,15 +366,13 @@ function BookingContent() {
                     }`}
                   >
                     <Calendar className={`w-4 h-4 flex-shrink-0 ${mode === 'booking' ? 'text-[#1558f5]' : 'text-gray-400'}`} />
-                    Reservation
+                    {txt.tab_book}
                   </button>
                 </div>
 
                 <div>
                   <p className="text-[13px] text-gray-400">
-                    {isBookingMode
-                      ? "Choisissez une date et un creneau - on vous envoie un washer a l'heure prevue."
-                      : "Aucun compte requis - votre profil est cree automatiquement"}
+                    {isBookingMode ? txt.desc_booking : txt.desc_instant}
                   </p>
                 </div>
 
@@ -267,7 +385,7 @@ function BookingContent() {
 
                 {/* 1. Adresse */}
                 <section>
-                  <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">1 · Votre adresse</h2>
+                  <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">{txt.s1_title}</h2>
                   <div className="relative">
                     <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
@@ -275,26 +393,26 @@ function BookingContent() {
                       type="text"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Ex : Cocody, Abidjan"
+                      placeholder={txt.addr_placeholder}
                       required
                       className="input-field pl-10 text-[14px]"
                     />
                   </div>
-                  <p className="text-[12px] text-gray-400 mt-1.5">Deplacez le pin sur la carte si besoin</p>
+                  <p className="text-[12px] text-gray-400 mt-1.5">{txt.addr_hint}</p>
                 </section>
 
                 {/* 2. Type de vehicule */}
                 <section>
-                  <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">2 · Type de vehicule</h2>
+                  <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">{txt.s2_title}</h2>
                   <div className="grid grid-cols-2 gap-3">
-                    {VEHICLE_TYPES.map(({ key, label, desc, surcharge: s }) => (
+                    {VEHICLE_TYPES.map(({ key, surcharge: s }) => (
                       <button key={key} type="button" onClick={() => setVehicleType(key as any)}
                         className={`text-left p-3.5 rounded-xl border-2 transition-all ${
                           vehicleType === key ? 'border-[#1558f5] bg-blue-50' : 'border-gray-200 hover:border-blue-200'
                         }`}>
                         <Car className="w-4 h-4 mb-2 text-gray-600" />
-                        <p className="text-[13px] font-semibold text-gray-900">{label}</p>
-                        <p className="text-[11px] text-gray-400">{desc}</p>
+                        <p className="text-[13px] font-semibold text-gray-900">{vehicleLabels[key]}</p>
+                        <p className="text-[11px] text-gray-400">{key === 'standard' ? txt.vt_std_desc : txt.vt_lg_desc}</p>
                         {s > 0 && <p className="text-[11px] font-semibold text-[#1558f5] mt-1">+{s} FCFA</p>}
                       </button>
                     ))}
@@ -303,9 +421,9 @@ function BookingContent() {
 
                 {/* 3. Type de lavage */}
                 <section>
-                  <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">3 · Type de lavage</h2>
+                  <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">{txt.s3_title}</h2>
                   <div className="space-y-2.5">
-                    {SERVICES.map(({ key, label, basePrice, icon, desc }) => (
+                    {SERVICES.map(({ key, basePrice, icon }) => (
                       <button key={key} type="button" onClick={() => setService(key as any)}
                         className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
                           service === key ? 'border-[#1558f5] bg-blue-50' : 'border-gray-200 hover:border-blue-200'
@@ -313,8 +431,10 @@ function BookingContent() {
                         <div className="flex items-center gap-3">
                           <span className="text-xl">{icon}</span>
                           <div className="text-left">
-                            <p className="text-[14px] font-semibold text-gray-900">{label}</p>
-                            <p className="text-[12px] text-gray-400">{desc}</p>
+                            <p className="text-[14px] font-semibold text-gray-900">{serviceLabels[key]}</p>
+                            <p className="text-[12px] text-gray-400">
+                              {key === 'EXTERIOR' ? txt.service_ext_desc : key === 'INTERIOR' ? txt.service_int_desc : txt.service_full_desc}
+                            </p>
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0">
@@ -329,10 +449,10 @@ function BookingContent() {
                 {/* 4. Date + heure (booking seulement) */}
                 {isBookingMode && (
                   <section>
-                    <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">4 · Date et heure</h2>
+                    <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">{txt.s4_datetime}</h2>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[12px] text-gray-500 mb-1.5">Date</label>
+                        <label className="block text-[12px] text-gray-500 mb-1.5">{txt.label_date}</label>
                         <div className="relative">
                           <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                           <input type="date" required={isBookingMode}
@@ -342,7 +462,7 @@ function BookingContent() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-[12px] text-gray-500 mb-1.5">Heure</label>
+                        <label className="block text-[12px] text-gray-500 mb-1.5">{txt.label_time}</label>
                         <div className="relative">
                           <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                           <input type="time" required={isBookingMode}
@@ -357,7 +477,7 @@ function BookingContent() {
                 {/* 4/5. Vos infos */}
                 <section>
                   <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">
-                    {isBookingMode ? '5' : '4'} · Vos informations
+                    {isBookingMode ? txt.s_info_booking : txt.s_info_instant}
                   </h2>
                   {isAuthenticated ? (
                     <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -374,7 +494,7 @@ function BookingContent() {
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-[12px] text-gray-500 mb-1.5">Prenom <span className="text-gray-300">(optionnel)</span></label>
+                          <label className="block text-[12px] text-gray-500 mb-1.5">{txt.label_firstname} <span className="text-gray-300">{txt.optional}</span></label>
                           <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <input type="text" value={name} onChange={(e) => setName(e.target.value)}
@@ -382,7 +502,7 @@ function BookingContent() {
                           </div>
                         </div>
                         <div>
-                          <label className="block text-[12px] text-gray-500 mb-1.5">Telephone <span className="text-red-400">*</span></label>
+                          <label className="block text-[12px] text-gray-500 mb-1.5">{txt.label_phone} <span className="text-red-400">*</span></label>
                           <div className="relative">
                             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
@@ -391,7 +511,7 @@ function BookingContent() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-[12px] text-gray-500 mb-1.5">Email <span className="text-gray-300">(optionnel)</span></label>
+                        <label className="block text-[12px] text-gray-500 mb-1.5">{txt.label_email} <span className="text-gray-300">{txt.optional}</span></label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
@@ -399,16 +519,16 @@ function BookingContent() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-[12px] text-gray-500 mb-1.5">Mot de passe <span className="text-gray-300">(optionnel)</span></label>
+                        <label className="block text-[12px] text-gray-500 mb-1.5">{txt.label_password} <span className="text-gray-300">{txt.optional}</span></label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Pour retrouver votre compte" className="input-field pl-9 text-[13px]" />
+                            placeholder={txt.placeholder_password} className="input-field pl-9 text-[13px]" />
                         </div>
                       </div>
                       <p className="text-[12px] text-gray-400">
-                        Deja un compte ?{' '}
-                        <Link href="/login?redirect=/booking" className="text-[#1558f5] font-semibold">Se connecter</Link>
+                        {txt.already_account}{' '}
+                        <Link href="/login?redirect=/booking" className="text-[#1558f5] font-semibold">{txt.sign_in}</Link>
                       </p>
                     </div>
                   )}
@@ -417,22 +537,22 @@ function BookingContent() {
                 {/* 5/6. Paiement */}
                 <section>
                   <h2 className="text-[13px] font-bold text-gray-500 uppercase tracking-wide mb-3">
-                    {isBookingMode ? '6' : '5'} · Paiement
+                    {isBookingMode ? txt.s_pay_booking : txt.s_pay_instant}
                   </h2>
                   <div className="grid grid-cols-2 gap-3">
                     <button type="button" onClick={() => setPaymentMethod('WAVE_MONEY')}
                       className={`p-3.5 rounded-xl border-2 text-center transition-all ${
                         paymentMethod === 'WAVE_MONEY' ? 'border-[#00b9f5] bg-blue-50' : 'border-gray-200'
                       }`}>
-                      <p className="text-[13px] font-bold text-gray-900">Wave Money</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Paiement apres la prestation</p>
+                      <p className="text-[13px] font-bold text-gray-900">{txt.wave}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">{txt.wave_sub}</p>
                     </button>
                     <button type="button" onClick={() => setPaymentMethod('CASH')}
                       className={`p-3.5 rounded-xl border-2 text-center transition-all ${
                         paymentMethod === 'CASH' ? 'border-green-500 bg-green-50' : 'border-gray-200'
                       }`}>
-                      <p className="text-[13px] font-bold text-gray-900">Especes</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Directement au washer</p>
+                      <p className="text-[13px] font-bold text-gray-900">{txt.cash}</p>
+                      <p className="text-[11px] text-gray-400 mt-0.5">{txt.cash_sub}</p>
                     </button>
                   </div>
                 </section>
@@ -441,13 +561,13 @@ function BookingContent() {
                 <div className="sticky bottom-0 bg-white pt-4 pb-2 -mx-8 px-8 border-t border-gray-100">
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="text-[13px] text-gray-500">{currentService.label} · {VEHICLE_TYPES.find(v => v.key === vehicleType)!.label}</p>
+                      <p className="text-[13px] text-gray-500">{serviceLabels[service]} · {vehicleLabels[vehicleType]}</p>
                       <p className="text-[22px] font-extrabold text-gray-900">{totalPrice.toLocaleString()} <span className="text-[14px] font-medium text-gray-400">FCFA</span></p>
                     </div>
                     <button type="submit" disabled={loading || !address || !phone}
                       className="btn-primary px-8 py-4 text-[15px] flex items-center gap-2 disabled:opacity-50">
-                      {loading ? 'En cours...' : (
-                        <>{isBookingMode ? 'Reserver' : 'Commander'}<ArrowRight className="w-4 h-4" /></>
+                      {loading ? txt.btn_loading : (
+                        <>{isBookingMode ? txt.btn_book : txt.btn_order}<ArrowRight className="w-4 h-4" /></>
                       )}
                     </button>
                   </div>
@@ -464,12 +584,12 @@ function BookingContent() {
             <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-[#1558f5] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                <p className="text-[13px] text-gray-400">Chargement de la carte</p>
+                <p className="text-[13px] text-gray-400">{txt.map_loading}</p>
               </div>
             </div>
           )}
           <div className="absolute top-4 right-4 bg-white rounded-xl shadow-md px-3 py-2 text-[12px] text-gray-600 font-medium">
-            Deplacez le pin pour ajuster
+            {txt.map_hint}
           </div>
         </div>
       </div>

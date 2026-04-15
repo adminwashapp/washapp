@@ -7,12 +7,14 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Phone, Mail, ArrowRight } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store';
+import { useLang } from '@/contexts/lang';
 
 type LoginMode = 'phone' | 'email';
 
 export default function LoginPage() {
   const router = useRouter();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const { lang } = useLang();
   const [mode, setMode] = useState<LoginMode>('phone');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -20,6 +22,53 @@ export default function LoginPage() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const txt = {
+    fr: {
+      title: 'Bon retour !',
+      subtitle: 'Connectez-vous a votre compte client',
+      demo_btn: 'Acceder au compte demo (sans backend)',
+      google_btn: 'Continuer avec Google',
+      or: 'ou',
+      tab_phone: 'Telephone',
+      tab_email: 'Email',
+      label_phone: 'Numero de telephone',
+      label_email: 'Adresse email',
+      label_password: 'Mot de passe',
+      forgot: 'Mot de passe oublie ?',
+      submit_loading: 'Connexion...',
+      submit: 'Se connecter',
+      no_account: 'Pas encore de compte ?',
+      register: 'Creer un compte',
+      no_account_order: 'Vous voulez commander sans compte ?',
+      order_direct: 'Commander directement',
+      badge_city: 'Service disponible a Abidjan',
+      badge_sub: 'Washers professionnels · 7j/7',
+      err_invalid: 'Identifiants invalides',
+    },
+    en: {
+      title: 'Welcome back!',
+      subtitle: 'Sign in to your client account',
+      demo_btn: 'Access demo account (no backend)',
+      google_btn: 'Continue with Google',
+      or: 'or',
+      tab_phone: 'Phone',
+      tab_email: 'Email',
+      label_phone: 'Phone number',
+      label_email: 'Email address',
+      label_password: 'Password',
+      forgot: 'Forgot password?',
+      submit_loading: 'Signing in...',
+      submit: 'Sign in',
+      no_account: 'No account yet?',
+      register: 'Create an account',
+      no_account_order: 'Want to order without an account?',
+      order_direct: 'Order directly',
+      badge_city: 'Service available in Abidjan',
+      badge_sub: 'Professional washers · 7 days/week',
+      err_invalid: 'Invalid credentials',
+    },
+  }[lang];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +82,7 @@ export default function LoginPage() {
       const params = new URLSearchParams(window.location.search);
       router.push(params.get('redirect') || '/booking');
     } catch (e: any) {
-      setError(e.response?.data?.message || 'Identifiants invalides');
+      setError(e.response?.data?.message || txt.err_invalid);
     } finally {
       setLoading(false);
     }
@@ -61,17 +110,17 @@ export default function LoginPage() {
 
         <div className="max-w-[400px] w-full">
           <h1 className="text-[2rem] font-bold text-gray-900 mb-2 leading-tight">
-            Bon retour !
+            {txt.title}
           </h1>
           <p className="text-gray-400 text-[15px] mb-8">
-            Connectez-vous a votre compte client
+            {txt.subtitle}
           </p>
 
           {/* Bouton demo */}
           <button
             onClick={handleDemo}
             className="w-full flex items-center justify-center gap-3 bg-blue-50 border border-blue-200 rounded-2xl py-3.5 text-[15px] font-semibold text-[#1558f5] hover:bg-blue-100 transition-colors mb-3">
-            Acceder au compte demo (sans backend)
+            {txt.demo_btn}
           </button>
 
           {/* Google */}
@@ -84,13 +133,13 @@ export default function LoginPage() {
               <path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.826.957 4.039l3.007-2.332z" fill="#FBBC05"/>
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
             </svg>
-            Continuer avec Google
+            {txt.google_btn}
           </button>
 
           {/* Separateur */}
           <div className="flex items-center gap-4 my-5">
             <div className="flex-1 h-px bg-gray-100" />
-            <span className="text-[13px] text-gray-400 font-medium">ou</span>
+            <span className="text-[13px] text-gray-400 font-medium">{txt.or}</span>
             <div className="flex-1 h-px bg-gray-100" />
           </div>
 
@@ -104,7 +153,7 @@ export default function LoginPage() {
                   mode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}>
                 {m === 'phone' ? <Phone className="w-3.5 h-3.5" /> : <Mail className="w-3.5 h-3.5" />}
-                {m === 'phone' ? 'Telephone' : 'Email'}
+                {m === 'phone' ? txt.tab_phone : txt.tab_email}
               </button>
             ))}
           </div>
@@ -120,7 +169,7 @@ export default function LoginPage() {
             {mode === 'phone' ? (
               <div>
                 <label className="block text-[13px] font-medium text-gray-600 mb-1.5">
-                  Numero de telephone
+                  {txt.label_phone}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -137,7 +186,7 @@ export default function LoginPage() {
             ) : (
               <div>
                 <label className="block text-[13px] font-medium text-gray-600 mb-1.5">
-                  Adresse email
+                  {txt.label_email}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -154,15 +203,16 @@ export default function LoginPage() {
             )}
 
             <div>
-            <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-[13px] font-medium text-gray-600">
-                  Mot de passe
+                  {txt.label_password}
                 </label>
                 <a href="/forgot-password" className="text-xs text-blue-600 hover:underline font-semibold">
-                  Mot de passe oublié ?
+                  {txt.forgot}
                 </a>
               </div>
+              <div className="relative">
+                <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -183,23 +233,23 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               className="btn-primary w-full text-[15px] py-4 mt-2 flex items-center justify-center gap-2">
-              {loading ? 'Connexion...' : (
-                <>Se connecter <ArrowRight className="w-4 h-4" /></>
+              {loading ? txt.submit_loading : (
+                <>{txt.submit} <ArrowRight className="w-4 h-4" /></>
               )}
             </button>
           </form>
 
           <p className="text-center text-[13px] text-gray-400 mt-6">
-            Pas encore de compte ?{' '}
+            {txt.no_account}{' '}
             <Link href="/register" className="text-[#1558f5] font-semibold hover:underline">
-              Creer un compte
+              {txt.register}
             </Link>
           </p>
 
           <p className="text-center text-[13px] text-gray-400 mt-3">
-            Vous voulez commander sans compte ?{' '}
+            {txt.no_account_order}{' '}
             <Link href="/booking" className="text-[#1558f5] font-semibold hover:underline">
-              Commander directement
+              {txt.order_direct}
             </Link>
           </p>
         </div>
@@ -218,8 +268,8 @@ export default function LoginPage() {
           style={{ background: 'linear-gradient(to bottom, rgba(10,20,60,0.18) 0%, rgba(10,20,60,0.08) 60%, transparent 100%)' }}
         />
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-xl text-center">
-          <p className="text-[13px] font-bold text-gray-900 mb-0.5">Service disponible a Abidjan</p>
-          <p className="text-[12px] text-gray-400">Washers professionnels · 7j/7</p>
+          <p className="text-[13px] font-bold text-gray-900 mb-0.5">{txt.badge_city}</p>
+          <p className="text-[12px] text-gray-400">{txt.badge_sub}</p>
         </div>
       </div>
     </div>

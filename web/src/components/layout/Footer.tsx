@@ -1,7 +1,69 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLang } from '@/contexts/lang';
 
 export default function Footer() {
+  const { lang } = useLang();
+
+  const txt = {
+    fr: {
+      tagline: 'Le lavage auto à domicile à Abidjan. Simple, rapide, professionnel.',
+      badges: ["Côte d'Ivoire", 'OHADA', 'Données protégées'],
+      nav_title: 'Navigation',
+      nav: [
+        { href: '/concept',        label: 'Concept' },
+        { href: '/tarifs',         label: 'Tarifs' },
+        { href: '/devenir-washer', label: 'Devenir washer' },
+        { href: '/faq',            label: 'FAQ' },
+        { href: '/booking',        label: 'Réserver un lavage' },
+      ],
+      legal_title: 'Documents légaux',
+      legal: [
+        { href: '/legal#mentions-legales',        label: 'Mentions légales' },
+        { href: '/legal#cgu-clients',             label: 'CGU – Clients' },
+        { href: '/legal#cgu-washers',             label: 'CGU – Washers' },
+        { href: '/politique-de-confidentialite',  label: 'Politique de confidentialité' },
+        { href: '/legal#politique-cookies',       label: 'Politique cookies' },
+      ],
+      copyright: '© 2026 Washapp — Société en cours de constitution · Cocody, Abidjan',
+      bottom_legal: [
+        { href: '/legal#mentions-legales',        label: 'Mentions légales' },
+        { href: '/legal#cgu-clients',             label: 'CGU' },
+        { href: '/politique-de-confidentialite',  label: 'Confidentialité' },
+        { href: '/legal#politique-cookies',       label: 'Cookies' },
+      ],
+    },
+    en: {
+      tagline: 'At-home car wash in Abidjan. Simple, fast, professional.',
+      badges: ["Côte d'Ivoire", 'OHADA', 'Data protected'],
+      nav_title: 'Navigation',
+      nav: [
+        { href: '/concept',        label: 'How it works' },
+        { href: '/tarifs',         label: 'Pricing' },
+        { href: '/devenir-washer', label: 'Become a washer' },
+        { href: '/faq',            label: 'FAQ' },
+        { href: '/booking',        label: 'Book a wash' },
+      ],
+      legal_title: 'Legal documents',
+      legal: [
+        { href: '/legal#mentions-legales',        label: 'Legal notices' },
+        { href: '/legal#cgu-clients',             label: 'Terms – Clients' },
+        { href: '/legal#cgu-washers',             label: 'Terms – Washers' },
+        { href: '/politique-de-confidentialite',  label: 'Privacy policy' },
+        { href: '/legal#politique-cookies',       label: 'Cookie policy' },
+      ],
+      copyright: '© 2026 Washapp — Company being incorporated · Cocody, Abidjan',
+      bottom_legal: [
+        { href: '/legal#mentions-legales',        label: 'Legal notices' },
+        { href: '/legal#cgu-clients',             label: 'Terms' },
+        { href: '/politique-de-confidentialite',  label: 'Privacy' },
+        { href: '/legal#politique-cookies',       label: 'Cookies' },
+      ],
+    },
+  }[lang];
+
   return (
     <footer
       className="relative overflow-hidden"
@@ -20,10 +82,10 @@ export default function Footer() {
               <span className="text-[17px] font-extrabold text-white tracking-tight">Washapp</span>
             </Link>
             <p className="text-[13.5px] text-white/50 leading-relaxed max-w-[230px] mb-6">
-              Le lavage auto à domicile à Abidjan. Simple, rapide, professionnel.
+              {txt.tagline}
             </p>
             <div className="flex flex-wrap gap-2">
-              {["Côte d\'Ivoire", 'OHADA', 'Données protégées'].map((b) => (
+              {txt.badges.map((b) => (
                 <span key={b} className="text-[11px] font-semibold text-white/60 px-3 py-1 rounded-full"
                   style={{ border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(255,255,255,0.06)' }}>{b}</span>
               ))}
@@ -31,15 +93,9 @@ export default function Footer() {
           </div>
           <div>
             <h4 className="text-[11px] font-bold tracking-[1.2px] uppercase text-white mb-5 pb-3"
-              style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>Navigation</h4>
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>{txt.nav_title}</h4>
             <ul className="flex flex-col gap-3">
-              {[
-                { href: '/concept',        label: 'Concept' },
-                { href: '/tarifs',         label: 'Tarifs' },
-                { href: '/devenir-washer', label: 'Devenir washer' },
-                { href: '/faq',            label: 'FAQ' },
-                { href: '/booking',        label: 'Réserver un lavage' },
-              ].map(({ href, label }) => (
+              {txt.nav.map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-[13.5px] text-white/55 hover:text-white transition-colors duration-200 flex items-center gap-2 group">
                     <span className="text-white/20 group-hover:text-[#5b9fff] transition-colors text-[10px]">›</span>
@@ -51,15 +107,9 @@ export default function Footer() {
           </div>
           <div>
             <h4 className="text-[11px] font-bold tracking-[1.2px] uppercase text-white mb-5 pb-3"
-              style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>Documents légaux</h4>
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>{txt.legal_title}</h4>
             <ul className="flex flex-col gap-3">
-              {[
-                { href: '/legal#mentions-legales',          label: 'Mentions légales' },
-                { href: '/legal#cgu-clients',               label: 'CGU – Clients' },
-                { href: '/legal#cgu-washers',               label: 'CGU – Washers' },
-                { href: '/politique-de-confidentialite', label: 'Politique de confidentialité' },
-                { href: '/legal#politique-cookies',         label: 'Politique cookies' },
-              ].map(({ href, label }) => (
+              {txt.legal.map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-[13.5px] text-white/55 hover:text-white transition-colors duration-200 flex items-center gap-2 group">
                     <span className="text-white/20 group-hover:text-[#5b9fff] transition-colors text-[10px]">›</span>
@@ -71,14 +121,9 @@ export default function Footer() {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-5">
-          <p className="text-[12px] text-white/30">© 2026 Washapp — Société en cours de constitution · Cocody, Abidjan</p>
+          <p className="text-[12px] text-white/30">{txt.copyright}</p>
           <div className="flex flex-wrap items-center gap-5">
-            {[
-              { href: '/legal#mentions-legales',          label: 'Mentions légales' },
-              { href: '/legal#cgu-clients',               label: 'CGU' },
-              { href: '/politique-de-confidentialite', label: 'Confidentialité' },
-              { href: '/legal#politique-cookies',         label: 'Cookies' },
-            ].map(({ href, label }) => (
+            {txt.bottom_legal.map(({ href, label }) => (
               <Link key={href} href={href} className="text-[11.5px] text-white/30 hover:text-white/70 transition-colors">{label}</Link>
             ))}
           </div>

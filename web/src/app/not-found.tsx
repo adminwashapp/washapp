@@ -2,10 +2,29 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useLang } from '@/contexts/lang';
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  const { lang } = useLang();
+
+  const txt = {
+    fr: {
+      title: 'Page introuvable',
+      sub: "La page que vous recherchez n'existe pas ou a été déplacée. Revenez à l'accueil pour continuer.",
+      home: "Retour à l'accueil",
+      book: 'Réserver un lavage',
+      tagline: 'Washapp — Lavage auto à domicile à Abidjan',
+    },
+    en: {
+      title: 'Page not found',
+      sub: "The page you are looking for doesn't exist or has been moved. Head back home to continue.",
+      home: 'Back to home',
+      book: 'Book a wash',
+      tagline: 'Washapp — At-home car wash in Abidjan',
+    },
+  }[lang];
 
   return (
     <div className="min-h-screen bg-[#040c24] flex flex-col items-center justify-center px-6 text-white">
@@ -31,10 +50,9 @@ export default function NotFound() {
       </div>
 
       {/* Message */}
-      <h1 className="text-2xl font-semibold mb-3 text-center">Page introuvable</h1>
+      <h1 className="text-2xl font-semibold mb-3 text-center">{txt.title}</h1>
       <p className="text-gray-400 text-center max-w-md mb-10 leading-relaxed">
-        La page que vous recherchez n&apos;existe pas ou a été déplacée.
-        Revenez à l&apos;accueil pour continuer.
+        {txt.sub}
       </p>
 
       {/* CTA */}
@@ -43,19 +61,19 @@ export default function NotFound() {
           href="/"
           className="px-8 py-3 bg-[#1558f5] text-white rounded-xl font-semibold text-center hover:bg-blue-600 transition-colors"
         >
-          Retour à l&apos;accueil
+          {txt.home}
         </Link>
         <Link
           href="/booking"
           className="px-8 py-3 border border-white/20 text-white rounded-xl font-semibold text-center hover:bg-white/10 transition-colors"
         >
-          Réserver un lavage
+          {txt.book}
         </Link>
       </div>
 
       {/* Bottom hint */}
       <p className="mt-12 text-xs text-gray-600 text-center">
-        Washapp &mdash; Lavage auto à domicile à Abidjan
+        {txt.tagline}
       </p>
     </div>
   );

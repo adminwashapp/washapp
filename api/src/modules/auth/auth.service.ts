@@ -225,5 +225,60 @@ export class AuthService {
         role: user.role,
       },
     };
+  // ── Washer OTP Login ─────────────────────────────────────────────────────
+  async washerRequestOtp(email: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { email, role: 'WASHER' },
+      include: { washerProfile: true },
+    });
+    if (!user) throw new BadRequestException('Aucun compte washer trouve pour cet email');
+    if (!user.washerProfile?.isApproved) throw new BadRequestException('Votre compte nest pas encore approuve par ladmin');
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
+    await this.prisma.user.update({ where: { id: user.id }, data: { otpCode: code, otpExpiry: expiry } });
+    await this.sendOtpEmail(user.email!, user.name, code);
+    return { message: 'Code envoye sur votre email' };
+  }
+
+  async washerVerifyOtp(email: string, code: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { email, role: 'WASHER' },
+      include: { washerProfile: true },
+    });
+    if (!user || !user.otpCode || !user.otpExpiry) throw new UnauthorizedException('Code invalide');
+    if (user.otpCode !== code) throw new UnauthorizedException('Code incorrect');
+    if (new Date() > user.otpExpiry) throw new UnauthorizedException('Code expire');
+
+    await this.prisma.user.update({ where: { id: user.id }, data: { otpCode: null, otpExpiry: null } });
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwt.signAsync({ sub: user.id, role: user.role }, { secret: process.env.JWT_SECRET, expiresIn: '15m' }),
+      this.jwt.signAsync({ sub: user.id }, { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' }),
+    ]);
+    return { accessToken, refreshToken, user: { id: user.id, name: user.name, email: user.email, role: user.role, washerProfile: user.washerProfile } };
+  }
+
+  private async sendOtpEmail(email: string, name: string, code: string) {
+    const nodemailer = require('nodemailer');
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: false,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    });
+    await transporter.sendMail({
+      from: `"Washapp" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Votre code de connexion Washapp',
+      html: `<div style="font-family:sans-serif;max-width:400px;margin:auto;padding:32px;background:#f9fafb;border-radius:16px">
+        <h2 style="color:#1558f5">Washapp</h2>
+        <p>Bonjour ${name},</p>
+        <p>Votre code de connexion :</p>
+        <div style="font-size:36px;font-weight:bold;letter-spacing:8px;color:#1558f5;text-align:center;padding:16px;background:#fff;border-radius:12px;margin:16px 0">${code}</div>
+        <p style="color:#666;font-size:12px">Ce code expire dans 10 minutes.</p>
+      </div>`,
+    });
   }
 }

@@ -1,57 +1,43 @@
 {
-    "expo":  {
-                 "name":  "Washapp",
-                 "slug":  "washapp-client",
-                 "version":  "1.0.0",
-                 "sdkVersion":  "54.0.0",
-                 "orientation":  "portrait",
-                 "scheme":  "washapp",
-                 "userInterfaceStyle":  "automatic",
-                 "splash":  {
-                                "image":  "./assets/images/manphone.png",
-                                "resizeMode":  "cover",
-                                "backgroundColor":  "#040c24"
-                            },
-                 "ios":  {
-                             "supportsTablet":  false,
-                             "bundleIdentifier":  "com.washapp.client",
-                             "infoPlist":  {
-                                               "NSLocationWhenInUseUsageDescription":  "Washapp a besoin de votre localisation.",
-                                               "NSCameraUsageDescription":  "Washapp utilise la camera pour les photos."
-                                           },
-                             "config":  {
-                                            "googleMapsApiKey":  "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk"
-                                        }
-                         },
-                 "android":  {
-                                 "package":  "com.washapp.client",
-                                 "permissions":  [
-                                                     "ACCESS_COARSE_LOCATION",
-                                                     "ACCESS_FINE_LOCATION",
-                                                     "CAMERA"
-                                                 ],
-                                 "config":  {
-                                                "googleMaps":  {
-                                                                   "apiKey":  "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk"
-                                                               }
-                                            }
-                             },
-                 "web":  {
-                             "bundler":  "metro",
-                             "output":  "static"
-                         },
-                 "plugins":  [
-                                 "expo-router","expo-location","expo-camera",["expo-notifications",{"icon":"./assets/images/icon.png","color":"#1558f5","sounds":[],"mode":"production"}]
-                             ],
-                 "experiments":  {
-                                     "typedRoutes":  true
-                                 },
-                 "extra":  {
-                               "apiUrl":  "https://washapp-api.onrender.com/api",
-                               "wsUrl":  "http://localhost:3001",
-                               "eas":  {
-                                           "projectId":  "your-eas-project-id"
-                                       }
-                           }
-             }
+  "expo": {
+    "name": "Washapp",
+    "slug": "washapp-client",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "scheme": "washapp",
+    "userInterfaceStyle": "automatic",
+    "splash": { "image": "./assets/images/manphone.png", "resizeMode": "cover", "backgroundColor": "#040c24" },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.washapp.client",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Washapp a besoin de votre localisation.",
+        "NSCameraUsageDescription": "Washapp utilise la camera pour les photos."
+      },
+      "config": { "googleMapsApiKey": "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk" }
+    },
+    "android": {
+      "package": "com.washapp.client",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","CAMERA",
+        "android.permission.ACCESS_COARSE_LOCATION","android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA","android.permission.RECORD_AUDIO"
+      ],
+      "config": { "googleMaps": { "apiKey": "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk" } }
+    },
+    "web": { "bundler": "metro", "output": "static" },
+    "plugins": [
+      "expo-router","expo-location","expo-camera",
+      ["expo-notifications",{"icon":"./assets/images/icon.png","color":"#1558f5","sounds":[],"mode":"production"}]
+    ],
+    "experiments": { "typedRoutes": true },
+    "extra": {
+      "apiUrl": "https://washapp-api.onrender.com/api",
+      "wsUrl": "http://localhost:3001",
+      "eas": { "projectId": "5de62954-4d03-4489-a65d-331d9c3b8895" },
+      "router": {}
+    },
+    "owner": "lohrans"
+  }
 }

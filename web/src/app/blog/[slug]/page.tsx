@@ -1,5 +1,3 @@
-'use client';
-import { useState } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Clock, Calendar, ArrowRight, ChevronDown } from 'lucide-react';

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   RefreshControl, ActivityIndicator, Alert,
@@ -47,7 +47,7 @@ export default function WalletScreen() {
           text: "Confirmer",
           onPress: async () => {
             try {
-              await walletApi.withdraw(wallet.balance, wallet.waveMoneyNumber ?? """);
+              await walletApi.withdraw(wallet.balance, wallet.waveMoneyNumber ?? "");
               Alert.alert("Demande envoyee", "Votre retrait a ete enregistre.");
               load();
             } catch {

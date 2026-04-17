@@ -20,7 +20,7 @@
         "NSCameraUsageDescription": "Washapp Washer utilise la camera."
       },
       "config": {
-        "googleMapsApiKey": "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk"
+        "googleMapsApiKey": "AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI"
       }
     },
     "android": {
@@ -36,7 +36,7 @@
       ],
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk"
+          "apiKey": "AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI"
         }
       }
     },

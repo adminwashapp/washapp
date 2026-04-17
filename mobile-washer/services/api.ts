@@ -56,6 +56,7 @@ export const washerApi = {
   cancelReservation: (id: string) => api.post(`/washers/reservations/${id}/cancel`),
   updateFcmToken: (fcmToken: string) => api.post('/washers/fcm-token', { fcmToken }),
   confirmWavePayment: (missionId: string) => api.post('/payments/wave/' + missionId + '/confirm-washer'),
+  getStatsToday: () => api.get('/washers/stats/today'),
 };
 
 export const walletApi = {

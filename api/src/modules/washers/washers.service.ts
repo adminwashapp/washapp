@@ -73,6 +73,37 @@ export class WashersService {
     };
   }
 
+
+  async getStatsToday(washerProfileId: string) {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const [missions, earnings] = await Promise.all([
+      this.prisma.mission.count({
+        where: {
+          washerId: washerProfileId,
+          status: 'COMPLETED',
+          completedAt: { gte: todayStart, lte: todayEnd },
+        },
+      }),
+      this.prisma.ledgerEntry.aggregate({
+        where: {
+          washerId: washerProfileId,
+          type: 'RELEASE_TO_WASHER',
+          status: 'COMPLETED',
+          createdAt: { gte: todayStart, lte: todayEnd },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
+
+    return {
+      todayMissions: missions,
+      todayEarnings: earnings._sum.amount || 0,
+    };
+  }
   async uploadMissionPhoto(
     missionId: string,
     washerProfileId: string,

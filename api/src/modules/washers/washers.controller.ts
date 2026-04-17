@@ -37,6 +37,11 @@ export class WashersController {
     return this.washersService.getReservations(user.washerProfile.id);
   }
 
+
+  @Get('stats/today')
+  getStatsToday(@Req() req: any) {
+    return this.washersService.getStatsToday(req.user.washerProfileId);
+  }
   @Get('earnings')
   getEarnings(@CurrentUser() user: any) {
     return this.washersService.getEarnings(user.washerProfile.id);

@@ -68,6 +68,7 @@ export default function MapScreen() {
   const [countdown, setCountdown]  = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [missionTimer, setMissionTimer] = useState<number>(0);
+  const [stats, setStats] = useState<{ todayMissions: number; todayEarnings: number }>({ todayMissions: 0, todayEarnings: 0 });
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Continuous GPS tracking
@@ -316,6 +317,19 @@ export default function MapScreen() {
         </View>
       )}
 
+      {/* EARNINGS WIDGET - style Uber */}
+      <View style={styles.earningsBar}>
+        <View style={styles.earningsItem}>
+          <Text style={styles.earningsValue}>{stats.todayEarnings.toLocaleString('fr-FR')} F</Text>
+          <Text style={styles.earningsLabel}>CA du jour</Text>
+        </View>
+        <View style={styles.earningsDivider} />
+        <View style={styles.earningsItem}>
+          <Text style={styles.earningsValue}>{stats.todayMissions}</Text>
+          <Text style={styles.earningsLabel}>{stats.todayMissions <= 1 ? 'course' : 'courses'}</Text>
+        </View>
+      </View>
+
       {/* FREE STATE MESSAGE */}
       {mapState === "ONLINE_FREE" && (
         <View style={styles.freeMsg}>
@@ -548,6 +562,49 @@ const styles = StyleSheet.create({
   },
   onlineBtnText: { color: "#fff", fontWeight: "800", fontSize: 16 },
 
+  earningsBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    paddingTop: 110,
+    paddingHorizontal: 16,
+  },
+  earningsItem: {
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  earningsValue: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0f172a',
+  },
+  earningsLabel: {
+    fontSize: 11,
+    color: '#64748b',
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  earningsDivider: {
+    width: 1,
+    height: 28,
+    backgroundColor: '#e2e8f0',
+  },
+  earningsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
   freeMsg: {
     position: "absolute", bottom: 130, left: 20, right: 20,
     backgroundColor: "#fff", borderRadius: 16, padding: 14,

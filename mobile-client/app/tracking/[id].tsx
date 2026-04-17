@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, ActivityIndicator, Animated, Linking, Image, Platform, Dimensions,
@@ -11,7 +11,7 @@ import { missionsApi } from "../../services/api";
 import { connectSocket } from "../../services/socket";
 
 const { height: SCREEN_H } = Dimensions.get("window");
-const GOOGLE_KEY = "AIzaSyCeTFxCeQDH9m6lhWNl0OIyFGPZo5iFxCk";
+const GOOGLE_KEY = "AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI";
 const IS_EXPO_GO = Constants.appOwnership === "expo";
 
 function decodePolyline(encoded: string): { latitude: number; longitude: number }[] {
@@ -263,7 +263,7 @@ export default function TrackingScreen() {
         >
           <Marker coordinate={{ latitude: destLat, longitude: destLng }} title="Votre adresse" pinColor="#1558f5" />
           {washerLoc && (
-            <Marker coordinate={{ latitude: washerLoc.lat, longitude: washerLoc.lng }} title="Votre washer" anchor={{ x: 0.5, y: 0.5 }}>
+            <Marker coordinate={{ latitude: washerLoc.lat, longitude: washerLoc.lng }} title="Votre washer" anchor={{ x: 0.5, y: 0.5 }} tracksViewChanges={false}>
               <View style={styles.washerMarker}>
                 <Text style={styles.washerMarkerEmoji}>{"\uD83D\uDEF5"}</Text>
               </View>

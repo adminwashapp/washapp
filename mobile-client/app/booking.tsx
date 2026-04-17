@@ -1,10 +1,11 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   TextInput, KeyboardAvoidingView, Platform, Alert, ActivityIndicator,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Location from 'expo-location';
 import { useAuthStore } from '../store';
 import { useBookingStore } from '../store';
 import { missionsApi, clientsApi } from '../services/api';
@@ -36,6 +37,8 @@ export default function BookingScreen() {
 
   const [step, setStep] = useState(0);
   const [addressText, setAddressText] = useState(address || '');
+  const [geoLoading, setGeoLoading] = useState(false);
+  const [geoCoords, setGeoCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [payMethod, setPayMethod] = useState<'WAVE_MONEY' | 'CASH'>('WAVE_MONEY');
   const [vehicles, setVehicles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -48,9 +51,36 @@ export default function BookingScreen() {
     clientsApi.getVehicles().then((r) => setVehicles(r.data || [])).catch(() => {});
   }, []);
 
+  const handleUseLocation = async () => {
+    setGeoLoading(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission refusee', 'Autorisez la localisation dans les parametres de votre telephone.');
+        return;
+      }
+      const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+      const { latitude, longitude } = pos.coords;
+      setGeoCoords({ lat: latitude, lng: longitude });
+
+      const [geo] = await Location.reverseGeocodeAsync({ latitude, longitude });
+      if (geo) {
+        const parts = [geo.streetNumber, geo.street, geo.district, geo.city].filter(Boolean);
+        const readable = parts.join(', ') || `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+        setAddressText(readable);
+      } else {
+        setAddressText(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
+      }
+    } catch (e) {
+      Alert.alert('Erreur', 'Impossible de recuperer votre position.');
+    } finally {
+      setGeoLoading(false);
+    }
+  };
+
   const next = () => {
     if (step === 0 && !serviceType) { Alert.alert('Choisissez une prestation'); return; }
-    if (step === 1 && !addressText.trim()) { Alert.alert('Entrez votre adresse'); return; }
+    if (step === 1 && !addressText.trim()) { Alert.alert('Entrez votre adresse ou utilisez votre position'); return; }
     setStep((s) => Math.min(s + 1, 3));
   };
   const prev = () => setStep((s) => Math.max(s - 1, 0));
@@ -59,13 +89,15 @@ export default function BookingScreen() {
     if (!serviceType) return;
     setLoading(true);
     try {
-      setLocation(addressText, 5.3599517, -4.0082563);
+      const lat = geoCoords?.lat ?? 5.3599517;
+      const lng = geoCoords?.lng ?? -4.0082563;
+      setLocation(addressText, lat, lng);
       const payload: any = {
         serviceType,
         missionType: missionType || 'INSTANT',
         fullAddress: addressText,
-        lat: 5.3599517,
-        lng: -4.0082563,
+        lat,
+        lng,
         paymentMethod: payMethod,
       };
       if (vehicleId) payload.vehicleId = vehicleId;
@@ -177,17 +209,44 @@ export default function BookingScreen() {
         {step === 1 && (
           <View style={styles.stepContent}>
             <Text style={styles.stepTitle}>Adresse du vehicule</Text>
-            <Text style={styles.stepSub}>Ou se trouve votre vehicule ?</Text>
+            <Text style={styles.stepSub}>Entrez l'adresse ou utilisez votre position GPS</Text>
+
+            {/* Bouton geolocalisation */}
+            <TouchableOpacity
+              style={styles.geoBtn}
+              onPress={handleUseLocation}
+              disabled={geoLoading}
+              activeOpacity={0.8}
+            >
+              {geoLoading ? (
+                <ActivityIndicator color="#1558f5" size="small" />
+              ) : (
+                <Text style={styles.geoIcon}>{'\uD83D\uDCCD'}</Text>
+              )}
+              <Text style={styles.geoBtnText}>
+                {geoLoading ? 'Localisation en cours...' : 'Utiliser ma position actuelle'}
+              </Text>
+            </TouchableOpacity>
+
+            <View style={styles.orRow}>
+              <View style={styles.orLine} />
+              <Text style={styles.orText}>ou entrez l'adresse</Text>
+              <View style={styles.orLine} />
+            </View>
+
             <View style={styles.inputWrap}>
               <Text style={styles.inputLabel}>Adresse complete</Text>
               <TextInput
                 style={styles.textArea}
                 value={addressText}
-                onChangeText={setAddressText}
+                onChangeText={(t) => { setAddressText(t); setGeoCoords(null); }}
                 placeholder="Ex : Cocody Riviera 3, face pharmacie..."
                 multiline
                 numberOfLines={3}
               />
+              {geoCoords && (
+                <Text style={styles.geoTag}>Position GPS utilisee</Text>
+              )}
             </View>
 
             {vehicles.length > 0 && (
@@ -323,10 +382,7 @@ const styles = StyleSheet.create({
 
   progress: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, paddingTop: 20, paddingBottom: 4, backgroundColor: '#fff' },
   stepWrap: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-  stepDot: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: '#e2e8f0',
-    alignItems: 'center', justifyContent: 'center',
-  },
+  stepDot: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center' },
   stepDotActive: { backgroundColor: '#1558f5' },
   stepDotDone: { backgroundColor: '#059669' },
   stepNum: { fontSize: 12, fontWeight: '700', color: '#94a3b8' },
@@ -371,6 +427,19 @@ const styles = StyleSheet.create({
   checkMark: { fontSize: 12, color: '#fff', fontWeight: '800' },
   textActive: { color: '#1558f5' },
 
+  geoBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    backgroundColor: '#eff6ff', borderWidth: 2, borderColor: '#bfdbfe',
+    borderRadius: 14, paddingVertical: 14, paddingHorizontal: 18,
+  },
+  geoIcon: { fontSize: 20 },
+  geoBtnText: { fontSize: 15, fontWeight: '700', color: '#1558f5', flex: 1 },
+  geoTag: { fontSize: 12, color: '#059669', fontWeight: '600', marginTop: 4 },
+
+  orRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  orLine: { flex: 1, height: 1, backgroundColor: '#e2e8f0' },
+  orText: { fontSize: 12, color: '#94a3b8', fontWeight: '600' },
+
   inputWrap: { gap: 8 },
   inputLabel: { fontSize: 13, fontWeight: '600', color: '#374151' },
   textArea: {
@@ -404,8 +473,7 @@ const styles = StyleSheet.create({
   recapCard: {
     backgroundColor: '#fff', borderRadius: 20,
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08, shadowRadius: 16, elevation: 4,
-    overflow: 'hidden',
+    shadowOpacity: 0.08, shadowRadius: 16, elevation: 4, overflow: 'hidden',
   },
   recapRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', padding: 16, gap: 12 },
   recapBorder: { borderTopWidth: 1, borderTopColor: '#f1f5f9' },

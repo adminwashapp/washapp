@@ -35,7 +35,7 @@ export default function WelcomeScreen() {
       <Animated.View
         style={[
           styles.content,
-          { paddingTop: insets.top + 40, paddingBottom: insets.bottom + 36 },
+          { paddingTop: insets.top + 40, paddingBottom: insets.bottom + 24 },
           { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
         ]}
       >
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     lineHeight: 40, marginBottom: 14, letterSpacing: -0.5,
   },
   subtitle: { fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 22 },
-  badges: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 40 },
+  badges: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 28 },
   badge: {
     paddingHorizontal: 12, paddingVertical: 6,
     backgroundColor: "rgba(255,255,255,0.12)",

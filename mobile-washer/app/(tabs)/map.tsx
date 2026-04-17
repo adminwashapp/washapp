@@ -70,14 +70,24 @@ export default function MapScreen() {
   const [missionTimer, setMissionTimer] = useState<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Get current location
+  // Continuous GPS tracking
   useEffect(() => {
+    let sub: Location.LocationSubscription | null = null;
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") { Alert.alert("Permission GPS refusee"); return; }
       const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
       setLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
+      sub = await Location.watchPositionAsync(
+        { accuracy: Location.Accuracy.High, distanceInterval: 10, timeInterval: 5000 },
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setLocation({ lat: latitude, lng: longitude });
+          washerSocket.updateLocation(latitude, longitude);
+        }
+      );
     })();
+    return () => { sub?.remove(); };
   }, []);
 
   // Socket: incoming mission

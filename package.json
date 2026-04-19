@@ -14,9 +14,5 @@
     "db:generate": "npm run prisma:generate --workspace=api",
     "db:migrate": "npm run prisma:migrate --workspace=api",
     "db:studio": "npm run prisma:studio --workspace=api"
-  },
-  "dependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
   }
 }

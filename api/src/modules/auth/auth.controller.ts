@@ -77,6 +77,8 @@ export class AuthController {
   @Post('verify-email')
   verifyEmail(@Req() req: any, @Body('token') token: string) {
     return this.authService.verifyEmail(req.user.sub, token);
+  }
+
   @Post('washer/request-otp')
   washerRequestOtp(@Body() body: { email: string }) {
     return this.authService.washerRequestOtp(body.email);

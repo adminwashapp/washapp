@@ -85,12 +85,38 @@ export default function BookingScreen() {
   };
   const prev = () => setStep((s) => Math.max(s - 1, 0));
 
+  const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number } | null> => {
+    try {
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI`);
+      const data = await res.json();
+      if (data.results && data.results[0]) {
+        const loc = data.results[0].geometry.location;
+        return { lat: loc.lat, lng: loc.lng };
+      }
+    } catch {}
+    return null;
+  };
+
   const handleConfirm = async () => {
     if (!serviceType) return;
     setLoading(true);
     try {
-      const lat = geoCoords?.lat ?? 5.3599517;
-      const lng = geoCoords?.lng ?? -4.0082563;
+      let lat = geoCoords?.lat;
+      let lng = geoCoords?.lng;
+      
+      // Si pas de coords GPS, géocoder l'adresse texte
+      if (!lat || !lng) {
+        const coords = await geocodeAddress(addressText);
+        if (coords) {
+          lat = coords.lat;
+          lng = coords.lng;
+        } else {
+          // Fallback Abidjan si géocodage échoue
+          lat = 5.3599517;
+          lng = -4.0082563;
+        }
+      }
+      
       setLocation(addressText, lat, lng);
       const payload: any = {
         serviceType,

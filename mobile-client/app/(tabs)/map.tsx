@@ -47,6 +47,7 @@ export default function MapScreen() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [showServiceSheet, setShowServiceSheet] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showRecenter, setShowRecenter] = useState(false);
 
   const bottomSheetAnim = useRef(new Animated.Value(0)).current;
   const drawerAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
@@ -120,6 +121,13 @@ export default function MapScreen() {
 
   const sheetTranslateY = bottomSheetAnim.interpolate({ inputRange: [0, 1], outputRange: [500, 0] });
 
+  const handleRecenter = () => {
+    if (!userLocation) return;
+    const newRegion = { ...userLocation, latitudeDelta: 0.04, longitudeDelta: 0.04 };
+    mapRef.current?.animateToRegion(newRegion, 600);
+    setShowRecenter(false);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
@@ -134,11 +142,23 @@ export default function MapScreen() {
         showsMyLocationButton={false}
         showsCompass={false}
         toolbarEnabled={false}
+        onPanDrag={() => { if (!showRecenter) setShowRecenter(true); }}
       >
         {userLocation && (
           <Marker coordinate={userLocation} title="Ma position" />
         )}
       </MapView>
+
+      {/* Recenter button */}
+      {showRecenter && userLocation && (
+        <TouchableOpacity
+          style={[styles.recenterBtn, { bottom: insets.bottom + 100 }]}
+          onPress={handleRecenter}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.recenterIcon}>⊕</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Top bar */}
       <View style={[styles.topBar, { top: insets.top + 12 }]}>
@@ -297,4 +317,21 @@ const styles = StyleSheet.create({
   drawerItemLabel: { flex: 1, fontSize: 15, fontWeight: '500', color: '#1e293b' },
   drawerItemLabelLogout: { color: '#dc2626', fontWeight: '600' },
   drawerVersion: { fontSize: 11, color: '#cbd5e1', textAlign: 'center' },
+
+  recenterBtn: {
+    position: 'absolute',
+    right: 16,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  recenterIcon: { fontSize: 24, color: '#1558f5', lineHeight: 28 },
 });

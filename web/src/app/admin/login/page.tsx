@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Car } from 'lucide-react';
-import { authApi } from '@/lib/api';
+import { adminApi } from '@/lib/api';
 import { useAuthStore } from '@/store';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const { setAuth } = useAuthStore();
-  const [form, setForm] = useState({ phone: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await authApi.loginClient({ phone: form.phone, password: form.password });
+      const res = await adminApi.loginAdmin({ email: form.email, password: form.password });
       const { user, accessToken, refreshToken } = res.data;
       if (user.role !== 'ADMIN') {
         setError('Accès réservé aux administrateurs.');
@@ -51,12 +51,12 @@ export default function AdminLoginPage() {
             </div>
           )}
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1.5">Téléphone</label>
+            <label className="block text-sm font-medium text-gray-400 mb-1.5">Email</label>
             <input
-              type="tel"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              placeholder="+225 XX XX XX XX XX"
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              placeholder="admin@washapp.ci"
               className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 text-sm"
               required
             />

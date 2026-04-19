@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   logoImg: { width: 48, height: 48 },
   logoText: { fontSize: 24, fontWeight: '700', color: '#fff', letterSpacing: -0.5 },
 
-  heroBlock: { flex: 1, justifyContent: 'flex-end', paddingBottom: 28 },
+  heroBlock: { flex: 1, justifyContent: 'center', paddingBottom: 40 },
   overline: { fontSize: 10, fontWeight: '700', letterSpacing: 3, color: '#5999ff', marginBottom: 16, textTransform: 'uppercase' },
   title: { fontSize: 38, fontWeight: '700', color: '#fff', lineHeight: 46, letterSpacing: -0.8, marginBottom: 16 },
   titleAccent: { color: '#5999ff' },

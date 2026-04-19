@@ -224,7 +224,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-white">
 
       {/* ── HERO PLEIN ÉCRAN ─────────────────────── */}
-      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
+      <section className="relative h-screen min-h-[600px] flex items-start overflow-hidden">
 
         {/* Image de fond */}
         <div className="absolute inset-0">
@@ -240,18 +240,18 @@ export default function HomePage() {
           <div
             className="absolute inset-0"
             style={{
-              background: 'linear-gradient(to right, rgba(4,8,22,0.88) 0%, rgba(4,8,22,0.72) 38%, rgba(4,8,22,0.35) 65%, rgba(4,8,22,0.10) 100%)',
+              background: 'linear-gradient(to right, rgba(4,8,22,0.65) 0%, rgba(4,8,22,0.50) 38%, rgba(4,8,22,0.25) 65%, rgba(4,8,22,0.05) 100%)',
             }}
           />
           {/* Gradient subtil en bas pour lire les textes */}
           <div
             className="absolute inset-x-0 bottom-0 h-40"
-            style={{ background: 'linear-gradient(to top, rgba(4,8,22,0.55), transparent)' }}
+            style={{ background: 'linear-gradient(to top, rgba(4,8,22,0.35), transparent)' }}
           />
         </div>
 
         {/* Contenu */}
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 pt-[60px]">
+        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 pt-[100px]">
           <div className="max-w-[560px]">
 
             {/* Eyebrow */}

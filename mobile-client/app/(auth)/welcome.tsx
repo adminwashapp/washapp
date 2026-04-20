@@ -79,25 +79,25 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#040c24' },
   bg: { flex: 1 },
-  content: { flex: 1, paddingHorizontal: 26, paddingTop: Platform.OS === 'ios' ? 40 : 32, paddingBottom: 12, justifyContent: 'space-between' },
+  content: { flex: 1, paddingHorizontal: 26, paddingTop: Platform.OS === 'ios' ? 60 : 48, paddingBottom: 36, justifyContent: 'space-between' },
 
   topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   logoRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginLeft: -4 },
   logoImg: { width: 48, height: 48 },
   logoText: { fontSize: 24, fontWeight: '700', color: '#fff', letterSpacing: -0.5 },
 
-  heroBlock: { flex: 1, justifyContent: 'flex-start', paddingTop: 40, paddingBottom: 10 },
+  heroBlock: { marginBottom: 24 },
   overline: { fontSize: 10, fontWeight: '700', letterSpacing: 3, color: '#5999ff', marginBottom: 12, textTransform: 'uppercase' },
   title: { fontSize: 38, fontWeight: '700', color: '#fff', lineHeight: 46, letterSpacing: -0.8, marginBottom: 16 },
   titleAccent: { color: '#5999ff' },
   subtitle: { fontSize: 15, color: 'rgba(255,255,255,0.65)', lineHeight: 24, marginBottom: 16, fontWeight: '400' },
 
-  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 28 },
   badge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)', borderRadius: 20, paddingVertical: 6, paddingHorizontal: 12 },
   badgeCheck: { fontSize: 11, color: '#5999ff', fontWeight: '700' },
   badgeText: { fontSize: 12, color: 'rgba(255,255,255,0.75)', fontWeight: '500' },
 
-  actions: { gap: 10, marginTop: -10 },
+  actions: { gap: 12 },
   btnPrimary: { borderRadius: 16, overflow: 'hidden', shadowColor: '#1558f5', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.5, shadowRadius: 16, elevation: 10 },
   btnGradient: { paddingVertical: 17, alignItems: 'center', borderRadius: 16 },
   btnPrimaryText: { color: '#fff', fontWeight: '700', fontSize: 16, letterSpacing: 0.2 },

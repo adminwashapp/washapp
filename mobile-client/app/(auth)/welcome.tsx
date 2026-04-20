@@ -24,7 +24,7 @@ export default function WelcomeScreen() {
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
       <ImageBackground source={BG} style={styles.bg} resizeMode="cover">
         <LinearGradient
-          colors={['rgba(4,12,36,0.97)', 'rgba(4,12,36,0.90)', 'rgba(4,12,36,0.70)', 'rgba(4,12,36,0.50)']}
+          colors={['rgba(4,12,36,0.75)', 'rgba(4,12,36,0.60)', 'rgba(4,12,36,0.40)', 'rgba(4,12,36,0.20)']}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
@@ -79,14 +79,14 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#040c24' },
   bg: { flex: 1 },
-  content: { flex: 1, paddingHorizontal: 26, paddingTop: Platform.OS === 'ios' ? 60 : 48, paddingBottom: 36, justifyContent: 'space-between' },
+  content: { flex: 1, paddingHorizontal: 26, paddingTop: Platform.OS === 'ios' ? 60 : 48, paddingBottom: 24, justifyContent: 'space-between' },
 
   topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   logoRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginLeft: -4 },
   logoImg: { width: 48, height: 48 },
   logoText: { fontSize: 24, fontWeight: '700', color: '#fff', letterSpacing: -0.5 },
 
-  heroBlock: { flex: 1, justifyContent: 'center', paddingBottom: 40 },
+  heroBlock: { flex: 1, justifyContent: 'flex-end', paddingBottom: 20 },
   overline: { fontSize: 10, fontWeight: '700', letterSpacing: 3, color: '#5999ff', marginBottom: 16, textTransform: 'uppercase' },
   title: { fontSize: 38, fontWeight: '700', color: '#fff', lineHeight: 46, letterSpacing: -0.8, marginBottom: 16 },
   titleAccent: { color: '#5999ff' },

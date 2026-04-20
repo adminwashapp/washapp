@@ -11,7 +11,7 @@ import { missionsApi } from "../../services/api";
 import { connectSocket } from "../../services/socket";
 
 const { height: SCREEN_H } = Dimensions.get("window");
-const GOOGLE_KEY = "AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI";
+const GOOGLE_KEY = "";
 const IS_EXPO_GO = Constants.appOwnership === "expo";
 
 function decodePolyline(encoded: string): { latitude: number; longitude: number }[] {

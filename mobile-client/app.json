@@ -15,7 +15,7 @@
         "NSLocationWhenInUseUsageDescription": "Washapp a besoin de votre localisation.",
         "NSCameraUsageDescription": "Washapp utilise la camera pour les photos."
       },
-      "config": { "googleMapsApiKey": "AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI" }
+      "config": { "googleMapsApiKey": "" }
     },
     "android": {
       "package": "com.washapp.client",
@@ -24,7 +24,7 @@
         "android.permission.ACCESS_COARSE_LOCATION","android.permission.ACCESS_FINE_LOCATION",
         "android.permission.CAMERA","android.permission.RECORD_AUDIO"
       ],
-      "config": { "googleMaps": { "apiKey": "AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI" } }
+      "config": { "googleMaps": { "apiKey": "" } }
     },
     "web": { "bundler": "metro", "output": "static" },
     "plugins": [

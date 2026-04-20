@@ -87,7 +87,7 @@ export default function BookingScreen() {
 
   const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number } | null> => {
     try {
-      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyDQJd3A8TQix24ZY7AL71oQ-HXLzNQqqNI`);
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}`);
       const data = await res.json();
       if (data.results && data.results[0]) {
         const loc = data.results[0].geometry.location;

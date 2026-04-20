@@ -152,17 +152,21 @@ export class DispatchService {
       include: { client: { include: { user: { select: { name: true } } } } },
     });
 
-    await this.notificationsService.sendMissionToWasher(washer.user.id, {
-      missionId,
-      type,
-      serviceType: missionData!.serviceType,
-      price: missionData!.price,
-      address: missionData!.fullAddress,
-      lat: missionData!.lat,
-      lng: missionData!.lng,
-      scheduledAt: missionData!.scheduledAt?.toISOString(),
-      timeoutSeconds: timeoutMs / 1000,
-    });
+    try {
+      await this.notificationsService.sendMissionToWasher(washer.user.id, {
+        missionId,
+        type,
+        serviceType: missionData!.serviceType,
+        price: missionData!.price,
+        address: missionData!.fullAddress,
+        lat: missionData!.lat,
+        lng: missionData!.lng,
+        scheduledAt: missionData!.scheduledAt?.toISOString(),
+        timeoutSeconds: timeoutMs / 1000,
+      });
+    } catch (notifErr: any) {
+      this.logger.error(`Erreur notification washer ${washer.id}: ${notifErr.message}`);
+    }
 
     this.logger.log(
       `Mission ${missionId} envoyée au washer ${washer.id} (tentative ${index + 1})`,

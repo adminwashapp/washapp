@@ -1,4 +1,5 @@
 import {
+  Req,
   Controller,
   Get,
   Post,
@@ -9,8 +10,10 @@ import {
   Body,
   Query,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  AuthGuard } from '@nestjs/passport';
+import {
+  FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { WashersService } from './washers.service';

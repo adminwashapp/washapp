@@ -216,7 +216,7 @@ export default function BookingScreen() {
 
             <Text style={styles.stepTitle2}>Type de mission</Text>
             <View style={styles.missionTypeRow}>
-              {[{ key: 'INSTANT', icon: '\u26A1', label: 'Instantanee' }, { key: 'BOOKING', icon: '\uD83D\uDCC5', label: 'Reservee' }].map((m) => (
+              {[{ key: 'INSTANT', icon: '\u26A1', label: 'Instantanee' }, { key: 'BOOKING', icon: '\uD83D\uDCC5', label: 'Sur rendez-vous' }].map((m) => (
                 <TouchableOpacity
                   key={m.key}
                   style={[styles.missionTypeCard, missionType === m.key && styles.missionTypeCardActive]}
@@ -343,7 +343,7 @@ export default function BookingScreen() {
               </View>
               <View style={[styles.recapRow, styles.recapBorder]}>
                 <Text style={styles.recapKey}>Type</Text>
-                <Text style={styles.recapVal}>{missionType === 'INSTANT' ? 'Instantanee' : 'Reservee'}</Text>
+                <Text style={styles.recapVal}>{missionType === 'INSTANT' ? 'Instantanee' : 'Sur rendez-vous'}</Text>
               </View>
               <View style={[styles.recapRow, styles.recapBorder]}>
                 <Text style={styles.recapKey}>Adresse</Text>

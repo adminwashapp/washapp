@@ -212,7 +212,7 @@ export default function MapScreen() {
               <Text style={styles.sheetBtnTextWhite}>⚡  Maintenant</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.sheetBtn, styles.bookBtn, !selectedService && styles.btnDisabled]} onPress={handleBook} activeOpacity={0.85}>
-              <Text style={styles.sheetBtnTextBlue}>📅  Reserver</Text>
+              <Text style={styles.sheetBtnTextBlue}>📅  Sur rendez-vous</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>

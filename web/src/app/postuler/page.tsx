@@ -31,6 +31,8 @@ type FormData = {
   profilePhotoUrl: string;
   idDocumentUrl: string;
   otherDocumentUrl: string;
+  availability: string;
+  hasEquipment: boolean;
 };
 
 const initial: FormData = {
@@ -38,6 +40,8 @@ const initial: FormData = {
   transportType: '', experience: '',
   waveMoneyNumber: '', preferredPayment: 'WAVE',
   profilePhotoUrl: '', idDocumentUrl: '', otherDocumentUrl: '',
+  availability: 'FULL_TIME',
+  hasEquipment: true,
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';

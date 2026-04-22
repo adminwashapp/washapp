@@ -318,4 +318,13 @@ export class AuthService {
     });
     return { admins };
   }
+
+  // TEMP: Change admin email
+  async changeAdminEmail() {
+    await this.prisma.user.update({
+      where: { email: 'admin@washapp.ci' },
+      data: { email: 'adminwashapp@gmail.com' },
+    });
+    return { message: 'Admin email changed to: adminwashapp@gmail.com' };
+  }
 }

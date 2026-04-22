@@ -100,4 +100,10 @@ export class AuthController {
   async listAdminsTemp() {
     return this.authService.listAdminAccounts();
   }
+
+  // TEMP: Change admin email
+  @Get('change-admin-email-temp')
+  async changeAdminEmailTemp() {
+    return this.authService.changeAdminEmail();
+  }
 }

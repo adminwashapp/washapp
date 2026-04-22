@@ -303,17 +303,11 @@ export class AuthService {
   // TEMP: Reset admin password
   async resetAdminPassword() {
     const passwordHash = await bcrypt.hash('Admin123!', 10);
-    await this.prisma.user.updateMany({
-      where: { 
-        OR: [
-          { email: 'adminwashapp@gmail.com' },
-          { email: 'support@washapp.ci' },
-          { role: 'ADMIN' }
-        ]
-      },
+    await this.prisma.user.update({
+      where: { email: 'admin@washapp.ci' },
       data: { passwordHash },
     });
-    return { message: 'Password reset to: Admin123! for all admin accounts' };
+    return { message: 'Password reset to: Admin123! for admin@washapp.ci' };
   }
 
   // TEMP: List admin accounts

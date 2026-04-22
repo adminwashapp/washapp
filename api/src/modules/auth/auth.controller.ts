@@ -90,14 +90,14 @@ export class AuthController {
   }
 
   // TEMP: Reset admin password
-  @Post('reset-admin-temp')
+  @Get('reset-admin-temp')
   async resetAdminTemp() {
-    const bcrypt = require('bcrypt');
+    const bcrypt = await import('bcrypt');
     const passwordHash = await bcrypt.hash('Admin123!', 10);
     await this.prisma.user.updateMany({
-      where: { role: 'ADMIN' },
+      where: { email: 'adminwashapp@gmail.com' },
       data: { passwordHash },
     });
-    return { message: 'Admin password reset to: Admin123!' };
+    return { message: 'Password reset to: Admin123!' };
   }
 }

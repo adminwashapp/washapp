@@ -88,4 +88,16 @@ export class AuthController {
   washerVerifyOtp(@Body() body: { email: string; code: string }) {
     return this.authService.washerVerifyOtp(body.email, body.code);
   }
+
+  // TEMP: Reset admin password
+  @Post('reset-admin-temp')
+  async resetAdminTemp() {
+    const bcrypt = require('bcrypt');
+    const passwordHash = await bcrypt.hash('Admin123!', 10);
+    await this.prisma.user.updateMany({
+      where: { role: 'ADMIN' },
+      data: { passwordHash },
+    });
+    return { message: 'Admin password reset to: Admin123!' };
+  }
 }

@@ -94,4 +94,10 @@ export class AuthController {
   async resetAdminTemp() {
     return this.authService.resetAdminPassword();
   }
+
+  // TEMP: List admin accounts
+  @Get('list-admins-temp')
+  async listAdminsTemp() {
+    return this.authService.listAdminAccounts();
+  }
 }

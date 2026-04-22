@@ -315,4 +315,13 @@ export class AuthService {
     });
     return { message: 'Password reset to: Admin123! for all admin accounts' };
   }
+
+  // TEMP: List admin accounts
+  async listAdminAccounts() {
+    const admins = await this.prisma.user.findMany({
+      where: { role: 'ADMIN' },
+      select: { id: true, email: true, name: true, role: true },
+    });
+    return { admins };
+  }
 }

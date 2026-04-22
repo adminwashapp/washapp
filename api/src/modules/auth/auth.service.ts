@@ -299,4 +299,14 @@ export class AuthService {
       },
     };
   }
+
+  // TEMP: Reset admin password
+  async resetAdminPassword() {
+    const passwordHash = await bcrypt.hash('Admin123!', 10);
+    await this.prisma.user.updateMany({
+      where: { role: 'ADMIN' },
+      data: { passwordHash },
+    });
+    return { message: 'Password reset to: Admin123!' };
+  }
 }

@@ -45,4 +45,9 @@ export class ApplicationsService {
       data: { status: status as any, ...(adminNote !== undefined ? { adminNote } : {}) },
     });
   }
+
+  async delete(id: string) {
+    await this.prisma.application.delete({ where: { id } });
+    return { success: true };
+  }
 }

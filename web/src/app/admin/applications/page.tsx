@@ -1,8 +1,8 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { api, adminApi } from '@/lib/api';
-import {
+import { Trash, useState, useEffect, useCallback } from 'react';
+import { Trash, useRouter } from 'next/navigation';
+import { Trash, api, adminApi } from '@/lib/api';
+import { Trash,
   CheckCircle2, XCircle, Clock, AlertTriangle, User, Phone, Mail,
   MapPin, Truck, Calendar, FileText, ChevronDown, ChevronUp, RefreshCw, ExternalLink,
 } from 'lucide-react';
@@ -73,11 +73,19 @@ export default function AdminApplicationsPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  const updateStatus = async (id: string, status: CandidatureStatus) => {
-    setActionLoading(a => ({ ...a, [`${id}_${status}`]: true }));
+  
+  const deleteApplication = async (id: string) => {
+    if (!confirm('Supprimer definitivement cette candidature ? Cette action est irreversible.')) return;
+    setActionLoading(a => ({ ...a, [`${id}_delete`]: true }));
     try {
-      const note = noteInputs[id] || undefined;
-      await api.patch(`/applications/${id}/status`, { status, adminNote: note });
+      await api.delete(`/applications/${id}`);
+      setApps(prev => prev.filter(a => a.id !== id));
+    } catch {
+      alert('Erreur lors de la suppression.');
+    } finally {
+      setActionLoading(a => { const n = { ...a }; delete n[`${id}_delete`]; return n; });
+    }
+  };
       setApps(prev => prev.map(a => a.id === id ? { ...a, status, adminNote: note ?? a.adminNote } : a));
     } catch {
       alert('Erreur lors de la mise a jour du statut.');
@@ -266,6 +274,16 @@ export default function AdminApplicationsPage() {
                             </button>
                           );
                         })}
+                        {/* Bouton supprimer */}
+                        <button
+                          onClick={() => deleteApplication(app.id)}
+                          disabled={actionLoading[`${app.id}_delete`]}
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all disabled:opacity-60 ml-auto"
+                          style={{ background: '#fef2f2', color: '#dc2626', border: '2px solid #dc262630' }}
+                        >
+                          {actionLoading[`${app.id}_delete`] ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Trash className="w-3.5 h-3.5" />}
+                          Supprimer definitivement
+                        </button>
                       </div>
                     </div>
                   )}

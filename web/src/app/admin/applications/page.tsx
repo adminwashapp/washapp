@@ -86,13 +86,6 @@ export default function AdminApplicationsPage() {
       setActionLoading(a => { const n = { ...a }; delete n[`${id}_delete`]; return n; });
     }
   };
-      setApps(prev => prev.map(a => a.id === id ? { ...a, status, adminNote: note ?? a.adminNote } : a));
-    } catch {
-      alert('Erreur lors de la mise a jour du statut.');
-    } finally {
-      setActionLoading(a => { const n = { ...a }; delete n[`${id}_${status}`]; return n; });
-    }
-  };
 
   const counts = {
     all: apps.length,

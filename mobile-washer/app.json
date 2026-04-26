@@ -7,66 +7,47 @@
     "orientation": "portrait",
     "scheme": "washapp-washer",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/images/icon.png",
     "splash": {
-      "image": "./assets/images/Pagewasher.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#040c24"
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.washapp.washer",
+      "icon": "./assets/images/icon.png",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Washapp Washer a besoin de votre localisation.",
-        "NSCameraUsageDescription": "Washapp Washer utilise la camera."
+        "NSCameraUsageDescription": "Washapp Washer utilise la caméra."
       },
-      "config": {
-        "googleMapsApiKey": ""
-      }
+      "config": { "googleMapsApiKey": "" }
     },
     "android": {
       "package": "com.washapp.washer",
+      "icon": "./assets/images/icon.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
       "permissions": [
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "CAMERA",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","CAMERA",
+        "android.permission.ACCESS_COARSE_LOCATION","android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA","android.permission.RECORD_AUDIO"
       ],
-      "config": {
-        "googleMaps": {
-          "apiKey": ""
-        }
-      }
+      "config": { "googleMaps": { "apiKey": "" } }
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static"
-    },
+    "web": { "bundler": "metro", "output": "static" },
     "plugins": [
       "expo-router",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/images/icon.png",
-          "color": "#1558f5",
-          "sounds": [],
-          "mode": "production"
-        }
-      ],
-      "expo-location",
-      "expo-camera"
+      ["expo-notifications",{"icon":"./assets/images/icon.png","color":"#1558f5","sounds":[],"mode":"production"}],
+      "expo-location","expo-camera"
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
+    "experiments": { "typedRoutes": true },
     "extra": {
       "apiUrl": "https://washapp-api.onrender.com/api",
       "wsUrl": "https://washapp-api.onrender.com",
-      "eas": {
-        "projectId": "ff8e8820-3be6-4477-9e8d-749de8856523"
-      },
+      "eas": { "projectId": "ff8e8820-3be6-4477-9e8d-749de8856523" },
       "router": {}
     }
   }

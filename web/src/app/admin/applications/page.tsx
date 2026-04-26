@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, adminApi, applicationsApi } from '@/lib/api';
-import { Trash, CheckCircle2, XCircle, Clock, AlertTriangle, User, Phone, Mail,
+import { Trash, CheckCircle2, CheckCircle, XCircle, Clock, AlertTriangle, User, Phone, Mail,
   MapPin, Truck, Calendar, FileText, ChevronDown, ChevronUp, RefreshCw, ExternalLink,
 } from 'lucide-react';
 
@@ -58,6 +58,8 @@ export default function AdminApplicationsPage() {
   const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({});
   const [noteInputs, setNoteInputs] = useState<Record<string, string>>({});
 
+  const [createdAccount, setCreatedAccount] = useState<{ phone: string; tempPassword?: string; name: string; alreadyExists: boolean } | null>(null);
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -76,8 +78,12 @@ export default function AdminApplicationsPage() {
     setActionLoading(a => ({ ...a, [`${id}_${status}`]: true }));
     try {
       const note = noteInputs[id];
-      await applicationsApi.updateStatus(id, status, note);
+      const res = await applicationsApi.updateStatus(id, status, note);
       setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+      // Afficher les credentials si compte créé
+      if (status === 'VALIDATED' && res.data?.washerAccount) {
+        setCreatedAccount(res.data.washerAccount);
+      }
     } catch {
       alert('Erreur lors de la mise à jour du statut.');
     } finally {
@@ -108,6 +114,53 @@ export default function AdminApplicationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+
+      {/* Modale credentials washer créé */}
+      {createdAccount && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-7 h-7 text-green-600" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Compte washer créé !</h2>
+                <p className="text-sm text-gray-500">{createdAccount.alreadyExists ? 'Profil existant activé' : 'Nouvelles informations de connexion'}</p>
+              </div>
+            </div>
+            {!createdAccount.alreadyExists ? (
+              <div className="bg-gray-50 rounded-xl p-4 space-y-3 mb-5">
+                <p className="text-sm text-gray-600">Transmets ces informations au washer pour qu&apos;il se connecte sur l&apos;app :</p>
+                <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                  <span className="text-sm font-medium text-gray-500">Nom</span>
+                  <span className="text-sm font-bold text-gray-900">{createdAccount.name}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                  <span className="text-sm font-medium text-gray-500">Téléphone</span>
+                  <span className="text-sm font-bold text-gray-900">{createdAccount.phone}</span>
+                </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm font-medium text-gray-500">Mot de passe temp.</span>
+                  <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">{createdAccount.tempPassword}</span>
+                </div>
+                <p className="text-xs text-orange-600 bg-orange-50 p-2 rounded-lg">⚠️ Il devra changer ce mot de passe à la première connexion.</p>
+              </div>
+            ) : (
+              <div className="bg-green-50 rounded-xl p-4 mb-5">
+                <p className="text-sm text-green-700">Ce washer avait déjà un compte. Son profil a été activé.</p>
+                <p className="text-sm font-bold text-green-900 mt-1">{createdAccount.phone}</p>
+              </div>
+            )}
+            <button
+              onClick={() => setCreatedAccount(null)}
+              className="w-full bg-gray-900 text-white py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">

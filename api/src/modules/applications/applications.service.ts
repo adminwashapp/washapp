@@ -53,18 +53,30 @@ export class ApplicationsService {
       data: { status: status as any, ...(adminNote !== undefined ? { adminNote } : {}) },
     });
 
-    // Quand la candidature est validée, créer le compte washer automatiquement
     if (status === 'VALIDATED') {
-      const createdAccount = await this.createWasherAccount(app);
-      // Envoyer les credentials si nouveau compte
-      if (!createdAccount.alreadyExists && createdAccount.tempPassword) {
-        const notifications = await this.sendCredentials(app, createdAccount.tempPassword);
-        return { ...updated, washerAccount: { ...createdAccount, notifications } };
+      try {
+        const createdAccount = await this.createWasherAccount(app);
+        if (!createdAccount.alreadyExists && createdAccount.tempPassword) {
+          const notifications = await this.sendCredentials(app, createdAccount.tempPassword);
+          return { ...updated, washerAccount: { ...createdAccount, notifications } };
+        }
+        return { ...updated, washerAccount: createdAccount };
+      } catch (e: any) {
+        // Ne pas bloquer la validation si la création de compte échoue
+        return { ...updated, washerAccount: null, accountError: e.message };
       }
-      return { ...updated, washerAccount: createdAccount };
     }
 
     return updated;
+  }
+
+  private normalizeTransportType(value: string): 'BIKE' | 'SCOOTER' | 'MOTORBIKE' {
+    const map: Record<string, 'BIKE' | 'SCOOTER' | 'MOTORBIKE'> = {
+      MOTORBIKE: 'MOTORBIKE', Moto: 'MOTORBIKE', moto: 'MOTORBIKE',
+      SCOOTER: 'SCOOTER', Scooter: 'SCOOTER', scooter: 'SCOOTER',
+      BIKE: 'BIKE', Velo: 'BIKE', velo: 'BIKE', Vélo: 'BIKE',
+    };
+    return map[value] || 'MOTORBIKE';
   }
 
   private async createWasherAccount(app: any) {
@@ -90,7 +102,7 @@ export class ApplicationsService {
       const washerProfile = await this.prisma.washerProfile.create({
         data: {
           userId: existingUser.id,
-          transportType: (app.transportType as any) || 'MOTORBIKE',
+          transportType: this.normalizeTransportType(app.transportType),
           orangeMoneyNumber: app.waveMoneyNumber || '',
           zoneLabel: app.zone || '',
           accountStatus: 'ACTIVE',
@@ -127,7 +139,7 @@ export class ApplicationsService {
     const washerProfile = await this.prisma.washerProfile.create({
       data: {
         userId: user.id,
-        transportType: (app.transportType as any) || 'MOTORBIKE',
+        transportType: this.normalizeTransportType(app.transportType),
         orangeMoneyNumber: app.waveMoneyNumber || '',
         zoneLabel: app.zone || '',
         accountStatus: 'ACTIVE',

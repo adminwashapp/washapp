@@ -61,8 +61,9 @@ export default function AdminApplicationsPage() {
   const [createdAccount, setCreatedAccount] = useState<{
     phone: string;
     tempPassword?: string;
-    name: string;
-    alreadyExists: boolean;
+    name?: string;
+    alreadyExists?: boolean;
+    accountError?: string;
     notifications?: { sms: { sent: boolean }; email: { sent: boolean } };
   } | null>(null);
 
@@ -87,9 +88,11 @@ export default function AdminApplicationsPage() {
         // Appel dédié : met à jour le statut + crée le compte washer
         const res = await applicationsApi.validateAndCreate(id);
         setApps(prev => prev.map(a => a.id === id ? { ...a, status: 'VALIDATED' } : a));
-        if (res.data?.washerAccount) {
-          setCreatedAccount(res.data.washerAccount);
-        }
+        // Toujours ouvrir la modale (même si washerAccount est null, pour afficher l'erreur)
+        const account = res.data?.washerAccount;
+        const error = res.data?.accountError;
+        const appData = apps.find(a => a.id === id);
+        setCreatedAccount(account ?? { phone: appData?.phone || '', accountError: error || 'Compte non créé' });
       } else {
         const note = noteInputs[id];
         await applicationsApi.updateStatus(id, status, note || undefined);
@@ -140,7 +143,13 @@ export default function AdminApplicationsPage() {
                 <p className="text-sm text-gray-500">{createdAccount.alreadyExists ? 'Compte réactivé — credentials réinitialisés' : 'Nouvelles informations de connexion'}</p>
               </div>
             </div>
-            {createdAccount.tempPassword ? (
+            {createdAccount.accountError ? (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-5">
+                <p className="text-sm font-bold text-red-700">Erreur création compte</p>
+                <p className="text-xs text-red-600 mt-1 break-all">{createdAccount.accountError}</p>
+                <p className="text-xs text-gray-500 mt-2">Le statut a été mis à jour mais le compte n&apos;a pas pu être créé. Contactez le support technique.</p>
+              </div>
+            ) : createdAccount.tempPassword ? (
               <div className="bg-gray-50 rounded-xl p-4 space-y-3 mb-5">
                 <p className="text-sm text-gray-600">Transmets ces informations au washer pour qu&apos;il se connecte sur l&apos;app :</p>
                 <div className="flex justify-between items-center py-2 border-b border-gray-200">

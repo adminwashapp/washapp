@@ -1,14 +1,14 @@
-import { Delete,
-  Controller, Post, Get, Patch, Param, Body, Query,
+import {
+  Controller, Post, Get, Patch, Delete, Param, Body, Query,
   UseInterceptors, UploadedFile, UseGuards,
 } from '@nestjs/common';
-import { Delete, FileInterceptor } from '@nestjs/platform-express';
-import { Delete, AuthGuard } from '@nestjs/passport';
-import { Delete, IsString, IsOptional, IsBoolean } from 'class-validator';
-import { Delete, Transform } from 'class-transformer';
-import { Delete, ApplicationsService } from './applications.service';
-import { Delete, Roles } from '../../common/decorators/roles.decorator';
-import { Delete, RolesGuard } from '../../common/guards/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
+import { IsString, IsOptional, IsBoolean } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { ApplicationsService } from './applications.service';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
 
 class CreateApplicationDto {
   @IsString() firstName: string;
@@ -75,6 +75,8 @@ export class ApplicationsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN' as any)
   async deleteApplication(@Param('id') id: string) {
     await this.applicationsService.delete(id);
     return { success: true };

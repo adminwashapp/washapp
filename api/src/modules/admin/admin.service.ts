@@ -260,4 +260,22 @@ export class AdminService {
     });
     return { success: true, isActive: newStatus };
   }
+
+  async deleteWasher(washerProfileId: string) {
+    const washer = await this.prisma.washerProfile.findUnique({
+      where: { id: washerProfileId },
+    });
+    if (!washer) throw new Error('Washer introuvable');
+    await this.prisma.user.delete({ where: { id: washer.userId } });
+    return { success: true };
+  }
+
+  async deleteClient(clientProfileId: string) {
+    const client = await this.prisma.clientProfile.findUnique({
+      where: { id: clientProfileId },
+    });
+    if (!client) throw new Error('Client introuvable');
+    await this.prisma.user.delete({ where: { id: client.userId } });
+    return { success: true };
+  }
 }

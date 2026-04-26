@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, adminApi } from '@/lib/api';
+import { api, adminApi, applicationsApi } from '@/lib/api';
 import { Trash, CheckCircle2, XCircle, Clock, AlertTriangle, User, Phone, Mail,
   MapPin, Truck, Calendar, FileText, ChevronDown, ChevronUp, RefreshCw, ExternalLink,
 } from 'lucide-react';
@@ -72,7 +72,19 @@ export default function AdminApplicationsPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  
+  const updateStatus = async (id: string, status: CandidatureStatus) => {
+    setActionLoading(a => ({ ...a, [`${id}_${status}`]: true }));
+    try {
+      const note = noteInputs[id];
+      await applicationsApi.updateStatus(id, status, note);
+      setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+    } catch {
+      alert('Erreur lors de la mise à jour du statut.');
+    } finally {
+      setActionLoading(a => { const n = { ...a }; delete n[`${id}_${status}`]; return n; });
+    }
+  };
+
   const deleteApplication = async (id: string) => {
     if (!confirm('Supprimer definitivement cette candidature ? Cette action est irreversible.')) return;
     setActionLoading(a => ({ ...a, [`${id}_delete`]: true }));

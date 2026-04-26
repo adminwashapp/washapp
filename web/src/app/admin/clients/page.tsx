@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {
   Search, Users, Phone, Mail, Calendar, ShoppingBag,
   AlertTriangle, Ban, CheckCircle, ChevronLeft, ChevronRight,
-  Eye, RefreshCw, UserX, UserCheck,
+  Eye, RefreshCw, UserX, UserCheck, Trash2,
 } from 'lucide-react';
 import { adminApi } from '@/lib/api';
 
@@ -314,13 +314,27 @@ export default function AdminClientsPage() {
                     </td>
                     {/* Actions */}
                     <td className="px-5 py-4">
-                      <button
-                        onClick={() => openDetail(client)}
-                        disabled={detailLoading}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
-                      >
-                        <Eye className="w-3.5 h-3.5" /> Voir
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openDetail(client)}
+                          disabled={detailLoading}
+                          className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> Voir
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (!confirm('Supprimer définitivement ce client ? Action irréversible.')) return;
+                            try {
+                              await adminApi.deleteClient(client.id);
+                              setClients(prev => prev.filter(c => c.id !== client.id));
+                            } catch { alert('Erreur lors de la suppression.'); }
+                          }}
+                          className="flex items-center gap-1.5 text-xs font-semibold text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Supprimer
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

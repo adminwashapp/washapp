@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/api';
-import { CheckCircle, XCircle, ChevronDown, Search, RefreshCw } from 'lucide-react';
+import { CheckCircle, XCircle, ChevronDown, Search, RefreshCw, Trash2 } from 'lucide-react';
 
 const STATUS_FILTERS = [
   { value: '', label: 'Tous' },
@@ -181,7 +181,7 @@ export default function AdminWashersPage() {
                       </span>
                     </td>
                     <td className="px-4 py-4">
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         {w.accountStatus !== 'ACTIVE' && w.accountStatus !== 'BANNED' && (
                           <button
                             onClick={() => action(() => adminApi.activateWasher(w.id), w.id, 'activate')}
@@ -200,6 +200,21 @@ export default function AdminWashersPage() {
                             <XCircle className="w-3 h-3" /> Suspendre
                           </button>
                         )}
+                        <button
+                          onClick={async () => {
+                            if (!confirm('Supprimer définitivement ce washer ? Action irréversible.')) return;
+                            setActionLoading(`${w.id}-delete`);
+                            try {
+                              await adminApi.deleteWasher(w.id);
+                              setWashers(prev => prev.filter(x => x.id !== w.id));
+                            } catch { alert('Erreur lors de la suppression.'); }
+                            finally { setActionLoading(null); }
+                          }}
+                          disabled={!!actionLoading}
+                          className="flex items-center gap-1 text-xs bg-red-950 text-red-400 hover:bg-red-900 px-3 py-1.5 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                        >
+                          <Trash2 className="w-3 h-3" /> Supprimer
+                        </button>
                       </div>
                     </td>
                   </tr>

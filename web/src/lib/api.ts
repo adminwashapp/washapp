@@ -98,6 +98,8 @@ export const adminApi = {
     api.get('/admin/clients', { params }),
   getClientById: (id: string) => api.get('/admin/clients/' + id),
   toggleClientBan: (id: string) => api.patch('/admin/clients/' + id + '/ban'),
+  deleteWasher: (id: string) => api.delete('/admin/washers/' + id),
+  deleteClient: (id: string) => api.delete('/admin/clients/' + id),
   loginAdmin: (data: { phone?: string; email?: string; password: string }) =>
     api.post('/auth/login/admin', data),
 };

@@ -47,7 +47,7 @@ export class ApplicationsService {
   }
 
   async delete(id: string) {
-    await this.prisma.application.delete({ where: { id } });
+    await this.prisma.washerApplication.delete({ where: { id } });
     return { success: true };
   }
 }

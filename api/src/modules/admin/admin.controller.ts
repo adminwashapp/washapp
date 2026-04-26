@@ -3,6 +3,7 @@ import {
   Get,
   Patch,
   Post,
+  Delete,
   Body,
   Param,
   Query,
@@ -125,5 +126,15 @@ export class AdminController {
   @Patch('clients/:id/ban')
   toggleClientBan(@Param('id') id: string) {
     return this.adminService.toggleClientBan(id);
+  }
+
+  @Delete('washers/:id')
+  deleteWasher(@Param('id') id: string) {
+    return this.adminService.deleteWasher(id);
+  }
+
+  @Delete('clients/:id')
+  deleteClient(@Param('id') id: string) {
+    return this.adminService.deleteClient(id);
   }
 }

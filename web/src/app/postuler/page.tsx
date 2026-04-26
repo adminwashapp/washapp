@@ -79,7 +79,6 @@ export default function PostulerPage() {
       if (!form.lastName.trim())  e.lastName  = 'Requis';
       if (!form.phone.trim())     e.phone     = 'Requis';
       if (!form.city.trim())      e.city      = 'Requis';
-      if (!form.zone.trim())      e.zone      = 'Requis';
       if (form.email && !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Email invalide';
     }
     if (step === 2) {
@@ -197,14 +196,10 @@ export default function PostulerPage() {
                 <input value={form.email} onChange={e => { set('email', e.target.value); clearErr('email'); }}
                   className={input(errors.email)} placeholder="jean@example.com" type="email" />
               </Field>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <Field label="Ville / Commune *" error={errors.city}>
                   <input value={form.city} onChange={e => { set('city', e.target.value); clearErr('city'); }}
                     className={input(errors.city)} placeholder="Abidjan" />
-                </Field>
-                <Field label="Zone d'intervention *" error={errors.zone}>
-                  <input value={form.zone} onChange={e => { set('zone', e.target.value); clearErr('zone'); }}
-                    className={input(errors.zone)} placeholder="Cocody, Plateau..." />
                 </Field>
               </div>
             </div>
@@ -247,23 +242,11 @@ export default function PostulerPage() {
                 <p className="text-gray-500 text-sm mt-1">Pour recevoir vos revenus</p>
               </div>
               <div className="bg-blue-50 rounded-2xl p-4 text-sm text-blue-700 font-medium">
-                Vos gains seront verses via Wave Money apres chaque mission validee.
+                Vos gains seront versés via Orange Money après chaque mission validée.
               </div>
-              <Field label="Numero Wave Money">
+              <Field label="Numéro Orange Money">
                 <input value={form.waveMoneyNumber} onChange={e => set('waveMoneyNumber', e.target.value)}
                   className={input()} placeholder="+225 07 00 00 00 00" type="tel" />
-              </Field>
-              <Field label="Moyen de paiement prefere">
-                <div className="space-y-2 mt-1">
-                  {[{ k: 'WAVE', l: 'Wave Money' }, { k: 'CASH', l: 'Especes' }].map(p => (
-                    <label key={p.k} className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      form.preferredPayment === p.k ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <input type="radio" name="payment" value={p.k} checked={form.preferredPayment === p.k}
-                        onChange={() => set('preferredPayment', p.k)} className="accent-blue-600" />
-                      <span className={`font-semibold text-sm ${form.preferredPayment === p.k ? 'text-blue-700' : 'text-gray-700'}`}>{p.l}</span>
-                    </label>
-                  ))}
-                </div>
               </Field>
             </div>
           )}

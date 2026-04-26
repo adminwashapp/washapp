@@ -81,7 +81,7 @@ export class ApplicationsService {
       if (existingWasher) {
         await this.prisma.washerProfile.update({
           where: { id: existingWasher.id },
-          data: { accountStatus: 'ACTIVE' },
+          data: { accountStatus: 'ACTIVE', isApproved: true },
         });
         return { alreadyExists: true, phone: app.phone };
       }
@@ -112,6 +112,7 @@ export class ApplicationsService {
         orangeMoneyNumber: app.waveMoneyNumber || '',
         zoneLabel: app.zone || '',
         accountStatus: 'ACTIVE',
+        isApproved: true,
       },
     });
 

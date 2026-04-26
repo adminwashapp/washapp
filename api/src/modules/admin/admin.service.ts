@@ -99,7 +99,7 @@ export class AdminService {
   async activateWasher(washerProfileId: string) {
     return this.prisma.washerProfile.update({
       where: { id: washerProfileId },
-      data: { accountStatus: 'ACTIVE' },
+      data: { accountStatus: 'ACTIVE', isApproved: true },
     });
   }
 

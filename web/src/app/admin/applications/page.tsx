@@ -58,7 +58,13 @@ export default function AdminApplicationsPage() {
   const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({});
   const [noteInputs, setNoteInputs] = useState<Record<string, string>>({});
 
-  const [createdAccount, setCreatedAccount] = useState<{ phone: string; tempPassword?: string; name: string; alreadyExists: boolean } | null>(null);
+  const [createdAccount, setCreatedAccount] = useState<{
+    phone: string;
+    tempPassword?: string;
+    name: string;
+    alreadyExists: boolean;
+    notifications?: { sms: { sent: boolean }; email: { sent: boolean } };
+  } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -144,6 +150,16 @@ export default function AdminApplicationsPage() {
                   <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">{createdAccount.tempPassword}</span>
                 </div>
                 <p className="text-xs text-orange-600 bg-orange-50 p-2 rounded-lg">⚠️ Il devra changer ce mot de passe à la première connexion.</p>
+                {createdAccount.notifications && (
+                  <div className="flex gap-3 mt-3">
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${createdAccount.notifications.sms.sent ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+                      📱 SMS {createdAccount.notifications.sms.sent ? 'envoyé ✓' : 'non envoyé'}
+                    </span>
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${createdAccount.notifications.email.sent ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                      ✉️ Email {createdAccount.notifications.email.sent ? 'envoyé ✓' : 'non envoyé'}
+                    </span>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="bg-green-50 rounded-xl p-4 mb-5">

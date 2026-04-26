@@ -1,10 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
+import { MailerService } from '../mailer/mailer.service';
+import { SmsService } from '../mailer/sms.service';
 
 @Injectable()
 export class ApplicationsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailer: MailerService,
+    private sms: SmsService,
+  ) {}
 
   async create(data: {
     firstName: string;
@@ -50,6 +56,11 @@ export class ApplicationsService {
     // Quand la candidature est validée, créer le compte washer automatiquement
     if (status === 'VALIDATED') {
       const createdAccount = await this.createWasherAccount(app);
+      // Envoyer les credentials si nouveau compte
+      if (!createdAccount.alreadyExists && createdAccount.tempPassword) {
+        const notifications = await this.sendCredentials(app, createdAccount.tempPassword);
+        return { ...updated, washerAccount: { ...createdAccount, notifications } };
+      }
       return { ...updated, washerAccount: createdAccount };
     }
 
@@ -120,6 +131,30 @@ export class ApplicationsService {
       tempPassword,
       name: `${app.firstName} ${app.lastName}`,
     };
+  }
+
+  private async sendCredentials(app: any, tempPassword: string) {
+    const name = `${app.firstName} ${app.lastName}`;
+
+    // SMS (priorité)
+    const smsResult = await this.sms.sendWasherCredentials({
+      phone: app.phone,
+      name,
+      tempPassword,
+    });
+
+    // Email si disponible
+    let emailResult = { sent: false, reason: 'Pas d\'email' };
+    if (app.email) {
+      emailResult = await this.mailer.sendWasherCredentials({
+        email: app.email,
+        name,
+        phone: app.phone,
+        tempPassword,
+      });
+    }
+
+    return { sms: smsResult, email: emailResult };
   }
 
   async delete(id: string) {

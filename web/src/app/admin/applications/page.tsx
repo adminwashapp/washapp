@@ -137,10 +137,10 @@ export default function AdminApplicationsPage() {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-gray-900">Compte washer créé !</h2>
-                <p className="text-sm text-gray-500">{createdAccount.alreadyExists ? 'Profil existant activé' : 'Nouvelles informations de connexion'}</p>
+                <p className="text-sm text-gray-500">{createdAccount.alreadyExists ? 'Compte réactivé — credentials réinitialisés' : 'Nouvelles informations de connexion'}</p>
               </div>
             </div>
-            {!createdAccount.alreadyExists ? (
+            {createdAccount.tempPassword ? (
               <div className="bg-gray-50 rounded-xl p-4 space-y-3 mb-5">
                 <p className="text-sm text-gray-600">Transmets ces informations au washer pour qu&apos;il se connecte sur l&apos;app :</p>
                 <div className="flex justify-between items-center py-2 border-b border-gray-200">

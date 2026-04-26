@@ -64,7 +64,8 @@ export class ApplicationsService {
     // Créer le compte
     try {
       const createdAccount = await this.createWasherAccount(app);
-      if (!createdAccount.alreadyExists && createdAccount.tempPassword) {
+      // Envoyer les credentials dès qu'on a un tempPassword (nouveau compte ou réactivation)
+      if (createdAccount.tempPassword) {
         const notifications = await this.sendCredentials(app, createdAccount.tempPassword);
         return { success: true, washerAccount: { ...createdAccount, notifications } };
       }
@@ -94,11 +95,16 @@ export class ApplicationsService {
         where: { userId: existingUser.id },
       });
       if (existingWasher) {
+        // Réinitialiser le mot de passe temp et activer le profil
+        const digits = existingUser.phone?.replace(/\D/g, '') || '';
+        const tempPassword = 'Wash' + digits.slice(-4);
+        const passwordHash = await bcrypt.hash(tempPassword, 10);
+        await this.prisma.user.update({ where: { id: existingUser.id }, data: { passwordHash } });
         await this.prisma.washerProfile.update({
           where: { id: existingWasher.id },
           data: { accountStatus: 'ACTIVE', isApproved: true },
         });
-        return { alreadyExists: true, phone: app.phone };
+        return { alreadyExists: true, phone: app.phone, tempPassword, name: `${app.firstName} ${app.lastName}` };
       }
       // User existe mais pas de profil washer → créer le profil
       const digits = existingUser.phone?.replace(/\D/g, '') || '';

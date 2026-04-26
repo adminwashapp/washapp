@@ -13,31 +13,63 @@ export class AdminService {
       totalClients,
       totalWashers,
       activeWashers,
-      todayMissions,
+      missionsToday,
+      missionsTotal,
       todayRevenue,
-      pendingComplaints,
+      openComplaintsCount,
       pendingWithdrawals,
+      missionsSearching,
+      missionsValidatedToday,
+      recentMissions,
+      openComplaints,
     ] = await this.prisma.$transaction([
       this.prisma.clientProfile.count(),
       this.prisma.washerProfile.count(),
       this.prisma.washerProfile.count({ where: { accountStatus: 'ACTIVE' } }),
       this.prisma.mission.count({ where: { createdAt: { gte: today } } }),
+      this.prisma.mission.count(),
       this.prisma.mission.aggregate({
         where: { createdAt: { gte: today }, status: { in: ['VALIDATED', 'COMPLETED'] } },
         _sum: { price: true },
       }),
       this.prisma.complaint.count({ where: { status: 'OPEN' } }),
       this.prisma.withdrawalRequest.count({ where: { status: 'PENDING' } }),
+      this.prisma.mission.count({ where: { status: 'SEARCHING' } }),
+      this.prisma.mission.count({ where: { status: 'VALIDATED', validatedAt: { gte: today } } }),
+      this.prisma.mission.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 8,
+        include: {
+          client: { include: { user: { select: { name: true, phone: true } } } },
+          washer: { include: { user: { select: { name: true, phone: true } } } },
+        },
+      }),
+      this.prisma.complaint.findMany({
+        where: { status: 'OPEN' },
+        orderBy: { createdAt: 'desc' },
+        take: 8,
+        include: {
+          client: { include: { user: { select: { name: true, phone: true } } } },
+          washer: { include: { user: { select: { name: true, phone: true } } } },
+        },
+      }),
     ]);
 
     return {
-      totalClients,
-      totalWashers,
-      activeWashers,
-      todayMissions,
-      todayRevenue: todayRevenue._sum.price || 0,
-      pendingComplaints,
-      pendingWithdrawals,
+      stats: {
+        totalClients,
+        totalWashers,
+        activeWashers,
+        missionsToday,
+        missionsTotal,
+        revenueToday: todayRevenue._sum.price || 0,
+        openComplaints: openComplaintsCount,
+        pendingWithdrawals,
+        missionsSearching,
+        missionsValidatedToday,
+      },
+      recentMissions,
+      openComplaints,
     };
   }
 
@@ -146,7 +178,7 @@ export class AdminService {
         skip: (page - 1) * limit,
         take: limit,
         include: {
-          wallet: { include: { washer: { include: { user: { select: { name: true } } } } } },
+          washer: { include: { user: { select: { name: true, phone: true } } } },
           mission: { select: { serviceType: true, price: true } },
         },
       }),

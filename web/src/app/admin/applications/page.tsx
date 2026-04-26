@@ -64,7 +64,7 @@ export default function AdminApplicationsPage() {
       const res = await api.get('/applications', { params: filterStatus ? { status: filterStatus } : {} });
       setApps(res.data || []);
     } catch (e: any) {
-      if (e?.response?.status === 401) router.push('/admin');
+      if (e?.response?.status === 401) router.push('/admin/login');
     } finally {
       setLoading(false);
     }

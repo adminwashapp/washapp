@@ -47,27 +47,31 @@ export class ApplicationsService {
 
   async updateStatus(id: string, status: string, adminNote?: string) {
     const app = await this.findOne(id);
-
     const updated = await this.prisma.washerApplication.update({
       where: { id: app.id },
-      data: { status: status as any, ...(adminNote !== undefined ? { adminNote } : {}) },
+      data: { status: status as any, ...(adminNote !== undefined && adminNote !== null ? { adminNote } : {}) },
     });
-
-    if (status === 'VALIDATED') {
-      try {
-        const createdAccount = await this.createWasherAccount(app);
-        if (!createdAccount.alreadyExists && createdAccount.tempPassword) {
-          const notifications = await this.sendCredentials(app, createdAccount.tempPassword);
-          return { ...updated, washerAccount: { ...createdAccount, notifications } };
-        }
-        return { ...updated, washerAccount: createdAccount };
-      } catch (e: any) {
-        // Ne pas bloquer la validation si la création de compte échoue
-        return { ...updated, washerAccount: null, accountError: e.message };
-      }
-    }
-
     return updated;
+  }
+
+  async validateAndCreateAccount(id: string) {
+    const app = await this.findOne(id);
+    // Mettre à jour le statut
+    await this.prisma.washerApplication.update({
+      where: { id: app.id },
+      data: { status: 'VALIDATED' as any },
+    });
+    // Créer le compte
+    try {
+      const createdAccount = await this.createWasherAccount(app);
+      if (!createdAccount.alreadyExists && createdAccount.tempPassword) {
+        const notifications = await this.sendCredentials(app, createdAccount.tempPassword);
+        return { success: true, washerAccount: { ...createdAccount, notifications } };
+      }
+      return { success: true, washerAccount: createdAccount };
+    } catch (e: any) {
+      return { success: true, washerAccount: null, accountError: e.message };
+    }
   }
 
   private normalizeTransportType(value: string): 'BIKE' | 'SCOOTER' | 'MOTORBIKE' {

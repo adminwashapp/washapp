@@ -83,12 +83,17 @@ export default function AdminApplicationsPage() {
   const updateStatus = async (id: string, status: CandidatureStatus) => {
     setActionLoading(a => ({ ...a, [`${id}_${status}`]: true }));
     try {
-      const note = noteInputs[id];
-      const res = await applicationsApi.updateStatus(id, status, note);
-      setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a));
-      // Afficher les credentials si compte créé
-      if (status === 'VALIDATED' && res.data?.washerAccount) {
-        setCreatedAccount(res.data.washerAccount);
+      if (status === 'VALIDATED') {
+        // Appel dédié : met à jour le statut + crée le compte washer
+        const res = await applicationsApi.validateAndCreate(id);
+        setApps(prev => prev.map(a => a.id === id ? { ...a, status: 'VALIDATED' } : a));
+        if (res.data?.washerAccount) {
+          setCreatedAccount(res.data.washerAccount);
+        }
+      } else {
+        const note = noteInputs[id];
+        await applicationsApi.updateStatus(id, status, note || undefined);
+        setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a));
       }
     } catch (e: any) {
       const msg = e?.response?.data?.message || e?.message || 'Erreur inconnue';

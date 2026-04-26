@@ -119,6 +119,8 @@ export const applicationsApi = {
   getOne: (id: string) => api.get(`/applications/${id}`),
   updateStatus: (id: string, status: string, adminNote?: string) =>
     api.patch(`/applications/${id}/status`, { status, adminNote }),
+  validateAndCreate: (id: string) =>
+    api.post(`/applications/${id}/validate`),
 };
 
 export const paymentsApi = {

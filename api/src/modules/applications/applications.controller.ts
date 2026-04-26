@@ -74,6 +74,13 @@ export class ApplicationsController {
     return this.applicationsService.updateStatus(id, dto.status, dto.adminNote);
   }
 
+  @Post(':id/validate')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN' as any)
+  validateAndCreate(@Param('id') id: string) {
+    return this.applicationsService.validateAndCreateAccount(id);
+  }
+
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN' as any)

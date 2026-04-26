@@ -74,7 +74,6 @@ export class ApplicationsService {
     });
 
     if (existingUser) {
-      // Compte déjà existant — juste activer le profil washer si besoin
       const existingWasher = await this.prisma.washerProfile.findFirst({
         where: { userId: existingUser.id },
       });
@@ -85,6 +84,26 @@ export class ApplicationsService {
         });
         return { alreadyExists: true, phone: app.phone };
       }
+      // User existe mais pas de profil washer → créer le profil
+      const digits = existingUser.phone?.replace(/\D/g, '') || '';
+      const tempPassword = 'Wash' + digits.slice(-4);
+      const washerProfile = await this.prisma.washerProfile.create({
+        data: {
+          userId: existingUser.id,
+          transportType: (app.transportType as any) || 'MOTORBIKE',
+          orangeMoneyNumber: app.waveMoneyNumber || '',
+          zoneLabel: app.zone || '',
+          accountStatus: 'ACTIVE',
+          isApproved: true,
+        },
+      });
+      const existingWallet = await this.prisma.wallet.findFirst({ where: { washerId: washerProfile.id } });
+      if (!existingWallet) {
+        await this.prisma.wallet.create({
+          data: { washerId: washerProfile.id, availableBalance: 0, pendingBalance: 0, currency: 'XOF' },
+        });
+      }
+      return { alreadyExists: false, phone: app.phone, tempPassword, name: `${app.firstName} ${app.lastName}` };
     }
 
     // Générer mot de passe temporaire : Wash + 4 derniers chiffres du téléphone

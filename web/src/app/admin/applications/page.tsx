@@ -90,8 +90,9 @@ export default function AdminApplicationsPage() {
       if (status === 'VALIDATED' && res.data?.washerAccount) {
         setCreatedAccount(res.data.washerAccount);
       }
-    } catch {
-      alert('Erreur lors de la mise à jour du statut.');
+    } catch (e: any) {
+      const msg = e?.response?.data?.message || e?.message || 'Erreur inconnue';
+      alert('Erreur lors de la mise à jour du statut : ' + msg);
     } finally {
       setActionLoading(a => { const n = { ...a }; delete n[`${id}_${status}`]; return n; });
     }

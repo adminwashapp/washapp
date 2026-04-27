@@ -58,9 +58,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <aside className={`fixed lg:static inset-y-0 left-0 z-30 w-64 bg-gray-900 border-r border-gray-800 flex flex-col transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="px-6 py-5 border-b border-gray-800 flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Car className="w-5 h-5 text-white" />
-          </div>
+          <img src="/logowashapp.png" alt="Washapp" className="w-10 h-10 rounded-xl object-cover" />
           <div>
             <p className="font-bold text-white text-sm">Washapp</p>
             <p className="text-xs text-gray-500">Admin Panel</p>

@@ -397,4 +397,29 @@ export class AdminService {
     await this.notifications.sendToUser(userId, { title, body: message, data: { type: 'TEST' } });
     return { success: true, userId, title, message };
   }
+
+  async deleteUserByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) return { success: false, message: 'Utilisateur introuvable' };
+
+    // Si c'est un washer
+    const washerProfile = await this.prisma.washerProfile.findFirst({ where: { userId: user.id } });
+    if (washerProfile) {
+      await this.deleteWasher(washerProfile.id);
+      return { success: true, role: 'WASHER', email };
+    }
+
+    // Si c'est un client
+    const clientProfile = await this.prisma.clientProfile.findFirst({ where: { userId: user.id } });
+    if (clientProfile) {
+      await this.deleteClient(clientProfile.id);
+      return { success: true, role: 'CLIENT', email };
+    }
+
+    // Sinon supprimer juste le user
+    await this.prisma.refreshToken.deleteMany({ where: { userId: user.id } });
+    await this.prisma.passwordResetToken.deleteMany({ where: { userId: user.id } });
+    await this.prisma.user.delete({ where: { id: user.id } });
+    return { success: true, role: user.role, email };
+  }
 }

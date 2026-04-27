@@ -144,4 +144,9 @@ export class AdminController {
   sendTestNotification(@Body() body: { userId: string; title: string; message: string }) {
     return this.adminService.sendTestNotification(body.userId, body.title, body.message);
   }
+
+  @Delete('users/by-email')
+  deleteUserByEmail(@Query('email') email: string) {
+    return this.adminService.deleteUserByEmail(email);
+  }
 }

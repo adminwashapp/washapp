@@ -227,13 +227,23 @@ export class ApplicationsService {
     });
 
     if (user) {
-      // Supprimer le profil washer et tout ce qui y est lié
       const washerProfile = await this.prisma.washerProfile.findFirst({ where: { userId: user.id } });
       if (washerProfile) {
+        // Supprimer dans l'ordre correct (FK sans cascade)
+        await this.prisma.missionDispatchAttempt.deleteMany({ where: { washerId: washerProfile.id } });
+        await this.prisma.rating.deleteMany({ where: { washerId: washerProfile.id } });
+        await this.prisma.complaint.deleteMany({ where: { washerId: washerProfile.id } });
+
         const missions = await this.prisma.mission.findMany({ where: { washerId: washerProfile.id }, select: { id: true } });
         const missionIds = missions.map(m => m.id);
-        await this.prisma.complaint.deleteMany({ where: { washerId: washerProfile.id } });
-        if (missionIds.length > 0) await this.prisma.mission.deleteMany({ where: { id: { in: missionIds } } });
+        if (missionIds.length > 0) {
+          await this.prisma.missionDispatchAttempt.deleteMany({ where: { missionId: { in: missionIds } } });
+          await this.prisma.rating.deleteMany({ where: { missionId: { in: missionIds } } });
+          await this.prisma.complaint.deleteMany({ where: { missionId: { in: missionIds } } });
+          await this.prisma.missionPhoto.deleteMany({ where: { missionId: { in: missionIds } } });
+          await this.prisma.mission.deleteMany({ where: { id: { in: missionIds } } });
+        }
+
         await this.prisma.ledgerEntry.deleteMany({ where: { washerId: washerProfile.id } });
         const wallet = await this.prisma.wallet.findFirst({ where: { washerId: washerProfile.id } });
         if (wallet) {
@@ -247,7 +257,6 @@ export class ApplicationsService {
         await this.prisma.washerReservationStat.deleteMany({ where: { washerId: washerProfile.id } });
         await this.prisma.washerProfile.delete({ where: { id: washerProfile.id } });
       }
-      // Supprimer les tokens et le User (libère email + téléphone)
       await this.prisma.refreshToken.deleteMany({ where: { userId: user.id } });
       await this.prisma.passwordResetToken.deleteMany({ where: { userId: user.id } });
       await this.prisma.user.delete({ where: { id: user.id } });

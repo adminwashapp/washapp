@@ -48,7 +48,8 @@ export class ApplicationsController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const fileUrl = `${process.env.API_URL || 'http://localhost:3001'}/uploads/applications/${file.filename}`;
+    const baseUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 3001}`;
+    const fileUrl = `${baseUrl}/uploads/applications/${file.filename}`;
     return { url: fileUrl };
   }
 

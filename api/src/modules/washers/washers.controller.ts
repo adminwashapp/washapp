@@ -80,7 +80,8 @@ export class WashersController {
     @Param('type') photoType: 'BEFORE' | 'AFTER',
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const fileUrl = `${process.env.API_URL || 'http://localhost:3001'}/uploads/missions/${file.filename}`;
+    const baseUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 3001}`;
+    const fileUrl = `${baseUrl}/uploads/missions/${file.filename}`;
     return this.washersService.uploadMissionPhoto(
       missionId,
       user.washerProfile.id,

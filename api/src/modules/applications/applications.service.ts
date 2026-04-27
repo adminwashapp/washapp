@@ -96,15 +96,23 @@ export class ApplicationsService {
     });
 
     if (existingUser) {
+      // Mettre à jour phone/email avec les données de la candidature pour cohérence
+      const updateData: any = {};
+      if (app.phone && app.phone !== existingUser.phone) updateData.phone = app.phone;
+      if (app.email && app.email !== existingUser.email) updateData.email = app.email;
+
       const existingWasher = await this.prisma.washerProfile.findFirst({
         where: { userId: existingUser.id },
       });
       if (existingWasher) {
-        // Réinitialiser le mot de passe temp et activer le profil
-        const digits = existingUser.phone?.replace(/\D/g, '') || '';
+        // Réinitialiser le mot de passe temp avec le téléphone de la CANDIDATURE
+        const digits = app.phone.replace(/\D/g, '');
         const tempPassword = 'Wash' + digits.slice(-4);
         const passwordHash = await bcrypt.hash(tempPassword, 10);
-        await this.prisma.user.update({ where: { id: existingUser.id }, data: { passwordHash } });
+        await this.prisma.user.update({
+          where: { id: existingUser.id },
+          data: { passwordHash, ...updateData },
+        });
         await this.prisma.washerProfile.update({
           where: { id: existingWasher.id },
           data: { accountStatus: 'ACTIVE' },
@@ -112,8 +120,11 @@ export class ApplicationsService {
         return { alreadyExists: true, phone: app.phone, tempPassword, name: `${app.firstName} ${app.lastName}` };
       }
       // User existe mais pas de profil washer → créer le profil
-      const digits = existingUser.phone?.replace(/\D/g, '') || '';
+      const digits = app.phone.replace(/\D/g, '');
       const tempPassword = 'Wash' + digits.slice(-4);
+      if (Object.keys(updateData).length > 0) {
+        await this.prisma.user.update({ where: { id: existingUser.id }, data: updateData });
+      }
       const washerProfile = await this.prisma.washerProfile.create({
         data: {
           userId: existingUser.id,

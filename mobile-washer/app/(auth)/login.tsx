@@ -99,7 +99,7 @@ export default function LoginScreen() {
               style={[styles.input, { flex: 1, marginBottom: 0 }]}
               value={password}
               onChangeText={setPassword}
-              placeholder="Wash0000"
+              placeholder="Votre mot de passe"
               placeholderTextColor="#4a5580"
               secureTextEntry={!showPass}
               autoCapitalize="none"

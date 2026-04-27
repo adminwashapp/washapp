@@ -99,8 +99,12 @@ export class AuthService {
       throw new UnauthorizedException('Identifiants invalides');
     }
 
+    if (!user.washerProfile?.isApproved) {
+      throw new UnauthorizedException('Compte pas encore approuvé par Washapp');
+    }
+
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
-    if (!valid) throw new UnauthorizedException('Identifiants invalides');
+    if (!valid) throw new UnauthorizedException('Mot de passe incorrect');
 
     return this.generateTokens(user);
   }

@@ -5,96 +5,123 @@ import {
   Alert, Image, StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { playDing } from "../../services/sound";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthStore } from "../../store";
-import { washerApi } from "../../services/api";
-import { washerSocket } from "../../services/socket";
+import { washerApi, API_URL } from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerForPushNotifications } from "../../services/notifications";
-import { API_URL } from "../../services/api";
 import axios from "axios";
 
 export default function LoginScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { setAuth } = useAuthStore();
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [step, setStep] = useState<"email" | "otp">("email");
-  const [loading, setLoading] = useState(false);
 
-  const requestOtp = async () => {
-    if (!email.trim()) return Alert.alert("Erreur", "Entrez votre email");
+  const [identifier, setIdentifier] = useState(""); // telephone ou email
+  const [password, setPassword]     = useState("");
+  const [showPass, setShowPass]     = useState(false);
+  const [loading, setLoading]       = useState(false);
+
+  const login = async () => {
+    const id = identifier.trim();
+    const pw = password.trim();
+    if (!id) return Alert.alert("Erreur", "Entrez votre numéro de téléphone ou email");
+    if (!pw) return Alert.alert("Erreur", "Entrez votre mot de passe");
+
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/auth/washer/request-otp`, { email: email.trim().toLowerCase() });
-      setStep("otp");
-    } catch (e: any) {
-      Alert.alert("Erreur", e.response?.data?.message || "Email non reconnu ou compte non approuve");
-    } finally { setLoading(false); }
-  };
+      const isEmail = id.includes("@");
+      const res = await axios.post(`${API_URL}/auth/login/washer`, {
+        ...(isEmail ? { email: id.toLowerCase() } : { phone: id }),
+        password: pw,
+      });
 
-  const verifyOtp = async () => {
-    if (!code.trim()) return Alert.alert("Erreur", "Entrez le code recu");
-    setLoading(true);
-    try {
-      const res = await axios.post(`${API_URL}/auth/washer/verify-otp`, { email: email.trim().toLowerCase(), code: code.trim() });
       const { accessToken, refreshToken, user } = res.data;
-      await AsyncStorage.multiSet([["accessToken", accessToken], ["refreshToken", refreshToken]]);
+      await AsyncStorage.multiSet([
+        ["accessToken", accessToken],
+        ["refreshToken", refreshToken],
+      ]);
       setAuth({ user, accessToken, refreshToken });
-      playDing();
+
+      // Enregistrer le token push
       try {
-        const token = await registerForPushNotifications();
-        if (token) await washerApi.updatePushToken(token);
+        const pushToken = await registerForPushNotifications(() => Promise.resolve());
+        if (pushToken) await washerApi.updateFcmToken(pushToken);
       } catch {}
-      router.replace("/(tabs)/missions");
+
+      router.replace("/missions");
     } catch (e: any) {
-      Alert.alert("Code invalide", e.response?.data?.message || "Code incorrect ou expire");
-    } finally { setLoading(false); }
+      const msg = e?.response?.data?.message || "Identifiants incorrects ou compte non approuvé";
+      Alert.alert("Connexion impossible", msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1, backgroundColor: "#040c24" }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1, backgroundColor: "#040c24" }}
+    >
       <StatusBar barStyle="light-content" />
-      <ScrollView contentContainerStyle={[styles.container, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 }]} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={[styles.container, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 }]}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Logo */}
         <View style={styles.logoBox}>
           <Image source={require("../../assets/images/icon.png")} style={styles.logo} resizeMode="contain" />
           <Text style={styles.brand}>Washapp Washer</Text>
           <Text style={styles.sub}>Espace professionnel</Text>
         </View>
 
+        {/* Formulaire */}
         <View style={styles.card}>
-          {step === "email" ? (
-            <>
-              <Text style={styles.title}>Connexion</Text>
-              <Text style={styles.hint}>Entrez votre email professionnel</Text>
-              <TextInput
-                style={styles.input} value={email} onChangeText={setEmail}
-                placeholder="votre@email.com" placeholderTextColor="#666"
-                keyboardType="email-address" autoCapitalize="none" autoCorrect={false}
-              />
-              <TouchableOpacity style={styles.btn} onPress={requestOtp} disabled={loading}>
-                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Recevoir mon code</Text>}
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <Text style={styles.title}>Code de verification</Text>
-              <Text style={styles.hint}>Un code a 6 chiffres a ete envoye a{"\n"}{email}</Text>
-              <TextInput
-                style={[styles.input, styles.codeInput]} value={code} onChangeText={setCode}
-                placeholder="000000" placeholderTextColor="#666"
-                keyboardType="number-pad" maxLength={6}
-              />
-              <TouchableOpacity style={styles.btn} onPress={verifyOtp} disabled={loading}>
-                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>Valider</Text>}
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.back} onPress={() => { setStep("email"); setCode(""); }}>
-                <Text style={styles.backText}>Changer d adresse email</Text>
-              </TouchableOpacity>
-            </>
-          )}
+          <Text style={styles.title}>Connexion</Text>
+
+          {/* Champ identifiant */}
+          <Text style={styles.label}>Numéro de téléphone ou email</Text>
+          <TextInput
+            style={styles.input}
+            value={identifier}
+            onChangeText={setIdentifier}
+            placeholder="0033650090286 ou vous@email.com"
+            placeholderTextColor="#4a5580"
+            keyboardType="default"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+
+          {/* Champ mot de passe */}
+          <Text style={styles.label}>Mot de passe</Text>
+          <View style={styles.passwordRow}>
+            <TextInput
+              style={[styles.input, { flex: 1, marginBottom: 0 }]}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Wash0000"
+              placeholderTextColor="#4a5580"
+              secureTextEntry={!showPass}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <TouchableOpacity onPress={() => setShowPass(!showPass)} style={styles.eyeBtn}>
+              <Text style={{ color: "#6b7bcc", fontSize: 18 }}>{showPass ? "🙈" : "👁"}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Bouton connexion */}
+          <TouchableOpacity style={styles.btn} onPress={login} disabled={loading}>
+            {loading
+              ? <ActivityIndicator color="#fff" />
+              : <Text style={styles.btnText}>Se connecter</Text>
+            }
+          </TouchableOpacity>
+
+          <Text style={styles.hint}>
+            Mot de passe temporaire : Wash + 4 derniers chiffres de votre téléphone{"\n"}
+            Exemple : Wash0286
+          </Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -104,16 +131,20 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: { flexGrow: 1, justifyContent: "center", padding: 24 },
   logoBox: { alignItems: "center", marginBottom: 32 },
-  logo: { width: 80, height: 80, borderRadius: 20, marginBottom: 12 },
+  logo: { width: 90, height: 90, borderRadius: 22, marginBottom: 12 },
   brand: { fontSize: 26, fontWeight: "800", color: "#fff", letterSpacing: 1 },
   sub: { fontSize: 13, color: "#6b7bcc", marginTop: 4 },
   card: { backgroundColor: "#0d1631", borderRadius: 24, padding: 28, borderWidth: 1, borderColor: "#1a2550" },
-  title: { fontSize: 22, fontWeight: "700", color: "#fff", marginBottom: 8 },
-  hint: { fontSize: 14, color: "#8899cc", marginBottom: 24, lineHeight: 20 },
-  input: { backgroundColor: "#111d3a", borderWidth: 1, borderColor: "#1e2d55", borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14, color: "#fff", fontSize: 16, marginBottom: 16 },
-  codeInput: { fontSize: 28, fontWeight: "700", letterSpacing: 8, textAlign: "center" },
-  btn: { backgroundColor: "#1558f5", borderRadius: 14, paddingVertical: 16, alignItems: "center" },
+  title: { fontSize: 24, fontWeight: "700", color: "#fff", marginBottom: 24 },
+  label: { fontSize: 13, color: "#8899cc", fontWeight: "600", marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 },
+  input: {
+    backgroundColor: "#111d3a", borderWidth: 1, borderColor: "#1e2d55",
+    borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14,
+    color: "#fff", fontSize: 16, marginBottom: 20,
+  },
+  passwordRow: { flexDirection: "row", alignItems: "center", marginBottom: 20, gap: 8 },
+  eyeBtn: { paddingHorizontal: 12, paddingVertical: 14 },
+  btn: { backgroundColor: "#1558f5", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 4 },
   btnText: { color: "#fff", fontWeight: "700", fontSize: 16 },
-  back: { marginTop: 16, alignItems: "center" },
-  backText: { color: "#6b7bcc", fontSize: 14 },
+  hint: { marginTop: 20, fontSize: 12, color: "#4a5580", textAlign: "center", lineHeight: 18 },
 });

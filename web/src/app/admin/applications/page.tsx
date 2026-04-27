@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, adminApi, applicationsApi } from '@/lib/api';
 import { Trash, CheckCircle2, CheckCircle, XCircle, Clock, AlertTriangle, User, Phone, Mail,
-  MapPin, Truck, Calendar, FileText, ChevronDown, ChevronUp, RefreshCw, ExternalLink,
+  MapPin, Truck, Calendar, FileText, ChevronDown, ChevronUp, RefreshCw, ExternalLink, Search,
 } from 'lucide-react';
 
 type CandidatureStatus = 'PENDING' | 'VALIDATED' | 'REJECTED' | 'INCOMPLETE';
@@ -57,6 +57,7 @@ export default function AdminApplicationsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({});
   const [noteInputs, setNoteInputs] = useState<Record<string, string>>({});
+  const [search, setSearch] = useState('');
 
   const [createdAccount, setCreatedAccount] = useState<{
     phone: string;
@@ -118,6 +119,16 @@ export default function AdminApplicationsPage() {
       setActionLoading(a => { const n = { ...a }; delete n[`${id}_delete`]; return n; });
     }
   };
+
+  const filteredApps = apps.filter(app => {
+    const q = search.toLowerCase();
+    return (
+      app.firstName?.toLowerCase().includes(q) ||
+      app.lastName?.toLowerCase().includes(q) ||
+      app.email?.toLowerCase().includes(q) ||
+      app.phone?.toLowerCase().includes(q)
+    );
+  });
 
   const counts = {
     all: apps.length,
@@ -250,7 +261,17 @@ export default function AdminApplicationsPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {apps.map(app => {
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Rechercher une candidature..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            {filteredApps.map(app => {
               const cfg = STATUS_CONFIG[app.status];
               const StatusIcon = cfg.icon;
               const isOpen = expanded === app.id;

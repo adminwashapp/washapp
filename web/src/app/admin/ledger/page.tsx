@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/api';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Search } from 'lucide-react';
 
 const TYPE_COLORS: Record<string, string> = {
   PAYMENT_RECEIVED: 'bg-blue-900 text-blue-400',
@@ -28,6 +28,7 @@ export default function AdminLedgerPage() {
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -44,6 +45,16 @@ export default function AdminLedgerPage() {
   const total = entries.reduce((acc, e) => {
     return e.direction === 'CREDIT' ? acc + e.amount : acc - e.amount;
   }, 0);
+
+  const filteredEntries = entries.filter(e => {
+    const q = search.toLowerCase();
+    return (
+      e.type?.toLowerCase().includes(q) ||
+      (TYPE_LABELS[e.type] || '').toLowerCase().includes(q) ||
+      e.reference?.toLowerCase().includes(q) ||
+      e.washer?.user?.name?.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -76,6 +87,18 @@ export default function AdminLedgerPage() {
         </div>
       ) : (
         <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+          <div className="px-4 pt-4">
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Rechercher une entrée..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-800/50">
@@ -88,7 +111,7 @@ export default function AdminLedgerPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {entries.map((e) => (
+                {filteredEntries.map((e) => (
                   <tr key={e.id} className="hover:bg-gray-800/30 transition-colors">
                     <td className="px-4 py-3">
                       <span className={`text-xs font-bold px-2 py-1 rounded-full ${TYPE_COLORS[e.type] || 'bg-gray-800 text-gray-400'}`}>

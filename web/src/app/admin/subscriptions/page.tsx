@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/api';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Search } from 'lucide-react';
 
 const SUB_STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-900 text-yellow-400',
@@ -19,6 +19,7 @@ export default function AdminSubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ACTIVE');
+  const [search, setSearch] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -35,6 +36,15 @@ export default function AdminSubscriptionsPage() {
   const filtered = filter
     ? subscriptions.filter((s) => s.status === filter)
     : subscriptions;
+
+  const filteredSubscriptions = filtered.filter(s => {
+    const q = search.toLowerCase();
+    return (
+      s.washer?.user?.name?.toLowerCase().includes(q) ||
+      s.washer?.user?.phone?.toLowerCase().includes(q) ||
+      s.status?.toLowerCase().includes(q)
+    );
+  });
 
   const expiringThisWeek = subscriptions.filter((s) => {
     if (s.status !== 'ACTIVE') return false;
@@ -123,6 +133,18 @@ export default function AdminSubscriptionsPage() {
         </div>
       ) : (
         <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+          <div className="px-4 pt-4">
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Rechercher un abonnement..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-800/50">
@@ -135,7 +157,7 @@ export default function AdminSubscriptionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {filtered.map((s) => {
+                {filteredSubscriptions.map((s) => {
                   const daysLeft = Math.ceil((new Date(s.endsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
                   const expired = daysLeft < 0;
                   return (

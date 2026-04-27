@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/api';
-import { RefreshCw, CheckCircle, XCircle, CreditCard } from 'lucide-react';
+import { RefreshCw, CheckCircle, XCircle, CreditCard, Search } from 'lucide-react';
 
 const STATUS_FILTERS = [
   { value: '', label: 'Tous' },
@@ -29,6 +29,7 @@ export default function AdminWithdrawalsPage() {
   const [status, setStatus] = useState('PENDING');
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -55,6 +56,16 @@ export default function AdminWithdrawalsPage() {
   const totalPending = withdrawals
     .filter((w) => w.status === 'PENDING' || w.status === 'APPROVED')
     .reduce((acc, w) => acc + w.amount, 0);
+
+  const filteredWithdrawals = withdrawals.filter(w => {
+    const q = search.toLowerCase();
+    return (
+      w.washer?.user?.name?.toLowerCase().includes(q) ||
+      w.washer?.user?.phone?.toLowerCase().includes(q) ||
+      w.status?.toLowerCase().includes(q) ||
+      w.orangeMoneyNumber?.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -102,7 +113,17 @@ export default function AdminWithdrawalsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {withdrawals.map((w) => (
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Rechercher un retrait..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          {filteredWithdrawals.map((w) => (
             <div key={w.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">

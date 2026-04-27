@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { adminApi } from '@/lib/api';
-import { RefreshCw, ExternalLink } from 'lucide-react';
+import { RefreshCw, ExternalLink, Search } from 'lucide-react';
 
 const STATUS_FILTERS = [
   { value: '', label: 'Toutes' },
@@ -45,8 +45,18 @@ const TYPE_LABELS: Record<string, string> = {
 export default function AdminMissionsPage() {
   const [missions, setMissions] = useState<any[]>([]);
   const [status, setStatus] = useState('');
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+
+  const filteredMissions = missions.filter(m =>
+    !search ||
+    m.id?.toLowerCase().includes(search.toLowerCase()) ||
+    m.fullAddress?.toLowerCase().includes(search.toLowerCase()) ||
+    m.serviceType?.toLowerCase().includes(search.toLowerCase()) ||
+    m.client?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+    m.washer?.user?.name?.toLowerCase().includes(search.toLowerCase())
+  );
 
   const load = async () => {
     setLoading(true);
@@ -70,6 +80,17 @@ export default function AdminMissionsPage() {
         <button onClick={load} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white bg-gray-800 px-3 py-2 rounded-xl">
           <RefreshCw className="w-4 h-4" /> Actualiser
         </button>
+      </div>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+        <input
+          type="text"
+          placeholder="Rechercher une mission, client, adresse..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+        />
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -110,7 +131,7 @@ export default function AdminMissionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {missions.map((m) => (
+                {filteredMissions.map((m) => (
                   <tr key={m.id} className="hover:bg-gray-800/30 transition-colors">
                     <td className="px-4 py-3">
                       <p className="font-mono text-xs text-gray-500">#{m.id?.slice(-8)}</p>

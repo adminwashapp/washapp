@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/api';
-import { RefreshCw, CheckCircle } from 'lucide-react';
+import { RefreshCw, CheckCircle, Search } from 'lucide-react';
 
 const STATUS_FILTERS = [
   { value: '', label: 'Tous' },
@@ -30,6 +30,7 @@ export default function AdminComplaintsPage() {
   const [selected, setSelected] = useState<any | null>(null);
   const [note, setNote] = useState('');
   const [resolveLoading, setResolveLoading] = useState(false);
+  const [search, setSearch] = useState('');
 
   const load = async () => {
     setLoading(true);
@@ -55,6 +56,15 @@ export default function AdminComplaintsPage() {
       setResolveLoading(false);
     }
   };
+
+  const filteredComplaints = complaints.filter(c => {
+    const q = search.toLowerCase();
+    return (
+      c.reason?.toLowerCase().includes(q) ||
+      c.description?.toLowerCase().includes(q) ||
+      c.status?.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -93,7 +103,18 @@ export default function AdminComplaintsPage() {
               <p className="text-gray-500">Aucun litige</p>
             </div>
           ) : (
-            complaints.map((c) => (
+            <>
+              <div className="relative mb-6">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Rechercher une plainte..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              {filteredComplaints.map((c) => (
               <button
                 key={c.id}
                 onClick={() => { setSelected(c); setNote(''); }}
@@ -124,7 +145,8 @@ export default function AdminComplaintsPage() {
                   </div>
                 )}
               </button>
-            ))
+            ))}
+            </>
           )}
         </div>
 

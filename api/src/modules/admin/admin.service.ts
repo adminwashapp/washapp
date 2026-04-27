@@ -298,20 +298,98 @@ export class AdminService {
   }
 
   async deleteWasher(washerProfileId: string) {
-    const washer = await this.prisma.washerProfile.findUnique({
-      where: { id: washerProfileId },
-    });
+    const washer = await this.prisma.washerProfile.findUnique({ where: { id: washerProfileId } });
     if (!washer) throw new Error('Washer introuvable');
+
+    // 1. Trouver toutes les missions liées
+    const missions = await this.prisma.mission.findMany({
+      where: { washerId: washerProfileId },
+      select: { id: true },
+    });
+    const missionIds = missions.map(m => m.id);
+
+    // 2. Supprimer les plaintes (pas de cascade sur washerId)
+    await this.prisma.complaint.deleteMany({ where: { washerId: washerProfileId } });
+
+    // 3. Supprimer les missions (cascade → MissionPhoto, MissionDispatchAttempt, Rating)
+    if (missionIds.length > 0) {
+      await this.prisma.mission.deleteMany({ where: { id: { in: missionIds } } });
+    }
+
+    // 4. Supprimer les entrées ledger liées au washer / wallet
+    await this.prisma.ledgerEntry.deleteMany({ where: { washerId: washerProfileId } });
+
+    // 5. Trouver et supprimer le wallet
+    const wallet = await this.prisma.wallet.findFirst({ where: { washerId: washerProfileId } });
+    if (wallet) {
+      await this.prisma.ledgerEntry.deleteMany({ where: { walletId: wallet.id } });
+      await this.prisma.withdrawalRequest.deleteMany({ where: { walletId: wallet.id } });
+      await this.prisma.wallet.delete({ where: { id: wallet.id } });
+    }
+
+    // 6. Supprimer les retraits directs
+    await this.prisma.withdrawalRequest.deleteMany({ where: { washerId: washerProfileId } });
+
+    // 7. Supprimer les données washer
+    await this.prisma.washerSubscription.deleteMany({ where: { washerId: washerProfileId } });
+    await this.prisma.washerLocation.deleteMany({ where: { washerId: washerProfileId } });
+    await this.prisma.washerReservationStat.deleteMany({ where: { washerId: washerProfileId } });
+
+    // 8. Supprimer le profil washer
+    await this.prisma.washerProfile.delete({ where: { id: washerProfileId } });
+
+    // 9. Supprimer tokens refresh / reset
+    await this.prisma.refreshToken.deleteMany({ where: { userId: washer.userId } });
+    await this.prisma.passwordResetToken.deleteMany({ where: { userId: washer.userId } });
+
+    // 10. Supprimer l'utilisateur
     await this.prisma.user.delete({ where: { id: washer.userId } });
+
     return { success: true };
   }
 
   async deleteClient(clientProfileId: string) {
-    const client = await this.prisma.clientProfile.findUnique({
-      where: { id: clientProfileId },
-    });
+    const client = await this.prisma.clientProfile.findUnique({ where: { id: clientProfileId } });
     if (!client) throw new Error('Client introuvable');
+
+    // 1. Missions du client
+    const missions = await this.prisma.mission.findMany({
+      where: { clientId: clientProfileId },
+      select: { id: true },
+    });
+    const missionIds = missions.map(m => m.id);
+
+    // 2. Plaintes
+    await this.prisma.complaint.deleteMany({ where: { clientId: clientProfileId } });
+
+    // 3. Ratings du client
+    await this.prisma.rating.deleteMany({ where: { clientId: clientProfileId } });
+
+    // 4. Missions (cascade → photos, dispatch, ratings)
+    if (missionIds.length > 0) {
+      await this.prisma.mission.deleteMany({ where: { id: { in: missionIds } } });
+    }
+
+    // 5. LedgerEntries client
+    await this.prisma.ledgerEntry.deleteMany({ where: { clientId: clientProfileId } });
+
+    // 6. Véhicules et adresses
+    await this.prisma.vehicle.deleteMany({ where: { clientId: clientProfileId } });
+    await this.prisma.address.deleteMany({ where: { clientId: clientProfileId } });
+
+    // 7. Abonnements client
+    await this.prisma.clientSubscription.deleteMany({ where: { clientId: clientProfileId } });
+
+    // 8. Profil client
+    await this.prisma.clientProfile.delete({ where: { id: clientProfileId } });
+
+    // 9. Tokens
+    await this.prisma.refreshToken.deleteMany({ where: { userId: client.userId } });
+    await this.prisma.passwordResetToken.deleteMany({ where: { userId: client.userId } });
+
+    // 10. User
     await this.prisma.user.delete({ where: { id: client.userId } });
+
     return { success: true };
   }
 

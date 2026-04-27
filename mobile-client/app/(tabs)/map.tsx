@@ -88,12 +88,12 @@ export default function MapScreen() {
     setTimeout(() => {
       switch (action) {
         case 'map':      break;
-        case 'missions': router.push('/(tabs)/missions'); break;
-        case 'account':  router.push('/(tabs)/account'); break;
+        case 'missions': router.push('/missions'); break;
+        case 'account':  router.push('/account'); break;
         case 'faq':      Linking.openURL(`${WEB_URL}/faq`); break;
         case 'legal':    Linking.openURL(`${WEB_URL}/legal`); break;
         case 'privacy':  Linking.openURL(`${WEB_URL}/politique-de-confidentialite`); break;
-        case 'logout':   logout(); router.replace('/(auth)/welcome'); break;
+        case 'logout':   logout(); router.replace('/welcome'); break;
       }
     }, 260);
   };

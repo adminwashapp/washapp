@@ -150,14 +150,14 @@ export default function WaveConfirmScreen() {
             </View>
             <TouchableOpacity
               style={styles.homeBtn}
-              onPress={() => router.replace("/(tabs)/missions")}
+            onPress={() => router.replace("/missions")}
               activeOpacity={0.85}
             >
               <Text style={styles.homeBtnText}>Retour aux missions</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.walletBtn}
-              onPress={() => router.replace("/(tabs)/wallet")}
+            onPress={() => router.replace("/wallet")}
               activeOpacity={0.8}
             >
               <Text style={styles.walletBtnText}>{"\uD83D\uDCB0"} Voir mon wallet</Text>

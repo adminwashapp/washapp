@@ -27,10 +27,10 @@ const SERVICE_ICON: Record<string, string> = {
 
 const MENU_ITEMS = [
   { icon: "\uD83C\uDFE0", label: "Accueil",         route: null },
-  { icon: "\uD83D\uDCC5", label: "Mes missions",     route: "/(tabs)/missions" },
-  { icon: "\uD83D\uDCB0", label: "Revenus",          route: "/(tabs)/earnings" },
-  { icon: "\uD83D\uDCB3", label: "Wallet",           route: "/(tabs)/wallet" },
-  { icon: "\uD83D\uDC64", label: "Mon compte",       route: "/(tabs)/account" },
+  { icon: "\uD83D\uDCC5", label: "Mes missions",     route: "/missions" },
+  { icon: "\uD83D\uDCB0", label: "Revenus",          route: "/earnings" },
+  { icon: "\uD83D\uDCB3", label: "Wallet",           route: "/wallet" },
+  { icon: "\uD83D\uDC64", label: "Mon compte",       route: "/account" },
   { icon: "\uD83D\uDCCB", label: "FAQ",              route: null, web: `${WEB_URL}/faq` },
   { icon: "\uD83D\uDCC4", label: "Mentions legales", route: null, web: `${WEB_URL}/legal` },
   { icon: "\uD83D\uDD12", label: "Politique de confidentialite", route: null, web: `${WEB_URL}/politique-de-confidentialite` },
@@ -210,7 +210,7 @@ export default function MapScreen() {
         onPress: () => {
           washerSocket.complete(activeMission.id || activeMission.missionId);
           if (timerRef.current) clearInterval(timerRef.current);
-          router.push(`/mission/${activeMission.id || activeMission.missionId}`);
+          router.push({ pathname: "/mission/[id]", params: { id: String(activeMission.id || activeMission.missionId) } } as any);
           setActiveMission(null);
           setMapState("ONLINE_FREE");
           slidePanel(false);
@@ -227,7 +227,7 @@ export default function MapScreen() {
     if (rt) authApi.logout(rt).catch(() => {});
     await AsyncStorage.multiRemove(["accessToken", "refreshToken", "user"]);
     clearAuth();
-    router.replace("/(auth)/welcome");
+    router.replace("/welcome");
   };
 
   const handleMenuPress = (item: typeof MENU_ITEMS[0]) => {

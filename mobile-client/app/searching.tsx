@@ -69,7 +69,7 @@ export default function SearchingScreen() {
         if (m.status === "CANCELLED" || m.status === "EXPIRED") {
           clearInterval(poll);
           Alert.alert("Mission annulée", "Aucun washer disponible pour le moment.", [
-            { text: "OK", onPress: () => router.replace("/(tabs)/map") },
+        { text: "OK", onPress: () => router.replace("/map") },
           ]);
         }
       } catch { /* network — retry next tick */ }
@@ -88,7 +88,7 @@ export default function SearchingScreen() {
           try {
             if (id) await missionsApi.cancel(id);
           } catch {}
-          router.replace("/(tabs)/map");
+    router.replace("/map");
         },
       },
     ]);

@@ -10,7 +10,7 @@ export default function NotFoundScreen() {
       <Text style={styles.code}>404</Text>
       <Text style={styles.title}>Page introuvable</Text>
       <Text style={styles.sub}>Cette page n{"'"}existe pas ou a ete deplacee.</Text>
-      <TouchableOpacity style={styles.btn} onPress={() => router.replace("/(tabs)/map")} activeOpacity={0.85}>
+      <TouchableOpacity style={styles.btn} onPress={() => router.replace("/map")} activeOpacity={0.85}>
         <Text style={styles.btnText}>Retour a l{"'"}accueil</Text>
       </TouchableOpacity>
     </View>

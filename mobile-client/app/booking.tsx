@@ -47,7 +47,7 @@ export default function BookingScreen() {
   useEffect(() => {
     if (params.serviceType) setService(params.serviceType as any);
     if (params.missionType) setMissionType(params.missionType as any);
-    if (!isAuthenticated) { router.replace('/(auth)/login'); return; }
+    if (!isAuthenticated) { router.replace('/login'); return; }
     clientsApi.getVehicles().then((r) => setVehicles(r.data || [])).catch(() => {});
   }, []);
 
@@ -142,7 +142,7 @@ export default function BookingScreen() {
         Alert.alert(
           'Reservation enregistree !',
           'Votre reservation a bien ete prise en compte. Vous pouvez suivre son statut dans Mes reservations.',
-          [{ text: 'OK', onPress: () => router.replace('/(tabs)/missions') }]
+          [{ text: 'OK', onPress: () => router.replace('/missions') }]
         );
       }
     } catch (e: any) {

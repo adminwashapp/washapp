@@ -45,7 +45,7 @@ export default function ResetPasswordScreen() {
           <Text style={styles.doneSub}>Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</Text>
           <TouchableOpacity
             style={styles.submitBtn}
-            onPress={() => router.replace("/(auth)/login")}
+              onPress={() => router.replace("/login")}
             activeOpacity={0.85}
           >
             <Text style={styles.submitBtnTxt}>Se connecter</Text>

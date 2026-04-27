@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   StatusBar, Alert, Linking, Modal, TextInput, Switch, ActivityIndicator,
@@ -108,7 +108,7 @@ export default function AccountScreen() {
           style: 'destructive',
           onPress: async () => {
             await logout();
-            router.replace('/(auth)/welcome');
+            router.replace('/welcome');
           },
         },
       ]
@@ -131,8 +131,8 @@ export default function AccountScreen() {
     {
       title: 'Activit\u00E9',
       rows: [
-        { icon: ICON.clipboard, label: 'Mes r\u00E9servations',     action: () => router.push('/(tabs)/missions') },
-        { icon: ICON.clock,     label: 'Historique des lavages', action: () => router.push('/(tabs)/missions') },
+        { icon: ICON.clipboard, label: 'Mes r\u00E9servations',     action: () => router.push('/missions') },
+        { icon: ICON.clock,     label: 'Historique des lavages', action: () => router.push('/missions') },
         { icon: '\u2B50', label: 'Mon abonnement', action: () => router.push('/abonnement') },
       ],
     },
@@ -161,10 +161,10 @@ export default function AccountScreen() {
         </View>
         <Text style={styles.guestTitle}>Mon compte</Text>
         <Text style={styles.guestSub}>{'Connectez-vous pour acc\u00E9der\n\u00E0 votre espace personnel'}</Text>
-        <TouchableOpacity style={styles.guestLoginBtn} onPress={() => router.push('/(auth)/login')} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.guestLoginBtn} onPress={() => router.push('/login')} activeOpacity={0.85}>
           <Text style={styles.guestLoginBtnText}>Se connecter</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/(auth)/register')} activeOpacity={0.7}>
+        <TouchableOpacity onPress={() => router.push('/register')} activeOpacity={0.7}>
           <Text style={styles.guestRegisterLink}>Cr\u00E9er un compte</Text>
         </TouchableOpacity>
       </View>
@@ -359,3 +359,4 @@ const styles = StyleSheet.create({
   modalCancelBtn: { paddingVertical: 14, alignItems: 'center', marginTop: 6 },
   modalCancelBtnText: { fontSize: 15, color: '#64748b', fontWeight: '500' },
 });
+

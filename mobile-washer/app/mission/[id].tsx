@@ -142,7 +142,7 @@ export default function MissionDetailScreen() {
           Alert.alert(
             "Mission terminee",
             isWave ? "Bravo ! Attendez que le client envoie le paiement Wave." : "Bravo ! La mission est enregistree.",
-            [{ text: "OK", onPress: () => isWave ? router.replace({ pathname: "/wave-confirm/[id]", params: { id: mission.id } }) : router.push("/(tabs)/missions") }]
+        [{ text: "OK", onPress: () => isWave ? router.replace({ pathname: "/wave-confirm/[id]", params: { id: mission.id } }) : router.push("/missions") }]
           );
         },
       },

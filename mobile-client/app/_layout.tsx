@@ -5,7 +5,8 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAuthStore } from '../store';
 import { LangProvider } from '../contexts/lang';
-import { registerForPushNotifications } from '../services/notifications';
+import { addNotificationListener, registerForPushNotifications } from '../services/notifications';
+import { authApi } from '../services/api';
 
 export default function RootLayout() {
   const { isAuthenticated, loadFromStorage } = useAuthStore();
@@ -25,18 +26,32 @@ export default function RootLayout() {
     if (!ready) return;
     const inAuth = segments[0] === '(auth)';
     if (!isAuthenticated && !inAuth) {
-      router.replace('/(auth)/welcome');
+      router.replace('/welcome');
     } else if (isAuthenticated && inAuth) {
-      router.replace('/(tabs)/map');
+      router.replace('/map');
     }
   }, [isAuthenticated, ready, segments]);
 
-  // Register push notifications when user is logged in
   useEffect(() => {
     if (isAuthenticated) {
-      registerForPushNotifications().catch(() => {});
+      registerForPushNotifications(authApi.savePushToken).catch(() => {});
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    const unsub = addNotificationListener(
+      () => {},
+      (response: any) => {
+        const missionId = response?.notification?.request?.content?.data?.missionId;
+        if (missionId) {
+          router.push({ pathname: '/tracking/[id]', params: { id: String(missionId) } } as any);
+        }
+      },
+    );
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, [router]);
 
   if (!ready) {
     return (

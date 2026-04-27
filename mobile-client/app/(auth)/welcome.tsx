@@ -60,12 +60,12 @@ export default function WelcomeScreen() {
 
           {/* CTA */}
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.btnPrimary} activeOpacity={0.85} onPress={() => router.push('/(auth)/register')}>
+            <TouchableOpacity style={styles.btnPrimary} activeOpacity={0.85} onPress={() => router.push('/register')}>
               <LinearGradient colors={['#2f78ff', '#1558f5', '#1045e1']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.btnGradient}>
                 <Text style={styles.btnPrimaryText}>{t('welcome_cta')}</Text>
               </LinearGradient>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnSecondary} activeOpacity={0.85} onPress={() => router.push('/(auth)/login')}>
+            <TouchableOpacity style={styles.btnSecondary} activeOpacity={0.85} onPress={() => router.push('/login')}>
               <Text style={styles.btnSecondaryText}>{t('welcome_login')}</Text>
             </TouchableOpacity>
           </View>

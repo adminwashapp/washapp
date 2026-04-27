@@ -137,4 +137,11 @@ export class AdminController {
   deleteClient(@Param('id') id: string) {
     return this.adminService.deleteClient(id);
   }
+
+  @Post('notifications/test')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN' as any)
+  sendTestNotification(@Body() body: { userId: string; title: string; message: string }) {
+    return this.adminService.sendTestNotification(body.userId, body.title, body.message);
+  }
 }

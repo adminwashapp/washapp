@@ -141,7 +141,7 @@ export default function AbonnementScreen() {
         )}
 
         {/* CTA Reserver */}
-        <TouchableOpacity style={styles.bookBtn} onPress={() => router.push("/(tabs)/map")} activeOpacity={0.85}>
+      <TouchableOpacity style={styles.bookBtn} onPress={() => router.push("/map")} activeOpacity={0.85}>
           <Text style={styles.bookBtnText}>{"🚗"} Reserver un lavage</Text>
         </TouchableOpacity>
       </ScrollView>

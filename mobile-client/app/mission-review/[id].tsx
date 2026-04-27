@@ -55,7 +55,7 @@ export default function MissionReviewScreen() {
             ? "Votre retour a ete enregistre. A tres bientot !"
             : "Votre reclamation a ete envoyee. Notre equipe la traite rapidement."}
         </Text>
-        <TouchableOpacity style={styles.doneBtn} onPress={() => router.replace("/(tabs)/missions")} activeOpacity={0.85}>
+      <TouchableOpacity style={styles.doneBtn} onPress={() => router.replace("/missions")} activeOpacity={0.85}>
           <Text style={styles.doneBtnText}>Retour a mes missions</Text>
         </TouchableOpacity>
       </View>

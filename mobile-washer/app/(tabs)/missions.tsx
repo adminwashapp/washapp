@@ -84,7 +84,7 @@ export default function MissionsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.push("/(tabs)/map")} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => router.push("/map")} style={styles.backBtn}>
           <Text style={styles.backArrow}>{"<"}</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Mes missions</Text>

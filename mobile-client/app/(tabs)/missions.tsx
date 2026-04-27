@@ -67,7 +67,7 @@ export default function MissionsScreen() {
         <Text style={styles.lockEmoji}>🔒</Text>
         <Text style={styles.lockTitle}>Connectez-vous</Text>
         <Text style={styles.lockSub}>pour voir vos missions</Text>
-        <TouchableOpacity style={styles.loginBtn} onPress={() => router.push('/(auth)/login')}>
+        <TouchableOpacity style={styles.loginBtn} onPress={() => router.push('/login')}>
           <Text style={styles.loginBtnText}>Se connecter</Text>
         </TouchableOpacity>
       </View>
@@ -87,7 +87,7 @@ export default function MissionsScreen() {
       <TouchableOpacity
         style={styles.card}
         activeOpacity={0.75}
-        onPress={() => router.push({ pathname: '/mission/[id]', params: { id: item.id } })}
+        onPress={() => router.push({ pathname: '/tracking/[id]', params: { id: item.id } })}
       >
         <View style={styles.cardLeft}>
           <View style={[styles.emojiBox, { backgroundColor: st.bg }]}>

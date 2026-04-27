@@ -200,6 +200,24 @@ export default function AdminWashersPage() {
                             <XCircle className="w-3 h-3" /> Suspendre
                           </button>
                         )}
+                        {w.accountStatus === 'ACTIVE' && (
+                          <button
+                            onClick={async () => {
+                              const userId = (w as any).user?.id;
+                              if (!userId) return alert('ID user introuvable');
+                              setActionLoading(`${w.id}-notif`);
+                              try {
+                                await adminApi.sendTestNotification(userId, 'Test Washapp', 'Notification de test — connexion OK !');
+                                alert('Notification envoyée !');
+                              } catch { alert('Erreur envoi notification. Le washer doit être connecté sur son app.'); }
+                              finally { setActionLoading(null); }
+                            }}
+                            disabled={!!actionLoading}
+                            className="flex items-center gap-1 text-xs bg-blue-900 text-blue-300 hover:bg-blue-800 px-3 py-1.5 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                          >
+                            Notif test
+                          </button>
+                        )}
                         <button
                           onClick={async () => {
                             if (!confirm('Supprimer définitivement ce washer ? Action irréversible.')) return;

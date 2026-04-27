@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class AdminService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notifications: NotificationsService,
+  ) {}
 
   async getDashboard() {
     const today = new Date();
@@ -309,5 +313,10 @@ export class AdminService {
     if (!client) throw new Error('Client introuvable');
     await this.prisma.user.delete({ where: { id: client.userId } });
     return { success: true };
+  }
+
+  async sendTestNotification(userId: string, title: string, message: string) {
+    await this.notifications.sendToUser(userId, { title, body: message, data: { type: 'TEST' } });
+    return { success: true, userId, title, message };
   }
 }

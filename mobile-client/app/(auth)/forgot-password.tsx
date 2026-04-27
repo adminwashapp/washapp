@@ -117,7 +117,7 @@ export default function ForgotPasswordScreen() {
             <TouchableOpacity
               style={styles.submitBtn}
               onPress={() => router.push({
-                pathname: "/(auth)/reset-password",
+                pathname: "/reset-password",
                 params: { [mode]: value },
               } as any)}
               activeOpacity={0.85}

@@ -27,9 +27,9 @@ export default function RootLayout() {
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/(auth)/welcome');
+      router.replace('/welcome');
     } else if (isAuthenticated && inAuthGroup) {
-      router.replace('/(tabs)/map');
+      router.replace('/map');
       washerSocket.connect();
     }
   }, [isAuthenticated, isLoading, segments]);
@@ -47,7 +47,7 @@ export default function RootLayout() {
       () => {},
       (response: any) => {
         const missionId = response?.notification?.request?.content?.data?.missionId;
-        if (missionId) router.push(`/mission/${missionId}`);
+        if (missionId) router.push({ pathname: '/mission/[id]', params: { id: String(missionId) } } as any);
       },
     );
     return () => { if (typeof unsub === 'function') unsub(); };

@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { authApi } from '../../services/api';
 import { useAuthStore } from '../../store';
+import { registerForPushNotifications } from '../../services/notifications';
 
 const LOGO = require('../../assets/images/logowashapp.png');
 
@@ -37,7 +38,8 @@ export default function RegisterScreen() {
     try {
       const res = await authApi.registerClient({ name, phone, password });
       await setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
-      router.replace('/(tabs)/map');
+      registerForPushNotifications(authApi.savePushToken).catch(() => {});
+      router.replace('/map');
     } catch (e: any) {
       Alert.alert('Erreur', e.response?.data?.message || "Erreur lors de l'inscription");
     } finally {
@@ -137,7 +139,7 @@ export default function RegisterScreen() {
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push('/(auth)/login')} style={styles.link}>
+          <TouchableOpacity onPress={() => router.push('/login')} style={styles.link}>
             <Text style={styles.linkText}>
               Deja un compte ?{' '}
               <Text style={styles.linkBold}>Se connecter</Text>

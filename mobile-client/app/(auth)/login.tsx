@@ -31,7 +31,7 @@ export default function LoginScreen() {
       const res = await authApi.loginClient({ phone, password });
       await setAuth(res.data.user, res.data.accessToken, res.data.refreshToken);
       registerForPushNotifications(authApi.savePushToken).catch(() => {});
-      router.replace('/(tabs)/map');
+      router.replace('/map');
     } catch (e: any) {
       setError(e.response?.data?.message || 'Identifiants invalides');
     } finally {
@@ -42,7 +42,7 @@ export default function LoginScreen() {
   const handleDemo = async () => {
     const demoUser = { id: 'demo-001', name: 'Demo Client', phone: '0700000001', email: 'demo@washapp.ci', role: 'CLIENT' as const };
     await setAuth(demoUser, 'demo-token', 'demo-refresh');
-    router.replace('/(tabs)/map');
+    router.replace('/map');
   };
 
   return (
@@ -100,7 +100,7 @@ export default function LoginScreen() {
           </View>
 
           <TouchableOpacity
-            onPress={() => router.push('/(auth)/forgot-password' as any)}
+            onPress={() => router.push('/forgot-password' as any)}
             style={styles.forgotWrap}
             activeOpacity={0.8}
           >
@@ -117,7 +117,7 @@ export default function LoginScreen() {
             <Text style={styles.demoBtnText}>Connexion demo (sans backend)</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push('/(auth)/register')} style={styles.link}>
+          <TouchableOpacity onPress={() => router.push('/register')} style={styles.link}>
             <Text style={styles.linkText}>Pas de compte ? <Text style={styles.linkBold}>Creer un compte</Text></Text>
           </TouchableOpacity>
         </View>

@@ -67,7 +67,7 @@ export default function WalletScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.push("/(tabs)/map")}>
+      <TouchableOpacity style={styles.backBtn} onPress={() => router.push("/map")}>
           <Text style={styles.backArrow}>{"<"}</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Wallet</Text>

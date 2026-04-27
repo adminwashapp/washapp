@@ -102,6 +102,8 @@ export const adminApi = {
   deleteClient: (id: string) => api.delete('/admin/clients/' + id),
   loginAdmin: (data: { phone?: string; email?: string; password: string }) =>
     api.post('/auth/login/admin', data),
+  sendTestNotification: (userId: string, title: string, message: string) =>
+    api.post('/admin/notifications/test', { userId, title, message }),
 };
 
 export const applicationsApi = {

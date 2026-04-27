@@ -201,7 +201,7 @@ export default function WavePaymentScreen() {
             <TouchableOpacity style={styles.reviewBtn} onPress={() => router.replace({ pathname: "/mission-review/[id]", params: { id } })} activeOpacity={0.85}>
               <Text style={styles.reviewBtnText}>{"\u2B50"} Noter la prestation</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.homeBtn} onPress={() => router.replace("/(tabs)/missions")} activeOpacity={0.8}>
+          <TouchableOpacity style={styles.homeBtn} onPress={() => router.replace("/missions")} activeOpacity={0.8}>
               <Text style={styles.homeBtnText}>Retour aux missions</Text>
             </TouchableOpacity>
           </View>

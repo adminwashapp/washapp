@@ -50,7 +50,7 @@ export default function AccountScreen() {
           if (rt) authApi.logout(rt).catch(() => {});
           await AsyncStorage.multiRemove(["accessToken", "refreshToken", "user"]);
           clearAuth();
-          router.replace("/(auth)/welcome");
+      router.replace("/welcome");
         },
       },
     ]);
@@ -63,7 +63,7 @@ export default function AccountScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.push("/(tabs)/map")}>
+      <TouchableOpacity style={styles.backBtn} onPress={() => router.push("/map")}>
           <Text style={styles.backArrow}>{"<"}</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Mon compte</Text>

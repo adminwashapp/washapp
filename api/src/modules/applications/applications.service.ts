@@ -102,7 +102,7 @@ export class ApplicationsService {
         await this.prisma.user.update({ where: { id: existingUser.id }, data: { passwordHash } });
         await this.prisma.washerProfile.update({
           where: { id: existingWasher.id },
-          data: { accountStatus: 'ACTIVE', isApproved: true },
+          data: { accountStatus: 'ACTIVE' },
         });
         return { alreadyExists: true, phone: app.phone, tempPassword, name: `${app.firstName} ${app.lastName}` };
       }
@@ -116,7 +116,6 @@ export class ApplicationsService {
           orangeMoneyNumber: app.waveMoneyNumber || '',
           zoneLabel: app.zone || '',
           accountStatus: 'ACTIVE',
-          isApproved: true,
         },
       });
       const existingWallet = await this.prisma.wallet.findFirst({ where: { washerId: washerProfile.id } });
@@ -153,7 +152,6 @@ export class ApplicationsService {
         orangeMoneyNumber: app.waveMoneyNumber || '',
         zoneLabel: app.zone || '',
         accountStatus: 'ACTIVE',
-        isApproved: true,
       },
     });
 

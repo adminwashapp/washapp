@@ -99,7 +99,7 @@ export class AuthService {
       throw new UnauthorizedException('Identifiants invalides');
     }
 
-    if (!user.washerProfile?.isApproved) {
+    if (user.washerProfile?.accountStatus !== 'ACTIVE') {
       throw new UnauthorizedException('Compte pas encore approuvé par Washapp');
     }
 
@@ -205,7 +205,7 @@ export class AuthService {
       include: { washerProfile: true },
     });
     if (!user) throw new BadRequestException('Aucun compte washer trouve pour cet email');
-    if (!user.washerProfile?.isApproved) throw new BadRequestException('Votre compte nest pas encore approuve par ladmin');
+    if (user.washerProfile?.accountStatus !== 'ACTIVE') throw new BadRequestException('Votre compte n\'est pas encore approuvé par l\'admin');
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiry = new Date(Date.now() + 10 * 60 * 1000);

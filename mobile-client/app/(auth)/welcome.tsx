@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLang } from '../../contexts/lang';
 import { LangToggle } from '../../components/LangToggle';
 
@@ -13,6 +14,7 @@ const LOGO = require('../../assets/images/logowashapp.png');
 export default function WelcomeScreen() {
   const router = useRouter();
   const { t } = useLang();
+  const insets = useSafeAreaInsets();
 
   const badges = [
     t('welcome_badge1'), t('welcome_badge2'),
@@ -29,7 +31,7 @@ export default function WelcomeScreen() {
           style={StyleSheet.absoluteFill}
         />
 
-        <View style={styles.content}>
+        <View style={[styles.content, { paddingTop: Platform.OS === 'ios' ? Math.max(insets.top, 44) : Math.max(insets.top, 36), paddingBottom: insets.bottom + 48 }]}>
 
           {/* Logo + toggle */}
           <View style={styles.topRow}>

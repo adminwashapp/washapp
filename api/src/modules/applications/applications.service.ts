@@ -85,9 +85,14 @@ export class ApplicationsService {
   }
 
   private async createWasherAccount(app: any) {
-    // Vérifier si un compte existe déjà avec ce téléphone
+    // Vérifier si un compte existe déjà avec ce téléphone OU cet email
     const existingUser = await this.prisma.user.findFirst({
-      where: { phone: app.phone },
+      where: {
+        OR: [
+          { phone: app.phone },
+          ...(app.email ? [{ email: app.email }] : []),
+        ],
+      },
     });
 
     if (existingUser) {

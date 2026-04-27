@@ -203,6 +203,46 @@ export class ApplicationsService {
   }
 
   async delete(id: string) {
+    const app = await this.findOne(id);
+
+    // Chercher le compte User associé (par email ou téléphone)
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          ...(app.email ? [{ email: app.email }] : []),
+          { phone: app.phone },
+        ],
+      },
+    });
+
+    if (user) {
+      // Supprimer le profil washer et tout ce qui y est lié
+      const washerProfile = await this.prisma.washerProfile.findFirst({ where: { userId: user.id } });
+      if (washerProfile) {
+        const missions = await this.prisma.mission.findMany({ where: { washerId: washerProfile.id }, select: { id: true } });
+        const missionIds = missions.map(m => m.id);
+        await this.prisma.complaint.deleteMany({ where: { washerId: washerProfile.id } });
+        if (missionIds.length > 0) await this.prisma.mission.deleteMany({ where: { id: { in: missionIds } } });
+        await this.prisma.ledgerEntry.deleteMany({ where: { washerId: washerProfile.id } });
+        const wallet = await this.prisma.wallet.findFirst({ where: { washerId: washerProfile.id } });
+        if (wallet) {
+          await this.prisma.ledgerEntry.deleteMany({ where: { walletId: wallet.id } });
+          await this.prisma.withdrawalRequest.deleteMany({ where: { walletId: wallet.id } });
+          await this.prisma.wallet.delete({ where: { id: wallet.id } });
+        }
+        await this.prisma.withdrawalRequest.deleteMany({ where: { washerId: washerProfile.id } });
+        await this.prisma.washerSubscription.deleteMany({ where: { washerId: washerProfile.id } });
+        await this.prisma.washerLocation.deleteMany({ where: { washerId: washerProfile.id } });
+        await this.prisma.washerReservationStat.deleteMany({ where: { washerId: washerProfile.id } });
+        await this.prisma.washerProfile.delete({ where: { id: washerProfile.id } });
+      }
+      // Supprimer les tokens et le User (libère email + téléphone)
+      await this.prisma.refreshToken.deleteMany({ where: { userId: user.id } });
+      await this.prisma.passwordResetToken.deleteMany({ where: { userId: user.id } });
+      await this.prisma.user.delete({ where: { id: user.id } });
+    }
+
+    // Supprimer la candidature
     await this.prisma.washerApplication.delete({ where: { id } });
     return { success: true };
   }

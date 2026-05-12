@@ -88,22 +88,4 @@ export class AuthController {
   washerVerifyOtp(@Body() body: { email: string; code: string }) {
     return this.authService.washerVerifyOtp(body.email, body.code);
   }
-
-  // TEMP: Reset admin password
-  @Get('reset-admin-temp')
-  async resetAdminTemp() {
-    return this.authService.resetAdminPassword();
-  }
-
-  // TEMP: List admin accounts
-  @Get('list-admins-temp')
-  async listAdminsTemp() {
-    return this.authService.listAdminAccounts();
-  }
-
-  // TEMP: Change admin email
-  @Get('change-admin-email-temp')
-  async changeAdminEmailTemp() {
-    return this.authService.changeAdminEmail();
-  }
 }

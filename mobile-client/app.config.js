@@ -1,0 +1,66 @@
+module.exports = {
+  expo: {
+    name: 'Washapp',
+    slug: 'washapp-client',
+    version: '1.0.0',
+    sdkVersion: '54.0.0',
+    orientation: 'portrait',
+    scheme: 'washapp',
+    userInterfaceStyle: 'automatic',
+    icon: './assets/images/icon.png',
+    splash: {
+      image: './assets/images/icon.png',
+      resizeMode: 'contain',
+      backgroundColor: '#FFFFFF',
+    },
+    ios: {
+      supportsTablet: false,
+      bundleIdentifier: 'com.washapp.client',
+      icon: './assets/images/icon.png',
+      infoPlist: {
+        NSLocationWhenInUseUsageDescription: 'Washapp a besoin de votre localisation.',
+        NSCameraUsageDescription: 'Washapp utilise la camera pour les photos.',
+      },
+      config: {
+        googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+      },
+    },
+    android: {
+      package: 'com.washapp.client',
+      icon: './assets/images/icon.png',
+      adaptiveIcon: {
+        foregroundImage: './assets/images/adaptive-icon.png',
+        backgroundColor: '#FFFFFF',
+      },
+      permissions: [
+        'ACCESS_COARSE_LOCATION',
+        'ACCESS_FINE_LOCATION',
+        'CAMERA',
+        'android.permission.ACCESS_COARSE_LOCATION',
+        'android.permission.ACCESS_FINE_LOCATION',
+        'android.permission.CAMERA',
+        'android.permission.RECORD_AUDIO',
+      ],
+      config: {
+        googleMaps: {
+          apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+        },
+      },
+    },
+    web: { bundler: 'metro', output: 'static' },
+    plugins: [
+      'expo-router',
+      'expo-location',
+      'expo-camera',
+      ['expo-notifications', { icon: './assets/images/icon.png', color: '#1558f5', sounds: [], mode: 'production' }],
+    ],
+    experiments: { typedRoutes: true },
+    extra: {
+      apiUrl: 'https://washapp-api.onrender.com/api',
+      wsUrl: 'https://washapp-api.onrender.com',
+      eas: { projectId: '5de62954-4d03-4489-a65d-331d9c3b8895' },
+      router: {},
+    },
+    owner: 'lohrans',
+  },
+};
